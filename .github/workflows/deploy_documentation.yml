@@ -1,0 +1,35 @@
+name: "Deploy Documentation"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  install:
+    name: "Install"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🔧 Setup"
+        uses: ./.github/actions/use-dependencies
+
+  deploy:
+    name: "Deploy"
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🔧 Setup"
+        uses: ./.github/actions/use-dependencies
+      - name: "🏗️ Build"
+        run: yarn docs:build
+      - name: "🚀 Deploy"
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.WRITE_REPOS_TOKEN }}
+          publish_dir: ./.docs
+          user_name: agoralabs-bot
+          user_email: tech@agoralabs.sh

@@ -1,0 +1,77 @@
+{
+  "name": "@agoralabs-sh/arc0027-sdk",
+  "version": "1.0.0",
+  "description": "A TypeScript implementation of the ARC-0027 specification that allows dApps to connect and interact with wallets in a standardized way.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "CONTRIBUTING.md",
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agoralabs-sh/agoralabs-sh/arc0027-sdk"
+  },
+  "author": {
+    "name": "Kieran O'Neill",
+    "email": "hello@kieranoneill.com",
+    "url": "https://github.com/kieranroneill"
+  },
+  "license": "MIT",
+  "keywords": [
+    "algorand",
+    "algosdk",
+    "arc0027",
+    "avm",
+    "blockchain",
+    "cryptocurrency"
+  ],
+  "private": false,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "docs:build": "docusaurus build --out-dir .docs",
+    "docs:serve": "docusaurus serve --dir .docs --no-open",
+    "docs:start": "docusaurus start --no-open --port 8080",
+    "lint": "eslint . --ext .ts --ext .js",
+    "prepare": "husky install",
+    "prettier": "prettier --config .prettierrc --write \"**/*.{js,json,ts}\"",
+    "test": "exit 0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0",
+    "@docusaurus/core": "^3.1.1",
+    "@docusaurus/module-type-aliases": "^3.1.1",
+    "@docusaurus/preset-classic": "^3.1.1",
+    "@docusaurus/remark-plugin-npm2yarn": "^3.1.1",
+    "@docusaurus/tsconfig": "^3.1.1",
+    "@mdx-js/react": "^3.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/release-notes-generator": "^12.1.0",
+    "@types/node": "^20.11.16",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "clsx": "^2.1.0",
+    "docusaurus-plugin-sass": "^0.2.5",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "prism-react-renderer": "^2.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.70.0",
+    "semantic-release": "^23.0.0",
+    "typescript": "^5.3.3"
+  }
+}
