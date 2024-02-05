@@ -38,7 +38,8 @@
     "docs:start": "docusaurus start --no-open --port 8080",
     "lint": "eslint . --ext .ts --ext .js",
     "prepare": "husky install",
-    "prettier": "prettier --config .prettierrc --write \"**/*.{js,json,ts}\""
+    "prettier": "prettier --config .prettierrc --write \"**/*.{js,json,ts}\"",
+    "test": "exit 0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.6.0",
