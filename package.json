@@ -1,0 +1,28 @@
+{
+  "name": "@agoralabs-sh/arc0027-sdk",
+  "version": "1.0.0",
+  "description": "A TypeScript implementation of the ARC-0027 specification that allows for dApps and wallets (providers) to connect and communicate.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "CONTRIBUTING.md",
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agoralabs-sh/agoralabs-sh/arc0027-sdk"
+  },
+  "author": {
+    "name": "Kieran O'Neill",
+    "email": "hello@kieranoneill.com",
+    "url": "https://github.com/kieranroneill"
+  },
+  "license": "MIT",
+  "keywords": [
+    "algorand",
+    "algosdk",
+    "blockchain"
+  ],
+  "private": false
+}
