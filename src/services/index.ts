@@ -1,1 +1,1 @@
-export { default as AVMProvider } from './AVMProvider';
+export { default as AVMWebProvider } from './AVMWebProvider';

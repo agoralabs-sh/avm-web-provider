@@ -1,0 +1,52 @@
+import TOCInline from '@theme/TOCInline';
+
+# AVMWebProvider
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Static Methods
+
+### `init([options])`
+
+> Initializes the AVM web provider object. If no options are supplied, a default configuration is used.
+
+#### Parameters
+
+| Name    | Type                                                         | Required | Default | Description                                                       |
+|---------|--------------------------------------------------------------|----------|---------|-------------------------------------------------------------------|
+| options | [`IAVMWebProviderInitOptions`](#iavmwebproviderinitoptions)  | no       | -       | An object to change the initial configuration.                    |
+
+#### Returns
+
+| Type                                | Description                             |
+|-------------------------------------|-----------------------------------------|
+| [`AVMWebProvider`](#avmwebprovider) | An initialized AVM web provider object. |
+
+## Methods
+
+### `getConfig()`
+
+> Returns the configuration.
+
+#### Returns
+
+| Type                                | Description                             |
+|-------------------------------------|-----------------------------------------|
+| [`IAVMWebProviderConfig`](#iavmwebproviderconfig) | The provider's configuration. |
+
+## Types
+
+### `IAVMWebProviderConfig`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| debug | `boolean` | yes       | `false` | Outputs debug information to the console.                 |
+
+### `IAVMWebProviderInitOptions`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |

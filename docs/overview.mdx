@@ -2,9 +2,15 @@
 slug: /
 ---
 
+# Overview
+
 import TOCInline from '@theme/TOCInline';
 
-# Overview
+<!-- components -->
+import CenteredImage from '@site/docs/components/CenteredImage';
+
+<!-- images -->
+import simpleMessageBusDiagramImage from '@site/docs/static/images/simple_message_bus.png';
 
 <TOCInline
   maxHeadingLevel={4}
@@ -13,4 +19,31 @@ import TOCInline from '@theme/TOCInline';
 
 ## Introduction
 
-Hello humie!
+The AVM Web Provider is an interface that bridges the gap between dApps and providers (wallets), allowing dApps to connect and interact with providers (wallets) in a standardized way.
+
+The AVM Web Provider works towards achieving three main goals:
+
+1. Creating a common interface between dApps and providers (wallets).
+2. Allowing dApps to choose what wallet to use.
+
+## How it works
+
+Traditionally, web-based providers inject script into a web page's document and "hijack" a property on the global object. This can be problematic for a user that may use multiple providers and could lead to provider B overwriting this global property that was already initialized by provider A.
+
+It is also common for web-based providers to use injected code to use the [`window.postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) for  communication to the extension's content scripts. This opens up a dApp to cross-origin communication; any messages sent to via [`window.postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) can be received by a page, and a pop-up that it spawned, or between a page and an iframe embedded within it.
+
+As of March 2022, the [`BroadcastChannel`](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) API is fully supported by all major browsers and is a clean and efficient way to broadcast/listen for messages. It provides several advantages over [`window.postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage):
+* It provides a higher-level abstraction for communication. It is simpler to use compared to manually injecting scripts and handling [`window.postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) events.
+* It is limited to a named channel and the same origin, meaning only the origin page, the dapp, and the browsing context (for instance, a web extension's content script) can broadcast/listen to messages.
+
+The AVM Web Provider leverages the [`BroadcastChannel API`](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) as a transport layer to deliver messages and allows dApps and web-based providers to securely communicate without interfering with other providers.
+
+A dApp will broadcast a message and the provider(s) will listen for these broadcasted messages and act upon them, responding with another broadcast message that references the original request broadcast.
+
+The dApp will, itself, listen to broadcasted responses from any provider(s). Below is a diagram demonstrating a web extension provider for the flow of data for an enable request.
+
+<CenteredImage
+  label="Diagram of a simple message bus using BroadcastChannel API"
+  maxWidth="100%"
+  src={simpleMessageBusDiagramImage}
+/>

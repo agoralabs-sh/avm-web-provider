@@ -1,19 +1,19 @@
 // services
-import AVMProvider from './AVMProvider';
+import AVMWebProvider from './AVMWebProvider';
 
 // types
-import { IConfig } from '@app/types';
+import { IAVMWebProviderConfig } from '@app/types';
 
-describe(AVMProvider.name, () => {
-  let provider: AVMProvider;
+describe(AVMWebProvider.name, () => {
+  let provider: AVMWebProvider;
 
-  describe(`${AVMProvider.name}#init`, () => {
+  describe(`${AVMWebProvider.name}#init`, () => {
     it('should initialize the provider with default options', () => {
       // arrange
-      let config: IConfig;
+      let config: IAVMWebProviderConfig;
 
       // act
-      provider = AVMProvider.init();
+      provider = AVMWebProvider.init();
 
       // assert
       config = provider.getConfig();
@@ -24,10 +24,10 @@ describe(AVMProvider.name, () => {
     it('should initialize the provider with the specified options', () => {
       // arrange
       const debug: boolean = true;
-      let config: IConfig;
+      let config: IAVMWebProviderConfig;
 
       // act
-      provider = AVMProvider.init({
+      provider = AVMWebProvider.init({
         debug,
       });
 

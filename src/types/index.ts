@@ -1,2 +1,2 @@
-export { default as IConfig } from './IConfig';
-export { default as IInitOptions } from './IInitOptions';
+export { default as IAVMWebProviderConfig } from './IAVMWebProviderConfig';
+export { default as IAVMWebProviderInitOptions } from './IAVMWebProviderInitOptions';
