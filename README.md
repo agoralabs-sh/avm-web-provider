@@ -1,39 +1,45 @@
+<p align="center">
+  <a href="https://avm-web-provider.agoralabs.sh">
+    <img alt="AVM Logo" src="assets/logo@128x128.png" style="padding-top: 15px" height="128" />
+  </a>
+</p>
+
 <h1 align="center">
-  ARC-0027 SDK
+  AVM Web Provider
 </h1>
 
 <p align="center">
-  <a href="https://github.com/agoralabs-sh/arc0027-sdk/releases/latest">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/agoralabs-sh/arc0027-sdk?&logo=github">
+  <a href="https://github.com/agoralabs-sh/avm-web-provider/releases/latest">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/agoralabs-sh/avm-web-provider?&logo=github">
   </a>
-  <a href="https://github.com/agoralabs-sh/arc0027-sdk/releases/latest">
-    <img alt="GitHub Release Date - Published At" src="https://img.shields.io/github/release-date/agoralabs-sh/arc0027-sdk?logo=github">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/agoralabs-sh/arc0027-sdk/releases">
-    <img alt="GitHub Pre-release" src="https://img.shields.io/github/v/release/agoralabs-sh/arc0027-sdk?include_prereleases&label=pre-release&logo=github">
-  </a>
-  <a href="https://github.com/agoralabs-sh/arc0027-sdk/releases">
-    <img alt="GitHub Pre-release Date - Published At" src="https://img.shields.io/github/release-date-pre/agoralabs-sh/arc0027-sdk?label=pre-release date&logo=github">
+  <a href="https://github.com/agoralabs-sh/avm-web-provider/releases/latest">
+    <img alt="GitHub Release Date - Published At" src="https://img.shields.io/github/release-date/agoralabs-sh/avm-web-provider?logo=github">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/agoralabs-sh/arc0027-sdk/blob/main/LICENSE">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/agoralabs-sh/arc0027-sdk">
+  <a href="https://github.com/agoralabs-sh/avm-web-provider/releases">
+    <img alt="GitHub Pre-release" src="https://img.shields.io/github/v/release/agoralabs-sh/avm-web-provider?include_prereleases&label=pre-release&logo=github">
+  </a>
+  <a href="https://github.com/agoralabs-sh/avm-web-provider/releases">
+    <img alt="GitHub Pre-release Date - Published At" src="https://img.shields.io/github/release-date-pre/agoralabs-sh/avm-web-provider?label=pre-release date&logo=github">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://npmjs.com/package/@agoralabs-sh/arc0027-sdk" target="_blank">
-    <img src="https://img.shields.io/npm/v/@agoralabs-sh/arc0027-sdk" alt="npm" />
+  <a href="https://github.com/agoralabs-sh/avm-web-provider/blob/main/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/agoralabs-sh/avm-web-provider">
   </a>
 </p>
 
 <p align="center">
-  A TypeScript implementation of the ARC-0027 specification that allows dApps to connect and interact with wallets in a standardized way.
+  <a href="https://npmjs.com/package/@agoralabs-sh/avm-web-provider" target="_blank">
+    <img src="https://img.shields.io/npm/v/@agoralabs-sh/avm-web-provider" alt="npm" />
+  </a>
+</p>
+
+<p align="center">
+  A TypeScript implementation that allows dApps to connect and interact with web-based providers.
 </p>
 
 ### Table of contents
@@ -56,12 +62,12 @@
 
 * Using npm:
 ```shell
-npm install @agoralabs-sh/arc0027-sdk
+npm install @agoralabs-sh/avm-web-provider
 ```
 
 * Using yarn:
 ```shell
-yarn add @agoralabs-sh/arc0027-sdk
+yarn add @agoralabs-sh/avm-web-provider
 ```
 
 ## 📚 2. Documentation
@@ -118,7 +124,7 @@ This will compile the Typescript source code into a `dist/` directory.
 
 ### 4.3. Useful Commands
 
-| Commnad               | Description                                                                        |
+| Command               | Description                                                                        |
 |-----------------------|------------------------------------------------------------------------------------|
 | `yarn build`          | Builds the source code into the `dist/` directory.                                 |
 | `yarn run docs:build` | Builds the documentation into the `.docs/` directory.                              |

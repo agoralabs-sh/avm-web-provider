@@ -11,13 +11,15 @@ const scriptsDir = path.resolve(docsDir, 'scripts');
 const stylesDir = path.resolve(docsDir, 'styles');
 
 // links
-const githubLink = 'https://github.com/agoralabs-sh/arc0027-sdk';
-const npmLink = 'https://npmjs.com/package/@agoralabs-sh/arc0027-sdk';
+const agoraLabsLink = 'https://agoralabs.sh';
+const githubLink = 'https://github.com/agoralabs-sh/avm-web-provider';
+const npmLink = 'https://npmjs.com/package/@agoralabs-sh/avm-web-provider';
+const url = 'https://avm-web-provider.agoralabs.sh';
 
 // header
 const tagline =
-  'A TypeScript implementation of the ARC-0027 specification that allows dApps to connect and interact with wallets in a standardized way.';
-const title = 'ARC-0027 SDK';
+  'A TypeScript implementation that allows dApps to connect and interact with web-based providers.';
+const title = 'AVM Web Provider';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -32,7 +34,7 @@ const config = {
   onBrokenMarkdownLinks: 'throw',
   onDuplicateRoutes: 'throw',
   organizationName: 'agoralabs-sh',
-  projectName: 'arc0027-sdk',
+  projectName: 'avm-web-provider',
   plugins: ['docusaurus-plugin-sass'],
   presets: [
     [
@@ -60,6 +62,8 @@ const config = {
         },
         theme: {
           customCss: [
+            require.resolve(path.resolve(stylesDir, 'footer.scss')),
+            require.resolve(path.resolve(stylesDir, 'functions.scss')),
             require.resolve(path.resolve(stylesDir, 'global.scss')),
             require.resolve(path.resolve(stylesDir, 'navbar.scss')),
           ],
@@ -77,14 +81,13 @@ const config = {
       metadata: [
         {
           name: 'keywords',
-          content:
-            'algorand, algosdk, arc0027, avm, blockchain, cryptocurrency',
+          content: 'algorand, algosdk, arc0027, avm, blockchain',
         },
       ],
       navbar: {
         title,
         logo: {
-          alt: 'Algorand logo',
+          alt: 'AVM logo',
           src: 'images/logo.svg',
         },
         items: [
@@ -93,6 +96,12 @@ const config = {
             docId: 'overview',
             position: 'left',
             label: 'Overview',
+          },
+          {
+            type: 'doc',
+            docId: 'api-reference/index',
+            position: 'left',
+            label: 'API',
           },
           // right
           {
@@ -110,7 +119,11 @@ const config = {
         ],
       },
       footer: {
-        style: 'dark',
+        copyright: `
+<div class="footer__copyright-container">
+    <p class="footer__text">Licensed under <a class="footer__text--link" href="${githubLink}/blob/main/LICENSE" target="_blank">MIT</a>.</p>
+</div>
+        `,
         links: [
           {
             title: 'Docs',
@@ -118,6 +131,10 @@ const config = {
               {
                 label: 'Overview',
                 to: 'overview',
+              },
+              {
+                label: 'API Reference',
+                to: 'api-reference/index',
               },
             ],
           },
@@ -135,7 +152,14 @@ const config = {
             ],
           },
         ],
-        copyright: `Developed with ❤️ by Agora Labs. Licensed under <a href="${githubLink}/blob/main/LICENSE" target="_blank">MIT</a>.`,
+        logo: {
+          alt: 'Agora Labs logo',
+          height: '50px',
+          href: agoraLabsLink,
+          src: '/images/developed_by_agora_labs_banner.svg',
+          target: '_blank',
+        },
+        style: 'dark',
       },
       prism: {
         darkTheme: themes.dracula,
@@ -144,7 +168,7 @@ const config = {
     }),
   title,
   trailingSlash: false,
-  url: 'https://arc0027-sdk.agoralabs.sh',
+  url,
 };
 
 module.exports = config;

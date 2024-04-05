@@ -1,4 +1,4 @@
-name: "Use Dependencies"
+name: "Use Yarn Dependencies"
 
 description: "Checks if the dependencies have been cached with the hash of the yarn.lock file."
 
@@ -11,7 +11,7 @@ runs:
         node-version: 20.9.0
         cache: 'yarn'
     - name: "💾 Cache dependencies"
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id: cache-dependencies
       with:
         path: node_modules

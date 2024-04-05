@@ -1,0 +1,54 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Getting Started
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Installation
+
+You can use your favourite package manager to install:
+
+```bash npm2yarn
+npm install --save @agoralabs-sh/avm-web-provider
+```
+
+## Initialization
+
+Firstly, we want to get the AVM provider setup and configured:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+    ```js
+    const { AVMWebProvider } = require('@agoralabs-sh/avm-web-provider');
+
+    const provider = AVMWebProvider.init();
+    ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+    ```typescript
+    import { AVMWebProvider } from '@agoralabs-sh/avm-web-provider';
+
+    const provider: AVMWebProvider = AVMWebProvider.init();
+    ```
+
+  </TabItem>
+</Tabs>
+
+:::note
+
+See [`IAVMWebProviderInitOptions`](../../api-reference/avm-web-provider#iavmwebproviderinitoptions) for more information on what options are supported.
+
+:::
