@@ -23,7 +23,7 @@ const sidebars = {
       type: 'category',
     },
     {
-      items: ['api-reference/avm-web-provider'],
+      items: ['api-reference/avm-web-provider', 'api-reference/avm-web-wallet'],
       label: 'API Reference',
       link: {
         type: 'doc',

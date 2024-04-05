@@ -24,6 +24,10 @@ export default class AVMWebProvider {
    * public methods
    */
 
+  /**
+   * Gets the configuration.
+   * @returns {IAVMWebProviderConfig} the current configuration.
+   */
   public getConfig(): IAVMWebProviderConfig {
     return this.config;
   }

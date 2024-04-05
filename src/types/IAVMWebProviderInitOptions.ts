@@ -1,5 +1,6 @@
-interface IAVMWebProviderInitOptions {
-  debug?: boolean;
-}
+// types
+import IBaseInitOptions from './IBaseInitOptions';
+
+type IAVMWebProviderInitOptions = IBaseInitOptions;
 
 export default IAVMWebProviderInitOptions;
