@@ -32,6 +32,20 @@ import TOCInline from '@theme/TOCInline';
 |------------|-----------|----------|---------|--------------------------------------------------------------|
 | debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
 
+### `IBaseError`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| code | `number` | yes       | - | The code of the error. See the [error codes](errors#summary) for more information.                 |
+| message | `string` | yes       | - | A human-readable error message that can be displayed to a user.                 |
+| providerId | `string` | no       | - | The ID of the provider that threw the error.                 |
+
+:::note
+
+This is the basic type for an error. For specific details on errors check out the [errors](errors).
+
+:::
+
 ### `IDiscoverParams`
 
 | Name        | Type      | Required | Default | Description                                                      |

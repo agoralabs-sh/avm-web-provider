@@ -15,17 +15,33 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name    | Type                                                         | Required | Default | Description                                                       |
-|---------|--------------------------------------------------------------|----------|---------|-------------------------------------------------------------------|
-| options | [`IAVMWebClientInitOptions`](#iavmwebclientinitoptions)  | no       | -       | An object to change the initial configuration.                    |
+| Name    | Type                                                         | Required | Default | Description                                    |
+|---------|--------------------------------------------------------------|----------|---------|------------------------------------------------|
+| options | [`IAVMWebClientInitOptions`](types#iavmwebclientinitoptions) | no       | -       | An object to change the initial configuration. |
 
 #### Returns
 
-| Type                                | Description                             |
-|-------------------------------------|-----------------------------------------|
-| [`AVMWebClient`](#avmwebclient) | An initialized AVM web client object. |
+| Type                                 | Description                           |
+|--------------------------------------|---------------------------------------|
+| [`AVMWebClient`](types#avmwebclient) | An initialized AVM web client object. |
 
 ## Methods
+
+### `discover([params])`
+
+> Sends a request to get information relating to available providers. This should be called before interacting with any providers to ensure networks and methods are supported.
+
+#### Parameters
+
+| Name   | Type                                       | Required | Default | Description                                   |
+|--------|--------------------------------------------|----------|---------|-----------------------------------------------|
+| params | [`IDiscoverParams`](types#idiscoverparams) | no       | -       | Params that specify which provider to target. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
 
 ### `getConfig()`
 
@@ -33,20 +49,23 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type                                | Description                             |
-|-------------------------------------|-----------------------------------------|
-| [`IAVMWebClientConfig`](#iavmwebclientconfig) | The client's configuration. |
+| Type                                               | Description                 |
+|----------------------------------------------------|-----------------------------|
+| [`IAVMWebClientConfig`](types#iavmwebclientconfig) | The client's configuration. |
 
-## Types
 
-### `IAVMWebClientConfig`
+### `onDiscover(listener)`
 
-| Name        | Type      | Required | Default | Description                                                      |
-|------------|-----------|----------|---------|--------------------------------------------------------------|
-| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+> Listens to discover messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
 
-### `IAVMWebClientInitOptions`
+#### Parameters
 
-| Name        | Type      | Required | Default | Description                                                      |
-|------------|-----------|----------|---------|--------------------------------------------------------------|
-| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+| Name     | Type                                                                                                                                                             | Required | Default | Description                                                                                                                                                  |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`result`?: [`IDiscoverResult`](types#idiscoverresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the reult was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |

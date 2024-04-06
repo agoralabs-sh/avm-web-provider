@@ -23,7 +23,12 @@ const sidebars = {
       type: 'category',
     },
     {
-      items: ['api-reference/avm-web-client', 'api-reference/avm-web-provider'],
+      items: [
+        'api-reference/avm-web-client',
+        'api-reference/avm-web-provider',
+        'api-reference/errors',
+        'api-reference/types',
+      ],
       label: 'API Reference',
       link: {
         type: 'doc',

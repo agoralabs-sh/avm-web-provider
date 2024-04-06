@@ -7,6 +7,6 @@ import type TResponseResults from './TResponseResults';
 type TAVMWebClientListener<Result = TResponseResults> = (
   result: Result | null,
   error: BaseARC0027Error | null
-) => void;
+) => void | Promise<void>;
 
 export default TAVMWebClientListener;
