@@ -53,3 +53,19 @@ import TOCInline from '@theme/TOCInline';
 | Type   | Description |
 |--------|-------------|
 | `void` | -           |
+
+### `onEnable(listener)`
+
+> Listens to enable messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+
+#### Parameters
+
+| Name     | Type                                                                                                                                                         | Required | Default | Description                                                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|----------------------------------------------------------------------------------------|
+| listener | (`params`?: [`IEnableParams`](types#ienableparams)) => ([`IEnableResult`](types#ienableresult) \| [`Promise<IEnableResult>`](types#ienableresult)) \| `null` | yes      | -       | The listener to call when the request message is sent, or null to remove the listener. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
