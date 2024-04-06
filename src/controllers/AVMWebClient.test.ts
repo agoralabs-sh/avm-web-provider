@@ -101,7 +101,7 @@ describe(AVMWebClient.name, () => {
     });
   });
 
-  describe.only(`${AVMWebClient.name}#enable`, () => {
+  describe(`${AVMWebClient.name}#enable`, () => {
     it('should return an error', (done) => {
       // arrange
       const expectedError: ARC0027MethodNotSupportedError =
