@@ -14,11 +14,11 @@ import TOCInline from '@theme/TOCInline';
 Before we can start interacting with a provider, we need ask the provider to enable the client. This will achieve two things:
 
 * if necessary, it will authorize your client with the provider; and
-* it will get a list of the authorized accounts available for your client to use.
+* it will get a list of the authorized accounts available to your client.
 
 :::note
 
-It should be safe to call [`enable()`](../../api-reference/avm-web-client#enable) as many times as your client wants, the provider should assume this.
+It should be safe to call [`enable()`](../../api-reference/avm-web-client#enable) as many times as your client needs; the provider should assume this.
 
 :::
 

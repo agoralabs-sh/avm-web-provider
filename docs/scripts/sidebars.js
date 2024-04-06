@@ -4,6 +4,7 @@
 const sidebars = {
   docs: [
     'overview',
+    'terminology',
     {
       items: [
         'clients/getting-started',
@@ -30,7 +31,6 @@ const sidebars = {
       },
       type: 'category',
     },
-    'terminology',
     {
       items: [
         'api-reference/avm-web-client',
