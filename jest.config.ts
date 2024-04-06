@@ -16,7 +16,7 @@ const config: Config = {
   preset: 'ts-jest',
   rootDir: './',
   setupFiles: ['<rootDir>/test/setup.ts'],
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   transform: {
     '^.+\\.ts?$': [
       'ts-jest',

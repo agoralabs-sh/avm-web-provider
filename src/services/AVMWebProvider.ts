@@ -7,7 +7,11 @@ import { DEFAULT_REQUEST_TIMEOUT, LOWER_REQUEST_TIMEOUT } from '@app/constants';
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 
 // messages
-import { RequestMessage } from '@app/messages';
+import {
+  RequestMessage,
+  ResponseMessageWithResult,
+  ResponseMessageWithError,
+} from '@app/messages';
 
 // types
 import type {
@@ -15,7 +19,6 @@ import type {
   IAVMWebProviderInitOptions,
   IDiscoverParams,
   IDiscoverResult,
-  IResponseMessage,
   ISendRequestWithTimeoutOptions,
   TRequestParams,
   TResponseResults,
@@ -55,19 +58,26 @@ export default class AVMWebProvider {
       const results: Result[] = [];
 
       // listen to responses
-      channel.onmessage = (message: MessageEvent<IResponseMessage<Result>>) => {
+      channel.onmessage = (
+        message: MessageEvent<
+          ResponseMessageWithError | ResponseMessageWithResult<Result>
+        >
+      ) => {
         // if the response's request id does not match the intended request, just ignore
         if (!message.data || message.data.requestId !== requestId) {
           return;
         }
 
         // if there is an error, reject
-        if (message.data.error) {
-          return reject(message.data.error);
+        if ((message.data as ResponseMessageWithError).error) {
+          return reject((message.data as ResponseMessageWithError).error);
         }
 
         // add the result
-        message.data.result && results.push(message.data.result);
+        (message.data as ResponseMessageWithResult<Result>).result &&
+          results.push(
+            (message.data as ResponseMessageWithResult<Result>).result
+          );
       };
 
       // create a timeout that returns the collected results
@@ -106,9 +116,10 @@ export default class AVMWebProvider {
    */
 
   /**
-   * Gets information relating to available providers. This should be called
-   * before interacting with any providers to ensure networks and methods are
-   * supported.
+   * Gets information relating to available providers. This should be called before interacting with any providers to
+   * ensure networks and methods are supported.
+   * **NOTE:** this request will timeout after 0.75 seconds, at which time all results will return.
+   * @param {IDiscoverParams} params - [optional] params that specify which provider to target.
    * @returns {Promise<IDiscoverResult[]>} information about the available providers.
    */
   public async discover(params?: IDiscoverParams): Promise<IDiscoverResult[]> {
