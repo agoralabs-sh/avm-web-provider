@@ -24,6 +24,7 @@ describe(AVMWebProvider.name, () => {
   });
 
   afterEach(() => {
+    provider.stopListening();
     wallet.stopListening();
   });
 
@@ -57,18 +58,9 @@ describe(AVMWebProvider.name, () => {
   });
 
   describe(`${AVMWebProvider.name}#discover`, () => {
-    it('should return empty results if no providers are initialized', async () => {
+    it('should return a provider', (done) => {
       // arrange
-      // act
-      const results: IDiscoverResult[] = await provider.discover();
-
-      // assert
-      expect(results).toHaveLength(0);
-    });
-
-    it('should return a provider', async () => {
-      // arrange
-      const result: IDiscoverResult = {
+      const expectedResult: IDiscoverResult = {
         host: 'https://awesome-wallet.com',
         name: 'Awesome Wallet',
         networks: [
@@ -86,22 +78,25 @@ describe(AVMWebProvider.name, () => {
         ],
         providerId,
       };
-      let results: IDiscoverResult[];
 
       wallet.on(
         createMessageReference(
           ARC0027MethodEnum.Discover,
           ARC0027MessageTypeEnum.Request
         ),
-        () => result
+        () => expectedResult
       );
+      provider.onDiscover((result, error) => {
+        // assert
+        expect(error).toBeNull();
+        expect(result).toBeDefined();
+        expect(result).toEqual(expectedResult);
+
+        done();
+      });
 
       // act
-      results = await provider.discover();
-
-      // assert
-      expect(results).toHaveLength(1);
-      expect(results[0]).toEqual(result);
+      provider.discover();
     });
   });
 });

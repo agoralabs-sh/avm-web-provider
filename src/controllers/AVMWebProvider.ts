@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
-// constants
-import { DEFAULT_REQUEST_TIMEOUT, LOWER_REQUEST_TIMEOUT } from '@app/constants';
+// controllers
+import BaseController from './BaseController';
 
 // enums
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
@@ -9,8 +9,8 @@ import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 // messages
 import {
   RequestMessage,
-  ResponseMessageWithResult,
   ResponseMessageWithError,
+  ResponseMessageWithResult,
 } from '@app/messages';
 
 // types
@@ -19,84 +19,87 @@ import type {
   IAVMWebProviderInitOptions,
   IDiscoverParams,
   IDiscoverResult,
-  ISendRequestWithTimeoutOptions,
+  ISendRequestMessageOptions,
+  TAVMWebClientListener,
   TRequestParams,
-  TResponseResults,
 } from '@app/types';
 
 // utils
-import { createChannelName, createMessageReference } from '@app/utils';
+import { createMessageReference } from '@app/utils';
 
-export default class AVMWebProvider {
-  private readonly config: IAVMWebProviderConfig;
+export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
+  private readonly requestIds: string[];
+  private readonly events: Map<string, TAVMWebClientListener>;
 
   private constructor(config: IAVMWebProviderConfig) {
-    this.config = config;
+    super(config);
+
+    this.events = new Map<string, TAVMWebClientListener>();
+    this.requestIds = [];
+
+    // start listening to response messages
+    this.startListening();
   }
 
   /**
    * private methods
    */
 
-  private async sendRequestWithTimeout<
-    Params = TRequestParams,
-    Result = TResponseResults,
-  >({
+  private sendRequestMessage<Params = TRequestParams>({
     method,
     params,
-    timeout,
-  }: ISendRequestWithTimeoutOptions<Params>): Promise<Result[]> {
-    return new Promise<Result[]>((resolve, reject) => {
-      const channel: BroadcastChannel = new BroadcastChannel(
-        createChannelName()
-      );
-      const requestId: string = uuid();
-      const requestReference: string = createMessageReference(
-        method,
-        ARC0027MessageTypeEnum.Request
-      );
-      const results: Result[] = [];
+  }: ISendRequestMessageOptions<Params>): void {
+    let id: string;
 
-      // listen to responses
-      channel.onmessage = (
-        message: MessageEvent<
-          ResponseMessageWithError | ResponseMessageWithResult<Result>
-        >
-      ) => {
-        // if the response's request id does not match the intended request, just ignore
-        if (!message.data || message.data.requestId !== requestId) {
-          return;
-        }
+    // if there is no channel, ignore
+    if (!this.channel) {
+      return;
+    }
 
-        // if there is an error, reject
-        if ((message.data as ResponseMessageWithError).error) {
-          return reject((message.data as ResponseMessageWithError).error);
-        }
+    id = uuid();
 
-        // add the result
-        (message.data as ResponseMessageWithResult<Result>).result &&
-          results.push(
-            (message.data as ResponseMessageWithResult<Result>).result
-          );
-      };
-
-      // create a timeout that returns the collected results
-      window.setTimeout(() => {
-        resolve(results);
-
-        // close the channel, we are done here
-        channel.close();
-      }, timeout || DEFAULT_REQUEST_TIMEOUT);
-
+    try {
       // broadcast the request message
-      channel.postMessage(
+      this.channel.postMessage(
         new RequestMessage<Params>({
-          id: requestId,
+          id,
           params,
-          reference: requestReference,
+          reference: createMessageReference(
+            method,
+            ARC0027MessageTypeEnum.Request
+          ),
         })
       );
-    });
+
+      // add the id to the internal state
+      this.requestIds.push(id);
+    } catch (error) {
+      // TODO: log error
+    }
+  }
+
+  /**
+   * protected methods
+   */
+
+  protected async onMessage(
+    message: MessageEvent<ResponseMessageWithError | ResponseMessageWithResult>
+  ): Promise<void> {
+    const listener: TAVMWebClientListener | null =
+      this.events.get(message.data.reference) || null;
+
+    // ensure we have a listener for the response and the request id is known
+    if (listener && this.requestIds.includes(message.data.requestId)) {
+      switch (message.data.reference) {
+        case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
+          return listener(
+            (message.data as ResponseMessageWithResult).result || null,
+            (message.data as ResponseMessageWithError).error || null
+          );
+        default:
+          break;
+      }
+    }
   }
 
   /**
@@ -116,27 +119,29 @@ export default class AVMWebProvider {
    */
 
   /**
-   * Gets information relating to available providers. This should be called before interacting with any providers to
-   * ensure networks and methods are supported.
-   * **NOTE:** this request will timeout after 0.75 seconds, at which time all results should have returned.
+   * Sends a request to get information relating to available providers. This should be called before interacting with
+   * any providers to ensure networks and methods are supported.
    * @param {IDiscoverParams} params - [optional] params that specify which provider to target.
-   * @returns {Promise<IDiscoverResult[]>} information about the available providers.
    */
-  public async discover(params?: IDiscoverParams): Promise<IDiscoverResult[]> {
-    return await this.sendRequestWithTimeout<IDiscoverParams, IDiscoverResult>({
+  public discover(params?: IDiscoverParams): void {
+    return this.sendRequestMessage<IDiscoverParams>({
       method: ARC0027MethodEnum.Discover,
       params,
-      timeout: LOWER_REQUEST_TIMEOUT,
     });
   }
 
   /**
-   * Gets the configuration.
-   * @returns {IAVMWebProviderConfig} the current configuration.
+   * Listens to discover messages sent from providers.
+   * @param {TAVMWebClientListener<IDiscoverResult>} listener - callback that is called when a response message is
+   * received.
    */
-  public getConfig(): IAVMWebProviderConfig {
-    return this.config;
+  onDiscover(listener: TAVMWebClientListener<IDiscoverResult>): void {
+    this.events.set(
+      createMessageReference(
+        ARC0027MethodEnum.Discover,
+        ARC0027MessageTypeEnum.Response
+      ),
+      listener
+    );
   }
-
-  onDiscover(): void {}
 }
