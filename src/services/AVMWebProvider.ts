@@ -118,7 +118,7 @@ export default class AVMWebProvider {
   /**
    * Gets information relating to available providers. This should be called before interacting with any providers to
    * ensure networks and methods are supported.
-   * **NOTE:** this request will timeout after 0.75 seconds, at which time all results will return.
+   * **NOTE:** this request will timeout after 0.75 seconds, at which time all results should have returned.
    * @param {IDiscoverParams} params - [optional] params that specify which provider to target.
    * @returns {Promise<IDiscoverResult[]>} information about the available providers.
    */
@@ -137,4 +137,6 @@ export default class AVMWebProvider {
   public getConfig(): IAVMWebProviderConfig {
     return this.config;
   }
+
+  onDiscover(): void {}
 }

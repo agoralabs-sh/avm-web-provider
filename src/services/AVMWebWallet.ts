@@ -3,6 +3,9 @@ import { v4 as uuid } from 'uuid';
 // enums
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 
+// errors
+import { ARC0027UnknownError, BaseARC0027Error } from '@app/errors';
+
 // messages
 import {
   RequestMessage,
@@ -46,7 +49,6 @@ export default class AVMWebWallet {
   }: ISendResponseMessageOptions): Promise<void> {
     let id: string;
     let reference: string;
-    let responseMessage: ResponseMessageWithError | ResponseMessageWithResult;
     let result: TResponseResults;
 
     // if there is no channel, ignore
@@ -59,23 +61,42 @@ export default class AVMWebWallet {
 
     try {
       result = await listener(requestMessage.params);
-      responseMessage = new ResponseMessageWithResult({
-        id,
-        reference,
-        requestId: requestMessage.id,
-        result,
-      });
-    } catch (error) {
-      responseMessage = new ResponseMessageWithError({
-        error,
-        id,
-        reference,
-        requestId: requestMessage.id,
-      });
-    }
 
-    // post the response message in the broadcast channel
-    this.channel.postMessage(responseMessage);
+      // post the result message in the broadcast channel
+      return this.channel.postMessage(
+        new ResponseMessageWithResult({
+          id,
+          reference,
+          requestId: requestMessage.id,
+          result,
+        })
+      );
+    } catch (error) {
+      // if we have an arc-0027 error, send it in the response
+      if ((error as BaseARC0027Error).code) {
+        return this.channel.postMessage(
+          new ResponseMessageWithError({
+            error,
+            id,
+            reference,
+            requestId: requestMessage.id,
+          })
+        );
+      }
+
+      // otherwise, wrap the message in an unknown error
+      return this.channel.postMessage(
+        new ResponseMessageWithError({
+          error: new ARC0027UnknownError({
+            message: error.message,
+            providerId: this.config.providerId,
+          }),
+          id,
+          reference,
+          requestId: requestMessage.id,
+        })
+      );
+    }
   }
 
   private async onRequestMessage(
