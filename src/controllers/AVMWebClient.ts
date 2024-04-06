@@ -49,14 +49,21 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     method,
     params,
   }: ISendRequestMessageOptions<Params>): void {
+    const _functionName: string = 'sendRequestMessage';
     let id: string;
+    let reference: string;
 
     // if there is no channel, ignore
     if (!this.channel) {
+      this.logger.debug(
+        `${AVMWebClient.name}#${_functionName}: no broadcast channel available, ignoring`
+      );
+
       return;
     }
 
     id = uuid();
+    reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
 
     try {
       // broadcast the request message
@@ -64,17 +71,18 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         new RequestMessage<Params>({
           id,
           params,
-          reference: createMessageReference(
-            method,
-            ARC0027MessageTypeEnum.Request
-          ),
+          reference,
         })
+      );
+
+      this.logger.debug(
+        `${AVMWebClient.name}#${_functionName}: posted message "${reference}" with id "${id}"`
       );
 
       // add the id to the internal state
       this.requestIds.push(id);
     } catch (error) {
-      // TODO: log error
+      this.logger.error(error);
     }
   }
 
@@ -85,6 +93,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   protected async onMessage(
     message: MessageEvent<ResponseMessageWithError | ResponseMessageWithResult>
   ): Promise<void> {
+    const _functionName: string = 'onMessage';
     const listener: TAVMWebClientListener | null =
       this.events.get(message.data.reference) || null;
 
@@ -92,6 +101,10 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     if (listener && this.requestIds.includes(message.data.requestId)) {
       switch (message.data.reference) {
         case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
+          this.logger.debug(
+            `${AVMWebClient.name}#${_functionName}: received response message "${JSON.stringify(message.data)}"`
+          );
+
           return listener(
             (message.data as ResponseMessageWithResult).result || null,
             (message.data as ResponseMessageWithError).error || null

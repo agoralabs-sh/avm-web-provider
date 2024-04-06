@@ -2,6 +2,7 @@ import { v4 as uuid } from 'uuid';
 
 // controllers
 import BaseController from './BaseController';
+import Logger from './Logger';
 
 // enums
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
@@ -30,6 +31,7 @@ import { createMessageReference } from '@app/utils';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
   private readonly events: Map<string, TAVMWebProviderListener>;
+  protected logger: Logger;
 
   private constructor(config: IAVMWebProviderConfig) {
     super(config);
@@ -49,12 +51,17 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     listener,
     requestMessage,
   }: ISendResponseMessageOptions): Promise<void> {
+    const _functionName: string = 'sendResponseMessage';
     let id: string;
     let reference: string;
     let result: TResponseResults;
 
     // if there is no channel, ignore
     if (!this.channel) {
+      this.logger.debug(
+        `${AVMWebProvider.name}#${_functionName}: no broadcast channel available, ignoring`
+      );
+
       return;
     }
 
@@ -74,6 +81,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
         })
       );
     } catch (error) {
+      this.logger.error(error);
+
       // if we have an arc-0027 error, send it in the response
       if ((error as BaseARC0027Error).code) {
         return this.channel.postMessage(

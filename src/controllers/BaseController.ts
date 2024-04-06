@@ -1,12 +1,20 @@
+// controllers
+import Logger from './Logger';
+
+// types
+import { IBaseConfig } from '@app/types';
+
 // utils
 import { createChannelName } from '@app/utils';
 
-export default abstract class BaseController<Config> {
+export default abstract class BaseController<Config extends IBaseConfig> {
   protected channel: BroadcastChannel | null = null;
   protected readonly config: Config;
+  protected logger: Logger;
 
   protected constructor(config: Config) {
     this.config = config;
+    this.logger = new Logger(config.debug ? 'debug' : 'error');
   }
 
   /**
