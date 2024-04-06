@@ -17,6 +17,7 @@ import TOCInline from '@theme/TOCInline';
 
 | Name    | Type                                                         | Required | Default | Description                                                       |
 |---------|--------------------------------------------------------------|----------|---------|-------------------------------------------------------------------|
+| providerId | `string`  | yes       | -       | This ID of the provider. It is recommended you use a [UUIDv4](https://www.rfc-editor.org/rfc/rfc4122) compliant string.                    |
 | options | [`IAVMWebProviderInitOptions`](#iavmwebproviderinitoptions)  | no       | -       | An object to change the initial configuration.                    |
 
 #### Returns
@@ -43,6 +44,7 @@ import TOCInline from '@theme/TOCInline';
 
 | Name        | Type      | Required | Default | Description                                                      |
 |------------|-----------|----------|---------|--------------------------------------------------------------|
+| providerId | `string` | yes       | - | The ID of the provider.                 |
 | debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
 
 ### `IAVMWebProviderInitOptions`

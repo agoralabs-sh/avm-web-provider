@@ -5,25 +5,25 @@ const sidebars = {
   docs: [
     'overview',
     {
-      items: ['dapps/getting-started'],
-      label: 'dApps',
+      items: ['clients/getting-started'],
+      label: 'Clients',
       link: {
         type: 'doc',
-        id: 'dapps/index',
+        id: 'clients/index',
       },
       type: 'category',
     },
     {
-      items: ['wallets/getting-started'],
-      label: 'Wallets',
+      items: ['providers/getting-started'],
+      label: 'Providers',
       link: {
         type: 'doc',
-        id: 'wallets/index',
+        id: 'providers/index',
       },
       type: 'category',
     },
     {
-      items: ['api-reference/avm-web-provider', 'api-reference/avm-web-wallet'],
+      items: ['api-reference/avm-web-client', 'api-reference/avm-web-provider'],
       label: 'API Reference',
       link: {
         type: 'doc',
