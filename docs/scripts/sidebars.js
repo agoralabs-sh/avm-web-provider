@@ -14,7 +14,10 @@ const sidebars = {
       type: 'category',
     },
     {
-      items: ['providers/getting-started'],
+      items: [
+        'providers/getting-started',
+        'providers/responding-to-discover-requests',
+      ],
       label: 'Providers',
       link: {
         type: 'doc',
