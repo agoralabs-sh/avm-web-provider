@@ -1,5 +1,8 @@
 import { v4 as uuid } from 'uuid';
 
+// controllers
+import { BaseController } from '@app/controllers';
+
 // enums
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 
@@ -23,15 +26,14 @@ import type {
 } from '@app/types';
 
 // utils
-import { createChannelName, createMessageReference } from '@app/utils';
+import { createMessageReference } from '@app/utils';
 
-export default class AVMWebWallet {
-  private channel: BroadcastChannel | null = null;
-  private readonly config: IAVMWebWalletConfig;
+export default class AVMWebWallet extends BaseController<IAVMWebWalletConfig> {
   private readonly events: Map<string, TAVMWebWalletListener>;
 
   private constructor(config: IAVMWebWalletConfig) {
-    this.config = config;
+    super(config);
+
     this.events = new Map<string, TAVMWebWalletListener>();
 
     // start listening to request messages
@@ -99,7 +101,11 @@ export default class AVMWebWallet {
     }
   }
 
-  private async onRequestMessage(
+  /**
+   * protected methods
+   */
+
+  protected async onMessage(
     message: MessageEvent<RequestMessage>
   ): Promise<void> {
     const listener: TAVMWebWalletListener | null =
@@ -154,37 +160,5 @@ export default class AVMWebWallet {
    */
   public on(requestReference: string, listener: TAVMWebWalletListener): void {
     this.events.set(requestReference, listener);
-  }
-
-  /**
-   * Starts listening to events.
-   */
-  public startListening(): void {
-    this.stopListening(); // close any previous channels
-
-    // create a new channel
-    this.channel = new BroadcastChannel(createChannelName());
-
-    // start listening to events
-    this.channel.onmessage = this.onRequestMessage.bind(this);
-  }
-
-  /**
-   * Stops listening to events.
-   *
-   * **NOTE:** this does not clear any event listeners declared in `on()`.
-   */
-  public stopListening(): void {
-    this.channel && this.channel.close();
-
-    this.channel = null;
-  }
-
-  /**
-   * Gets the configuration.
-   * @returns {IAVMWebWalletConfig} the current configuration.
-   */
-  public getConfig(): IAVMWebWalletConfig {
-    return this.config;
   }
 }

@@ -1,11 +1,11 @@
 import { randomBytes } from 'crypto';
 
-// enums
-import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
-
-// services
+// controllers
 import AVMWebProvider from './AVMWebProvider';
 import AVMWebWallet from './AVMWebWallet';
+
+// enums
+import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 
 // types
 import type { IAVMWebProviderConfig, IDiscoverResult } from '@app/types';

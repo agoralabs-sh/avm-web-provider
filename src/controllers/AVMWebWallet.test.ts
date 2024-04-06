@@ -1,4 +1,4 @@
-// services
+// controllers
 import AVMWebWallet from './AVMWebWallet';
 
 // types
