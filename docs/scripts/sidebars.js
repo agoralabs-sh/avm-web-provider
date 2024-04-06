@@ -5,7 +5,11 @@ const sidebars = {
   docs: [
     'overview',
     {
-      items: ['clients/getting-started', 'clients/discover-providers'],
+      items: [
+        'clients/getting-started',
+        'clients/discover-providers',
+        'clients/enabling-a-client',
+      ],
       label: 'Clients',
       link: {
         type: 'doc',
@@ -17,6 +21,7 @@ const sidebars = {
       items: [
         'providers/getting-started',
         'providers/responding-to-discover-requests',
+        'providers/responding-to-enable-requests',
       ],
       label: 'Providers',
       link: {

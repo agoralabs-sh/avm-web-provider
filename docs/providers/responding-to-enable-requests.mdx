@@ -1,0 +1,150 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Responding To Enable Requests
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+The main purpose of an enable request to is for clients to get a list of authorized accounts. However, it can be used to handle sessioning. While it is not enforced through this SDk, it is heavily recommended.
+
+## Responding to an anonymous request
+
+For clients that have not specified a provider, it means the client would like to enable with all providers. Once our provider object has been initialized, we can simply listen to events and respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+// initialized provider
+provider.onEnable((params) => {
+  if (!params || !params.providerId) {
+    return {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
+  }
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import type { IEnableParams } from '@agoralabs-sh/avm-web-provider';
+
+// initialized provider
+provider.onEnable((params?: IEnableParams) => {
+  if (!params || !params.providerId) {
+    return {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
+  }
+});
+```
+
+  </TabItem>
+</Tabs>
+
+## Responding to a specific provider request
+
+The `enable` request allows the client to specify the provider. This is denoted in the supplied `params.providerId` parameter. Providers with the matching ID should respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized provider
+provider.onEnable((params) => {
+  if (!params || params.providerId === providerId) {
+    return {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId,
+    };
+  }
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import type { IEnableParams } from '@agoralabs-sh/avm-web-provider';
+
+const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized provider
+provider.onEnable((params?: IEnableParams) => {
+  if (!params || params.providerId === providerId) {
+    return {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId,
+    };
+  }
+});
+```
+
+  </TabItem>
+</Tabs>
