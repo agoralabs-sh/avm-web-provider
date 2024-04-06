@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2024-04-06)
+
+
+### Features
+
+* implement enable method ([#8](https://github.com/agoralabs-sh/avm-web-provider/issues/8)) ([3f05046](https://github.com/agoralabs-sh/avm-web-provider/commit/3f050463edfb2400e54573a36e4c893d4aa7d24c))
+
 # 1.0.0-beta.1 (2024-04-06)
 
 
