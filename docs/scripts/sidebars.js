@@ -22,6 +22,7 @@ const sidebars = {
       },
       type: 'category',
     },
+    'terminology',
     {
       items: [
         'api-reference/avm-web-client',
