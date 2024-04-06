@@ -11,7 +11,7 @@ import {
 } from '@app/messages';
 
 // types
-import {
+import type {
   IAVMWebWalletConfig,
   IAVMWebWalletInitOptions,
   ISendResponseMessageOptions,
@@ -23,17 +23,16 @@ import {
 import { createChannelName, createMessageReference } from '@app/utils';
 
 export default class AVMWebWallet {
-  private readonly channel: BroadcastChannel;
+  private channel: BroadcastChannel | null = null;
   private readonly config: IAVMWebWalletConfig;
   private readonly events: Map<string, TAVMWebWalletListener>;
 
-  private constructor(channel: BroadcastChannel, config: IAVMWebWalletConfig) {
-    this.channel = channel;
+  private constructor(config: IAVMWebWalletConfig) {
     this.config = config;
     this.events = new Map<string, TAVMWebWalletListener>();
 
     // start listening to request messages
-    this.channel.onmessage = this.onRequestMessage.bind(this);
+    this.startListening();
   }
 
   /**
@@ -45,13 +44,18 @@ export default class AVMWebWallet {
     listener,
     requestMessage,
   }: ISendResponseMessageOptions): Promise<void> {
-    const id: string = uuid();
-    const reference: string = createMessageReference(
-      method,
-      ARC0027MessageTypeEnum.Response
-    );
+    let id: string;
+    let reference: string;
     let responseMessage: ResponseMessageWithError | ResponseMessageWithResult;
     let result: TResponseResults;
+
+    // if there is no channel, ignore
+    if (!this.channel) {
+      return;
+    }
+
+    id = uuid();
+    reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
 
     try {
       result = await listener(requestMessage.params);
@@ -102,7 +106,7 @@ export default class AVMWebWallet {
     providerId: string,
     { debug }: IAVMWebWalletInitOptions = { debug: false }
   ): AVMWebWallet {
-    return new AVMWebWallet(new BroadcastChannel(createChannelName()), {
+    return new AVMWebWallet({
       debug: debug || false,
       providerId,
     });
@@ -112,12 +116,47 @@ export default class AVMWebWallet {
    * public methods
    */
 
+  /**
+   * Removes a request message listener.
+   * @param {string} requestReference - the request reference. This follows the ARC-0027 request message naming
+   * convention.
+   */
   public off(requestReference: string): void {
     this.events.delete(requestReference);
   }
 
+  /**
+   * Sets a request message listener. This will replace any previous set listeners.
+   * @param {string} requestReference - the request reference. This follows the ARC-0027 request message naming
+   * convention.
+   * @param {TAVMWebWalletListener} listener - the listener to call when the request message is sent.
+   */
   public on(requestReference: string, listener: TAVMWebWalletListener): void {
     this.events.set(requestReference, listener);
+  }
+
+  /**
+   * Starts listening to events.
+   */
+  public startListening(): void {
+    this.stopListening(); // close any previous channels
+
+    // create a new channel
+    this.channel = new BroadcastChannel(createChannelName());
+
+    // start listening to events
+    this.channel.onmessage = this.onRequestMessage.bind(this);
+  }
+
+  /**
+   * Stops listening to events.
+   *
+   * **NOTE:** this does not clear any event listeners declared in `on()`.
+   */
+  public stopListening(): void {
+    this.channel && this.channel.close();
+
+    this.channel = null;
   }
 
   /**

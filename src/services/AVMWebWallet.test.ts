@@ -8,16 +8,20 @@ describe(AVMWebWallet.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
   let wallet: AVMWebWallet;
 
+  beforeEach(() => {
+    wallet = AVMWebWallet.init(providerId);
+  });
+
+  afterEach(() => {
+    wallet.stopListening();
+  });
+
   describe(`${AVMWebWallet.name}#init`, () => {
     it('should initialize the wallet with default options', () => {
       // arrange
-      let config: IAVMWebWalletConfig;
-
       // act
-      wallet = AVMWebWallet.init(providerId);
-
       // assert
-      config = wallet.getConfig();
+      const config: IAVMWebWalletConfig = wallet.getConfig();
 
       expect(config.debug).toBe(false);
     });

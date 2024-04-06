@@ -23,6 +23,10 @@ describe(AVMWebProvider.name, () => {
     wallet = AVMWebWallet.init(providerId);
   });
 
+  afterEach(() => {
+    wallet.stopListening();
+  });
+
   describe(`${AVMWebProvider.name}#init`, () => {
     it('should initialize the provider with default options', () => {
       // arrange
