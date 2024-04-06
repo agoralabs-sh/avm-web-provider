@@ -1,3 +1,4 @@
+export type { default as IAccount } from './IAccount';
 export type { default as IAVMWebClientConfig } from './IAVMWebClientConfig';
 export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOptions';
 export type { default as IAVMWebProviderConfig } from './IAVMWebProviderConfig';
@@ -6,6 +7,8 @@ export type { default as IBaseConfig } from './IBaseConfig';
 export type { default as IBaseResponseMessage } from './IBaseResponseMessage';
 export type { default as IDiscoverParams } from './IDiscoverParams';
 export type { default as IDiscoverResult } from './IDiscoverResult';
+export type { default as IEnableParams } from './IEnableParams';
+export type { default as IEnableResult } from './IEnableResult';
 export type { default as INetworkConfiguration } from './INetworkConfiguration';
 export type { default as IRequestMessage } from './IRequestMessage';
 export type { default as IResponseMessageWithResult } from './IResponseMessageWithResult';
