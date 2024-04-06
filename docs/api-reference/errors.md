@@ -5,7 +5,7 @@
 | Code | Name                                                                      | Summary                                                                                   |
 |------|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
 | 4000 | [`UnknownError`](#unknownerror)                                           | The default error response, usually indicates something is not quite right.               |
-| 4001 | [`MethodCanceledError`](#operationcancelederror)                          | When a user has rejected the method.                                                      |
+| 4001 | [`MethodCanceledError`](#methodcancelederror)                             | When a user has rejected the method.                                                      |
 | 4003 | [`MethodNotSupportedError`](#methodnotsupportederror)                     | The specified provider does not exist.                                                    |
 | 4004 | [`NetworkNotSupportedError`](#networknotsupportederror)                   | Networks not supported.                                                                   |
 | 4100 | [`UnauthorizedSignerError`](#unauthorizedsignererror)                     | The provider has not given permission to use a specified signer.                          |

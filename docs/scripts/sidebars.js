@@ -5,7 +5,7 @@ const sidebars = {
   docs: [
     'overview',
     {
-      items: ['clients/getting-started'],
+      items: ['clients/getting-started', 'clients/discover-providers'],
       label: 'Clients',
       link: {
         type: 'doc',
