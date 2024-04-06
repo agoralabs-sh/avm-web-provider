@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "lib": ["ESNext"],
+    "lib": ["DOM", "ESNext"],
     "module": "CommonJS",
     "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": false,
@@ -21,8 +21,10 @@
     "noImplicitThis": true,
     "paths": {
       "@app/constants": ["src/constants"],
+      "@app/controllers": ["src/controllers"],
       "@app/enums": ["src/enums"],
-      "@app/services": ["src/services"],
+      "@app/errors": ["src/errors"],
+      "@app/messages": ["src/messages"],
       "@app/types": ["src/types"],
       "@app/utils": ["src/utils"]
     },

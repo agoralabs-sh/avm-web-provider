@@ -136,6 +136,10 @@ const config = {
                 label: 'API Reference',
                 to: 'api-reference/index',
               },
+              {
+                label: 'Terminology',
+                to: 'terminology',
+              },
             ],
           },
           {

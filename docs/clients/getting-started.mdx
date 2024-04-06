@@ -11,7 +11,7 @@ import TOCInline from '@theme/TOCInline';
 
 ## Installation
 
-You can use your favourite package manager to install:
+Use your favourite package manager to install:
 
 ```bash npm2yarn
 npm install --save @agoralabs-sh/avm-web-provider
@@ -19,7 +19,7 @@ npm install --save @agoralabs-sh/avm-web-provider
 
 ## Initialization
 
-Firstly, we want to get the AVM provider setup and configured:
+Firstly, we want to initialize the AVM client:
 
 <Tabs
   defaultValue="javascript"
@@ -30,18 +30,18 @@ Firstly, we want to get the AVM provider setup and configured:
   <TabItem value="javascript">
 
     ```js
-    const { AVMWebProvider } = require('@agoralabs-sh/avm-web-provider');
+    const { AVMWebClient } = require('@agoralabs-sh/avm-web-provider');
 
-    const provider = AVMWebProvider.init();
+    const client = AVMWebClient.init();
     ```
 
   </TabItem>
   <TabItem value="typescript">
 
     ```typescript
-    import { AVMWebProvider } from '@agoralabs-sh/avm-web-provider';
+    import { AVMWebClient } from '@agoralabs-sh/avm-web-provider';
 
-    const provider: AVMWebProvider = AVMWebProvider.init();
+    const client: AVMWebClient = AVMWebClient.init();
     ```
 
   </TabItem>
@@ -49,6 +49,6 @@ Firstly, we want to get the AVM provider setup and configured:
 
 :::note
 
-See [`IAVMWebProviderInitOptions`](../../api-reference/avm-web-provider#iavmwebproviderinitoptions) for more information on what options are supported.
+See [`IAVMWebClientInitOptions`](../../api-reference/types#iavmwebclientinitoptions) for more information on what options are supported.
 
 :::

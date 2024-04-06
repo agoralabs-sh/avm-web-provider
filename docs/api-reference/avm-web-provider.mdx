@@ -15,15 +15,16 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name    | Type                                                         | Required | Default | Description                                                       |
-|---------|--------------------------------------------------------------|----------|---------|-------------------------------------------------------------------|
-| options | [`IAVMWebProviderInitOptions`](#iavmwebproviderinitoptions)  | no       | -       | An object to change the initial configuration.                    |
+| Name       | Type                                                             | Required | Default | Description                                                                                                             |
+|------------|------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------|
+| providerId | `string`                                                         | yes      | -       | This ID of the provider. It is recommended you use a [UUIDv4](https://www.rfc-editor.org/rfc/rfc4122) compliant string. |
+| options    | [`IAVMWebProviderInitOptions`](types#iavmwebproviderinitoptions) | no       | -       | An object to change the initial configuration.                                                                          |
 
 #### Returns
 
-| Type                                | Description                             |
-|-------------------------------------|-----------------------------------------|
-| [`AVMWebProvider`](#avmwebprovider) | An initialized AVM web provider object. |
+| Type                                     | Description                             |
+|------------------------------------------|-----------------------------------------|
+| [`AVMWebProvider`](types#avmwebprovider) | An initialized AVM web provider object. |
 
 ## Methods
 
@@ -33,20 +34,22 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type                                | Description                             |
-|-------------------------------------|-----------------------------------------|
-| [`IAVMWebProviderConfig`](#iavmwebproviderconfig) | The provider's configuration. |
+| Type                                                   | Description                   |
+|--------------------------------------------------------|-------------------------------|
+| [`IAVMWebProviderConfig`](types#iavmwebproviderconfig) | The provider's configuration. |
 
-## Types
+### `onDiscover(listener)`
 
-### `IAVMWebProviderConfig`
+> Listens to discover messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
 
-| Name        | Type      | Required | Default | Description                                                      |
-|------------|-----------|----------|---------|--------------------------------------------------------------|
-| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+#### Parameters
 
-### `IAVMWebProviderInitOptions`
+| Name     | Type                                                                                                                                                                     | Required | Default | Description                                                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|----------------------------------------------------------------------------------------|
+| listener | (`params`?: [`IDiscoverParams`](types#idiscoverparams)) => ([`IDiscoverResult`](types#idiscoverresult) \| [`Promise<IDiscoverResult>`](types#idiscoverresult)) \| `null` | yes      | -       | The listener to call when the request message is sent, or null to remove the listener. |
 
-| Name        | Type      | Required | Default | Description                                                      |
-|------------|-----------|----------|---------|--------------------------------------------------------------|
-| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |

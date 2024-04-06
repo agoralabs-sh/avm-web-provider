@@ -1,0 +1,71 @@
+import TOCInline from '@theme/TOCInline';
+
+# Types
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+### `IAVMWebClientConfig`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+
+### `IAVMWebClientInitOptions`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+
+### `IAVMWebProviderConfig`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| providerId | `string` | yes       | - | The ID of the provider.                 |
+| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+
+### `IAVMWebProviderInitOptions`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| debug | `boolean` | no       | `false` | Outputs debug information to the console.                 |
+
+### `IBaseError`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| code | `number` | yes       | - | The code of the error. See the [error codes](errors#summary) for more information.                 |
+| message | `string` | yes       | - | A human-readable error message that can be displayed to a user.                 |
+| providerId | `string` | no       | - | The ID of the provider that threw the error.                 |
+
+:::note
+
+This is the basic type for an error. For specific details on errors check out the [errors](errors).
+
+:::
+
+### `IDiscoverParams`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| providerId | `string` | yes       | - | The ID of the provider.                 |
+
+### `IDiscoverResult`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| host | `string` | no       | - | The domain name of the provider.                 |
+| icon | `string` | no       | - | A URI pointing to an image.                 |
+| name | `string` | yes       | - | A human-readable canonical name of the provider.                 |
+| networks | [`INetworkConfiguration[]`](#inetworkconfiguration) | yes       | - | A list of networks available for the provider.                 |
+| providerId | `string` | yes       | - | The ID of the provider.                 |
+
+### `INetworkConfiguration`
+
+| Name        | Type      | Required | Default | Description                                                      |
+|------------|-----------|----------|---------|--------------------------------------------------------------|
+| genesisHash | `string` | yes       | - | The unique identifier for the network that is the hash of the genesis block.                 |
+| genesisId | `string` | yes       | - | A human-readable identifier for the network.                 |
+| methods | `string[]` | yes       | - | A list of methods available from the provider for the chain.                |
