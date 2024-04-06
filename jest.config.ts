@@ -5,7 +5,6 @@ import { pathsToModuleNameMapper } from 'ts-jest';
 import { compilerOptions } from './tsconfig.json';
 
 const config: Config = {
-  collectCoverage: true,
   collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/**/*.d.ts'],
   coverageDirectory: 'coverage',
   moduleNameMapper: {

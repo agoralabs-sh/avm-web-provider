@@ -10,22 +10,26 @@ describe(AVMWebProvider.name, () => {
   let client: AVMWebClient;
   let provider: AVMWebProvider;
 
-  beforeEach(() => {
-    client = AVMWebClient.init();
-    provider = AVMWebProvider.init(providerId);
-  });
-
   afterEach(() => {
-    client.stopListening();
-    provider.stopListening();
+    if (client) {
+      client.stopListening();
+    }
+
+    if (provider) {
+      provider.stopListening();
+    }
   });
 
   describe(`${AVMWebProvider.name}#init`, () => {
     it('should initialize the wallet with default options', () => {
       // arrange
+      let config: IAVMWebProviderConfig;
+
       // act
+      provider = AVMWebProvider.init(providerId);
+
       // assert
-      const config: IAVMWebProviderConfig = provider.getConfig();
+      config = provider.getConfig();
 
       expect(config.debug).toBe(false);
     });
@@ -51,6 +55,9 @@ describe(AVMWebProvider.name, () => {
   describe(`${AVMWebProvider.name}#onDiscover`, () => {
     it('should return receive the client request', (done) => {
       // arrange
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
       // assert
       provider.onDiscover(done);
 

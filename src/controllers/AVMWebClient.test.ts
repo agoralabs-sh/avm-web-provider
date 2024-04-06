@@ -8,21 +8,21 @@ import AVMWebProvider from './AVMWebProvider';
 import { ARC0027MethodEnum } from '@app/enums';
 
 // types
-import type { IAVMWebClientConfig, IDiscoverResult } from '@app/types';
+import { IAVMWebClientConfig, IDiscoverResult } from '@app/types';
 
 describe(AVMWebClient.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
   let client: AVMWebClient;
   let provider: AVMWebProvider;
 
-  beforeEach(() => {
-    client = AVMWebClient.init();
-    provider = AVMWebProvider.init(providerId);
-  });
-
   afterEach(() => {
-    client.stopListening();
-    provider.stopListening();
+    if (client) {
+      client.stopListening();
+    }
+
+    if (provider) {
+      provider.stopListening();
+    }
   });
 
   describe(`${AVMWebClient.name}#init`, () => {
@@ -31,6 +31,8 @@ describe(AVMWebClient.name, () => {
       let config: IAVMWebClientConfig;
 
       // act
+      client = AVMWebClient.init();
+
       // assert
       config = client.getConfig();
 
@@ -75,6 +77,9 @@ describe(AVMWebClient.name, () => {
         ],
         providerId,
       };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
 
       provider.onDiscover(() => expectedResult);
       client.onDiscover((result, error) => {
