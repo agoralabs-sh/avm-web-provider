@@ -39,7 +39,7 @@
 </p>
 
 <p align="center">
-  A TypeScript implementation that allows dApps to connect and interact with web-based providers.
+  A TypeScript implementation that allows clients to connect and interact with web-based providers.
 </p>
 
 ### Table of contents
@@ -127,8 +127,8 @@ This will compile the Typescript source code into a `dist/` directory.
 | Command               | Description                                                                        |
 |-----------------------|------------------------------------------------------------------------------------|
 | `yarn build`          | Builds the source code into the `dist/` directory.                                 |
-| `yarn run docs:build` | Builds the documentation into the `.docs/` directory.                              |
-| `yarn run docs:serve` | Serves the built documentation from the `.docs/` directory.                        |
+| `yarn run docs:build` | Builds the documentation into the `.docusaurus/` directory.                        |
+| `yarn run docs:serve` | Serves the built documentation from the `.docusaurus/` directory.                  |
 | `yarn run docs:start` | Builds and runs the documentation in a development environment with hot reloading. |
 | `yarn run lint`       | Runs the linter on `.js` and `.ts` files.                                          |
 | `yarn run prettier`   | Runs the prettier on `.js` and `.ts` files.                                        |

@@ -15,7 +15,7 @@ Before we can start interacting with a provider, we first need to find out what 
 
 ## Discovering all providers
 
-The first thing we want to do, after initialization, is start listening to discover messages:
+The first thing we want to do, after [initialization](getting-started), is start listening to discover messages. The callback passed will be called everytime a `discover` message is responded to by a provider. However, before we receive any `discover` messages we need then broadcast to any providers a request.
 
 <Tabs
   defaultValue="javascript"
@@ -25,62 +25,104 @@ The first thing we want to do, after initialization, is start listening to disco
   ]}>
   <TabItem value="javascript">
 
-    ```js
-    // initialized client
-    client.onDiscover((result, error) => {
-      if (error) {
-        console.error('error:', error);
+```js
+// initialized client
+client.onDiscover((result, error) => {
+  if (error) {
+    console.error('error:', error);
 
-        return;
-      }
+    return;
+  }
 
-      // handle result
-    });
-    ```
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
 
-  </TabItem>
-  <TabItem value="typescript">
-
-    ```typescript
-    import { BaseARC0027Error, IDiscoverResult } from '@agoralabs-sh/avm-web-provider';
-
-    // initialized client
-    client.onDiscover((result: IDiscoverResult: null, error: BaseARC0027Error | null) => {
-      if (error) {
-        console.error('error:', error);
-
-        return;
-      }
-
-      // handle result
-    });
-    ```
-
-  </TabItem>
-</Tabs>
-
-The callback passed will be called everytime a `discover` message is responded to by a provider. However, before we receive any `discover` messages we need to broadcast to any providers a request. This can be done by:
-
-<Tabs
-  defaultValue="javascript"
-  values={[
-    { label: 'Javascript', value: 'javascript' },
-    { label: 'TypeScript', value: 'typescript' },
-  ]}>
-  <TabItem value="javascript">
-
-    ```js
-    // initialized client
-    client.discover();
-    ```
+// broadcast a discover request
+client.discover();
+```
 
   </TabItem>
   <TabItem value="typescript">
 
-    ```typescript
-    // initialized client
-    client.discover();
-    ```
+```typescript
+import { BaseARC0027Error, IDiscoverResult } from '@agoralabs-sh/avm-web-provider';
+
+// initialized client
+client.onDiscover((result: IDiscoverResult: null, error: BaseARC0027Error | null) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
+
+// broadcast a discover request
+client.discover();
+```
 
   </TabItem>
 </Tabs>
@@ -99,52 +141,108 @@ As before, let's first add a listener and then broadcast, but this time we will 
   ]}>
   <TabItem value="javascript">
 
-    ```js
-    const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+```js
+const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
-    // initialized client
-    client.onDiscover((result, error) => {
-      if (error) {
-        console.error('error:', error);
+// initialized client
+client.onDiscover((result, error) => {
+  if (error) {
+    console.error('error:', error);
 
-        return;
-      }
+    return;
+  }
 
-      // if the provider is not the specified provider, we can ignore
-      if (result.providerId !== providerId) {
-        return;
-      }
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
 
-      // handle result
-    });
-    client.discover({ providerId });
-    ```
+// broadcast a discover request
+client.discover({ providerId });
+```
 
   </TabItem>
   <TabItem value="typescript">
 
-    ```typescript
-    import { BaseARC0027Error, IDiscoverResult } from '@agoralabs-sh/avm-web-provider';
+```typescript
+import { BaseARC0027Error, IDiscoverResult } from '@agoralabs-sh/avm-web-provider';
 
-    const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
-    // initialized client
-    client.onDiscover((result: IDiscoverResult: null, error: BaseARC0027Error | null) => {
-      if (error) {
-        console.error('error:', error);
+// initialized client
+client.onDiscover((result: IDiscoverResult: null, error: BaseARC0027Error | null) => {
+  if (error) {
+    console.error('error:', error);
 
-        return;
-      }
+    return;
+  }
 
-      // if the provider is not the specified provider, we can ignore
-      if (result?.providerId !== providerId) {
-        return;
-      }
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
 
-      // handle result
-    });
-    client.discover({ providerId });
-    ```
+// broadcast a discover request
+client.discover({ providerId });
+```
 
   </TabItem>
 </Tabs>

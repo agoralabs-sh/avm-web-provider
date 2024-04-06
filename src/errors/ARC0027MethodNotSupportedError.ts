@@ -13,7 +13,7 @@ interface IOptions {
   providerId: string;
 }
 
-export default class SerializableARC0027MethodSupportedError extends BaseARC0027Error {
+export default class ARC0027MethodSupportedError extends BaseARC0027Error {
   public readonly code: ARC0027ErrorCodeEnum =
     ARC0027ErrorCodeEnum.MethodNotSupportedError;
   public readonly data: IData;

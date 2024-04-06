@@ -43,6 +43,22 @@ import TOCInline from '@theme/TOCInline';
 |--------|-------------|
 | `void` | -           |
 
+### `enable([params])`
+
+> Enables to a client with providers. If the ID of the provider and/or network is specified, that provider/network is used, otherwise the default provider is enabled.
+
+#### Parameters
+
+| Name   | Type                                   | Required | Default | Description                                          |
+|--------|----------------------------------------|----------|---------|------------------------------------------------------|
+| params | [`IEnableParams`](types#ienableparams) | no       | -       | Params that specify the provider and/or the network. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
 ### `getConfig()`
 
 > Returns the configuration.
@@ -60,9 +76,25 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                             | Required | Default | Description                                                                                                                                                  |
-|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`IDiscoverResult`](types#idiscoverresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the reult was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`result`?: [`IDiscoverResult`](types#idiscoverresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
+### `onEnable(listener)`
+
+> Listens to enable messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+
+#### Parameters
+
+| Name     | Type                                                                                                                                                         | Required | Default | Description                                                                                                                                                   |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`result`?: [`IEnableResult`](types#ienableresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 

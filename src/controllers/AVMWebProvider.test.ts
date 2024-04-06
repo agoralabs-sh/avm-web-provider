@@ -53,7 +53,7 @@ describe(AVMWebProvider.name, () => {
   });
 
   describe(`${AVMWebProvider.name}#onDiscover`, () => {
-    it('should return receive the client request', (done) => {
+    it('should receive the client request', (done) => {
       // arrange
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
@@ -63,6 +63,20 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.discover();
+    });
+  });
+
+  describe(`${AVMWebProvider.name}#onEnable`, () => {
+    it('should receive the client request', (done) => {
+      // arrange
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      // assert
+      provider.onEnable(done);
+
+      // act
+      client.enable();
     });
   });
 });
