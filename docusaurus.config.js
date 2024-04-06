@@ -18,7 +18,7 @@ const url = 'https://avm-web-provider.agoralabs.sh';
 
 // header
 const tagline =
-  'A TypeScript implementation that allows dApps to connect and interact with web-based providers.';
+  'A TypeScript implementation that allows clients to connect and interact with web-based providers.';
 const title = 'AVM Web Provider';
 
 /** @type {import('@docusaurus/types').Config} */
