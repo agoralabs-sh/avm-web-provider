@@ -1,11 +1,92 @@
+import { v4 as uuid } from 'uuid';
+
+// constants
+import { DEFAULT_REQUEST_TIMEOUT, LOWER_REQUEST_TIMEOUT } from '@app/constants';
+
+// enums
+import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
+
+// messages
+import { RequestMessage } from '@app/messages';
+
 // types
-import { IAVMWebProviderConfig, IAVMWebProviderInitOptions } from '@app/types';
+import type {
+  IAVMWebProviderConfig,
+  IAVMWebProviderInitOptions,
+  IDiscoverParams,
+  IDiscoverResult,
+  IResponseMessage,
+  ISendRequestWithTimeoutOptions,
+  TRequestParams,
+  TResponseResults,
+} from '@app/types';
+
+// utils
+import { createChannelName, createMessageReference } from '@app/utils';
 
 export default class AVMWebProvider {
   private readonly config: IAVMWebProviderConfig;
 
   private constructor(config: IAVMWebProviderConfig) {
     this.config = config;
+  }
+
+  /**
+   * private methods
+   */
+
+  private async sendRequestWithTimeout<
+    Params = TRequestParams,
+    Result = TResponseResults,
+  >({
+    method,
+    params,
+    timeout,
+  }: ISendRequestWithTimeoutOptions<Params>): Promise<Result[]> {
+    return new Promise<Result[]>((resolve, reject) => {
+      const channel: BroadcastChannel = new BroadcastChannel(
+        createChannelName()
+      );
+      const requestId: string = uuid();
+      const requestReference: string = createMessageReference(
+        method,
+        ARC0027MessageTypeEnum.Request
+      );
+      const results: Result[] = [];
+
+      // listen to responses
+      channel.onmessage = (message: MessageEvent<IResponseMessage<Result>>) => {
+        // if the response's request id does not match the intended request, just ignore
+        if (!message.data || message.data.requestId !== requestId) {
+          return;
+        }
+
+        // if there is an error, reject
+        if (message.data.error) {
+          return reject(message.data.error);
+        }
+
+        // add the result
+        message.data.result && results.push(message.data.result);
+      };
+
+      // create a timeout that returns the collected results
+      window.setTimeout(() => {
+        resolve(results);
+
+        // close the channel, we are done here
+        channel.close();
+      }, timeout || DEFAULT_REQUEST_TIMEOUT);
+
+      // broadcast the request message
+      channel.postMessage(
+        new RequestMessage<Params>({
+          id: requestId,
+          params,
+          reference: requestReference,
+        })
+      );
+    });
   }
 
   /**
@@ -23,6 +104,20 @@ export default class AVMWebProvider {
   /**
    * public methods
    */
+
+  /**
+   * Gets information relating to available providers. This should be called
+   * before interacting with any providers to ensure networks and methods are
+   * supported.
+   * @returns {Promise<IDiscoverResult[]>} information about the available providers.
+   */
+  public async discover(params?: IDiscoverParams): Promise<IDiscoverResult[]> {
+    return await this.sendRequestWithTimeout<IDiscoverParams, IDiscoverResult>({
+      method: ARC0027MethodEnum.Discover,
+      params,
+      timeout: LOWER_REQUEST_TIMEOUT,
+    });
+  }
 
   /**
    * Gets the configuration.

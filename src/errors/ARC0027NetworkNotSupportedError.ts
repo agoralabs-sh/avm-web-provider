@@ -7,6 +7,11 @@ import BaseARC0027Error from './BaseARC0027Error';
 interface IData {
   genesisHashes: string[];
 }
+interface IOptions {
+  genesisHashes: string[];
+  message?: string;
+  providerId: string;
+}
 
 export default class ARC0027NetworkNotSupportedError extends BaseARC0027Error {
   public readonly code: ARC0027ErrorCodeEnum =
@@ -14,14 +19,15 @@ export default class ARC0027NetworkNotSupportedError extends BaseARC0027Error {
   public readonly data: IData;
   public readonly name: string = 'NetworkNotSupportedError';
 
-  constructor(genesisHashes: string[], providerId: string, message?: string) {
-    super(
-      message ||
+  constructor({ genesisHashes, message, providerId }: IOptions) {
+    super({
+      message:
+        message ||
         `provider does not support network with genesis hashes [${genesisHashes
           .map((value) => `"${value}"`)
           .join(',')}]`,
-      providerId
-    );
+      providerId,
+    });
 
     this.data = {
       genesisHashes,

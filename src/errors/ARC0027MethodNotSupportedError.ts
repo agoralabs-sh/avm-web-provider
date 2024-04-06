@@ -7,6 +7,11 @@ import BaseARC0027Error from './BaseARC0027Error';
 interface IData {
   method: ARC0027MethodEnum;
 }
+interface IOptions {
+  method: ARC0027MethodEnum;
+  message?: string;
+  providerId: string;
+}
 
 export default class SerializableARC0027MethodSupportedError extends BaseARC0027Error {
   public readonly code: ARC0027ErrorCodeEnum =
@@ -14,11 +19,13 @@ export default class SerializableARC0027MethodSupportedError extends BaseARC0027
   public readonly data: IData;
   public readonly name: string = 'MethodNotSupportedError';
 
-  constructor(method: ARC0027MethodEnum, providerId: string, message?: string) {
-    super(
-      message || `method "${method}" not supported for provider ${providerId}`,
-      providerId
-    );
+  constructor({ message, method, providerId }: IOptions) {
+    super({
+      message:
+        message ||
+        `method "${method}" not supported for provider "${providerId}"`,
+      providerId,
+    });
 
     this.data = {
       method,

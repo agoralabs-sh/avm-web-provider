@@ -7,6 +7,11 @@ import BaseARC0027Error from './BaseARC0027Error';
 interface IData {
   method: ARC0027MethodEnum;
 }
+interface IOptions {
+  method: ARC0027MethodEnum;
+  message?: string;
+  providerId: string;
+}
 
 export default class ARC0027MethodCanceledError extends BaseARC0027Error {
   public readonly code: ARC0027ErrorCodeEnum =
@@ -14,8 +19,12 @@ export default class ARC0027MethodCanceledError extends BaseARC0027Error {
   public readonly data: IData;
   public readonly name: string = 'MethodCanceledError';
 
-  constructor(method: ARC0027MethodEnum, providerId: string, message?: string) {
-    super(message || `method "${method}" canceled`, providerId);
+  constructor({ message, method, providerId }: IOptions) {
+    super({
+      message:
+        message || `method "${method}" canceled for provider "${providerId}"`,
+      providerId,
+    });
 
     this.data = {
       method,

@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "lib": ["ESNext"],
+    "lib": ["DOM", "ESNext"],
     "module": "CommonJS",
     "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": false,
@@ -22,6 +22,8 @@
     "paths": {
       "@app/constants": ["src/constants"],
       "@app/enums": ["src/enums"],
+      "@app/errors": ["src/errors"],
+      "@app/messages": ["src/messages"],
       "@app/services": ["src/services"],
       "@app/types": ["src/types"],
       "@app/utils": ["src/utils"]

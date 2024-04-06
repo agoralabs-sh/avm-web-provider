@@ -1,5 +1,5 @@
 // types
-import IBaseConfig from './IBaseConfig';
+import type IBaseConfig from './IBaseConfig';
 
 interface IAVMWebWalletConfig extends IBaseConfig {
   providerId: string;

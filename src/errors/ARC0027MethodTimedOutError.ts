@@ -7,6 +7,11 @@ import BaseARC0027Error from './BaseARC0027Error';
 interface IData {
   method: ARC0027MethodEnum;
 }
+interface IOptions {
+  method: ARC0027MethodEnum;
+  message?: string;
+  providerId?: string;
+}
 
 export default class ARC0027MethodTimedOutError extends BaseARC0027Error {
   public readonly code: ARC0027ErrorCodeEnum =
@@ -14,8 +19,11 @@ export default class ARC0027MethodTimedOutError extends BaseARC0027Error {
   public readonly data: IData;
   public readonly name: string = 'MethodTimedOutError';
 
-  constructor(method: ARC0027MethodEnum, providerId: string, message?: string) {
-    super(message || `method "${method}" timed out`, providerId);
+  constructor({ message, method, providerId }: IOptions) {
+    super({
+      message: message || `method "${method}" timed out`,
+      providerId,
+    });
 
     this.data = {
       method,

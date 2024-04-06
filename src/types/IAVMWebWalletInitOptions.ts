@@ -1,5 +1,5 @@
 // types
-import IBaseInitOptions from './IBaseInitOptions';
+import type IBaseInitOptions from './IBaseInitOptions';
 
 type IAVMWebWalletInitOptions = IBaseInitOptions;
 

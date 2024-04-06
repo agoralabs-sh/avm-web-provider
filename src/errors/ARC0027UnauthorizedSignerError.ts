@@ -5,7 +5,12 @@ import { ARC0027ErrorCodeEnum } from '@app/enums';
 import BaseARC0027Error from './BaseARC0027Error';
 
 interface IData {
-  signer: string | null;
+  signer?: string;
+}
+interface IOptions {
+  message?: string;
+  providerId: string;
+  signer?: string;
 }
 
 export default class ARC0027UnauthorizedSignerError extends BaseARC0027Error {
@@ -14,8 +19,11 @@ export default class ARC0027UnauthorizedSignerError extends BaseARC0027Error {
   public readonly data: IData;
   public readonly name: string = 'UnauthorizedSignerError';
 
-  constructor(signer: string | null, providerId: string, message?: string) {
-    super(message || `unauthorized signer "${signer}"`, providerId);
+  constructor({ message, providerId, signer }: IOptions) {
+    super({
+      message: message || `unauthorized signer${signer ? ` "${signer}"` : ''}`,
+      providerId,
+    });
 
     this.data = {
       signer,
