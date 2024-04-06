@@ -21,6 +21,8 @@ import {
 import type {
   IAVMWebProviderConfig,
   IAVMWebProviderInitOptions,
+  IDiscoverParams,
+  IDiscoverResult,
   ISendResponseMessageOptions,
   TAVMWebProviderListener,
   TResponseResults,
@@ -30,13 +32,13 @@ import type {
 import { createMessageReference } from '@app/utils';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
-  private readonly events: Map<string, TAVMWebProviderListener>;
+  private readonly listeners: Map<string, TAVMWebProviderListener>;
   protected logger: Logger;
 
   private constructor(config: IAVMWebProviderConfig) {
     super(config);
 
-    this.events = new Map<string, TAVMWebProviderListener>();
+    this.listeners = new Map<string, TAVMWebProviderListener>();
 
     // start listening to request messages
     this.startListening();
@@ -118,7 +120,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     message: MessageEvent<RequestMessage>
   ): Promise<void> {
     const listener: TAVMWebProviderListener | null =
-      this.events.get(message.data.reference) || null;
+      this.listeners.get(message.data.reference) || null;
 
     if (listener) {
       switch (message.data.reference) {
@@ -153,21 +155,26 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
 
   /**
-   * Removes a request message listener.
-   * @param {string} requestReference - the request reference. This follows the ARC-0027 request message naming
-   * convention.
+   * Listens to discover messages sent from clients. This will replace any previous set listeners. If null is supplied,
+   * the listener will be removed.
+   * @param {TAVMWebProviderListener<IDiscoverParams, IDiscoverResult> | null} listener - the listener to call when the
+   * request message is sent, or null to remove the listener.
    */
-  public off(requestReference: string): void {
-    this.events.delete(requestReference);
-  }
+  onDiscover(
+    listener: TAVMWebProviderListener<IDiscoverParams, IDiscoverResult> | null
+  ): void {
+    const requestReference: string = createMessageReference(
+      ARC0027MethodEnum.Discover,
+      ARC0027MessageTypeEnum.Request
+    );
 
-  /**
-   * Sets a request message listener. This will replace any previous set listeners.
-   * @param {string} requestReference - the request reference. This follows the ARC-0027 request message naming
-   * convention.
-   * @param {TAVMWebProviderListener} listener - the listener to call when the request message is sent.
-   */
-  public on(requestReference: string, listener: TAVMWebProviderListener): void {
-    this.events.set(requestReference, listener);
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(requestReference);
+
+      return;
+    }
+
+    this.listeners.set(requestReference, listener);
   }
 }

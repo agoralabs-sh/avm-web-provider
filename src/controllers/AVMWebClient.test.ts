@@ -5,13 +5,10 @@ import AVMWebClient from './AVMWebClient';
 import AVMWebProvider from './AVMWebProvider';
 
 // enums
-import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
+import { ARC0027MethodEnum } from '@app/enums';
 
 // types
 import type { IAVMWebClientConfig, IDiscoverResult } from '@app/types';
-
-// utils
-import { createMessageReference } from '@app/utils';
 
 describe(AVMWebClient.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -58,7 +55,7 @@ describe(AVMWebClient.name, () => {
   });
 
   describe(`${AVMWebClient.name}#discover`, () => {
-    it('should return a provider', (done) => {
+    it('should return the provider information', (done) => {
       // arrange
       const expectedResult: IDiscoverResult = {
         host: 'https://awesome-wallet.com',
@@ -79,13 +76,7 @@ describe(AVMWebClient.name, () => {
         providerId,
       };
 
-      provider.on(
-        createMessageReference(
-          ARC0027MethodEnum.Discover,
-          ARC0027MessageTypeEnum.Request
-        ),
-        () => expectedResult
-      );
+      provider.onDiscover(() => expectedResult);
       client.onDiscover((result, error) => {
         // assert
         expect(error).toBeNull();

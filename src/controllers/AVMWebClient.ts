@@ -28,13 +28,13 @@ import type {
 import { createMessageReference } from '@app/utils';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
+  private readonly listeners: Map<string, TAVMWebClientListener>;
   private readonly requestIds: string[];
-  private readonly events: Map<string, TAVMWebClientListener>;
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
 
-    this.events = new Map<string, TAVMWebClientListener>();
+    this.listeners = new Map<string, TAVMWebClientListener>();
     this.requestIds = [];
 
     // start listening to response messages
@@ -95,7 +95,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   ): Promise<void> {
     const _functionName: string = 'onMessage';
     const listener: TAVMWebClientListener | null =
-      this.events.get(message.data.reference) || null;
+      this.listeners.get(message.data.reference) || null;
 
     // ensure we have a listener for the response and the request id is known
     if (listener && this.requestIds.includes(message.data.requestId)) {
@@ -144,17 +144,24 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   }
 
   /**
-   * Listens to discover messages sent from providers.
-   * @param {TAVMWebClientListener<IDiscoverResult>} listener - callback that is called when a response message is
-   * received.
+   * Listens to discover messages sent from providers. This will replace any previous set listeners. If null is
+   * supplied, the listener will be removed.
+   * @param {TAVMWebClientListener<IDiscoverResult> | null} listener - callback that is called when a response message
+   * is received, or null to remove the listener.
    */
-  onDiscover(listener: TAVMWebClientListener<IDiscoverResult>): void {
-    this.events.set(
-      createMessageReference(
-        ARC0027MethodEnum.Discover,
-        ARC0027MessageTypeEnum.Response
-      ),
-      listener
+  onDiscover(listener: TAVMWebClientListener<IDiscoverResult> | null): void {
+    const responseReference: string = createMessageReference(
+      ARC0027MethodEnum.Discover,
+      ARC0027MessageTypeEnum.Response
     );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(responseReference);
+
+      return;
+    }
+
+    this.listeners.set(responseReference, listener);
   }
 }
