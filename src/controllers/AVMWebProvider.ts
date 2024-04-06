@@ -6,6 +6,9 @@ import BaseController from './BaseController';
 // enums
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 
+// errors
+import { ARC0027UnknownError, BaseARC0027Error } from '@app/errors';
+
 // messages
 import {
   RequestMessage,
@@ -17,27 +20,23 @@ import {
 import type {
   IAVMWebProviderConfig,
   IAVMWebProviderInitOptions,
-  IDiscoverParams,
-  IDiscoverResult,
-  ISendRequestMessageOptions,
-  TAVMWebClientListener,
-  TRequestParams,
+  ISendResponseMessageOptions,
+  TAVMWebProviderListener,
+  TResponseResults,
 } from '@app/types';
 
 // utils
 import { createMessageReference } from '@app/utils';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
-  private readonly requestIds: string[];
-  private readonly events: Map<string, TAVMWebClientListener>;
+  private readonly events: Map<string, TAVMWebProviderListener>;
 
   private constructor(config: IAVMWebProviderConfig) {
     super(config);
 
-    this.events = new Map<string, TAVMWebClientListener>();
-    this.requestIds = [];
+    this.events = new Map<string, TAVMWebProviderListener>();
 
-    // start listening to response messages
+    // start listening to request messages
     this.startListening();
   }
 
@@ -45,11 +44,14 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * private methods
    */
 
-  private sendRequestMessage<Params = TRequestParams>({
+  private async sendResponseMessage({
     method,
-    params,
-  }: ISendRequestMessageOptions<Params>): void {
+    listener,
+    requestMessage,
+  }: ISendResponseMessageOptions): Promise<void> {
     let id: string;
+    let reference: string;
+    let result: TResponseResults;
 
     // if there is no channel, ignore
     if (!this.channel) {
@@ -57,24 +59,45 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     }
 
     id = uuid();
+    reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
 
     try {
-      // broadcast the request message
-      this.channel.postMessage(
-        new RequestMessage<Params>({
+      result = await listener(requestMessage.params);
+
+      // post the result message in the broadcast channel
+      return this.channel.postMessage(
+        new ResponseMessageWithResult({
           id,
-          params,
-          reference: createMessageReference(
-            method,
-            ARC0027MessageTypeEnum.Request
-          ),
+          reference,
+          requestId: requestMessage.id,
+          result,
         })
       );
-
-      // add the id to the internal state
-      this.requestIds.push(id);
     } catch (error) {
-      // TODO: log error
+      // if we have an arc-0027 error, send it in the response
+      if ((error as BaseARC0027Error).code) {
+        return this.channel.postMessage(
+          new ResponseMessageWithError({
+            error,
+            id,
+            reference,
+            requestId: requestMessage.id,
+          })
+        );
+      }
+
+      // otherwise, wrap the message in an unknown error
+      return this.channel.postMessage(
+        new ResponseMessageWithError({
+          error: new ARC0027UnknownError({
+            message: error.message,
+            providerId: this.config.providerId,
+          }),
+          id,
+          reference,
+          requestId: requestMessage.id,
+        })
+      );
     }
   }
 
@@ -83,19 +106,19 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
 
   protected async onMessage(
-    message: MessageEvent<ResponseMessageWithError | ResponseMessageWithResult>
+    message: MessageEvent<RequestMessage>
   ): Promise<void> {
-    const listener: TAVMWebClientListener | null =
+    const listener: TAVMWebProviderListener | null =
       this.events.get(message.data.reference) || null;
 
-    // ensure we have a listener for the response and the request id is known
-    if (listener && this.requestIds.includes(message.data.requestId)) {
+    if (listener) {
       switch (message.data.reference) {
-        case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
-          return listener(
-            (message.data as ResponseMessageWithResult).result || null,
-            (message.data as ResponseMessageWithError).error || null
-          );
+        case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Request)}`:
+          return await this.sendResponseMessage({
+            method: ARC0027MethodEnum.Discover,
+            listener,
+            requestMessage: message.data,
+          });
         default:
           break;
       }
@@ -107,10 +130,12 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
 
   public static init(
+    providerId: string,
     { debug }: IAVMWebProviderInitOptions = { debug: false }
   ): AVMWebProvider {
     return new AVMWebProvider({
       debug: debug || false,
+      providerId,
     });
   }
 
@@ -119,29 +144,21 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
 
   /**
-   * Sends a request to get information relating to available providers. This should be called before interacting with
-   * any providers to ensure networks and methods are supported.
-   * @param {IDiscoverParams} params - [optional] params that specify which provider to target.
+   * Removes a request message listener.
+   * @param {string} requestReference - the request reference. This follows the ARC-0027 request message naming
+   * convention.
    */
-  public discover(params?: IDiscoverParams): void {
-    return this.sendRequestMessage<IDiscoverParams>({
-      method: ARC0027MethodEnum.Discover,
-      params,
-    });
+  public off(requestReference: string): void {
+    this.events.delete(requestReference);
   }
 
   /**
-   * Listens to discover messages sent from providers.
-   * @param {TAVMWebClientListener<IDiscoverResult>} listener - callback that is called when a response message is
-   * received.
+   * Sets a request message listener. This will replace any previous set listeners.
+   * @param {string} requestReference - the request reference. This follows the ARC-0027 request message naming
+   * convention.
+   * @param {TAVMWebProviderListener} listener - the listener to call when the request message is sent.
    */
-  onDiscover(listener: TAVMWebClientListener<IDiscoverResult>): void {
-    this.events.set(
-      createMessageReference(
-        ARC0027MethodEnum.Discover,
-        ARC0027MessageTypeEnum.Response
-      ),
-      listener
-    );
+  public on(requestReference: string, listener: TAVMWebProviderListener): void {
+    this.events.set(requestReference, listener);
   }
 }

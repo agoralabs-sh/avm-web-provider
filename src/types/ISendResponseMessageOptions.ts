@@ -5,11 +5,11 @@ import { ARC0027MethodEnum } from '@app/enums';
 import { RequestMessage } from '@app/messages';
 
 // types
-import type TAVMWebWalletListener from './TAVMWebWalletListener';
+import type TAVMWebProviderListener from './TAVMWebProviderListener';
 import type TRequestParams from './TRequestParams';
 
 interface ISendResponseMessageOptions<RequestParams = TRequestParams> {
-  listener: TAVMWebWalletListener;
+  listener: TAVMWebProviderListener;
   method: ARC0027MethodEnum;
   requestMessage: RequestMessage<RequestParams>;
 }

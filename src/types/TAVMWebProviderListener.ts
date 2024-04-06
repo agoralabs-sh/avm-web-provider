@@ -2,8 +2,8 @@
 import type TRequestParams from './TRequestParams';
 import type TResponseResults from './TResponseResults';
 
-type TAVMWebWalletListener<Result = TResponseResults> = (
+type TAVMWebProviderListener<Result = TResponseResults> = (
   params?: TRequestParams
 ) => Result | Promise<Result>;
 
-export default TAVMWebWalletListener;
+export default TAVMWebProviderListener;

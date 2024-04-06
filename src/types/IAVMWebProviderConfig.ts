@@ -1,6 +1,8 @@
 // types
 import type IBaseConfig from './IBaseConfig';
 
-type IAVMWebProviderConfig = IBaseConfig;
+interface IAVMWebProviderConfig extends IBaseConfig {
+  providerId: string;
+}
 
 export default IAVMWebProviderConfig;

@@ -1,7 +1,7 @@
+export type { default as IAVMWebClientConfig } from './IAVMWebClientConfig';
+export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOptions';
 export type { default as IAVMWebProviderConfig } from './IAVMWebProviderConfig';
 export type { default as IAVMWebProviderInitOptions } from './IAVMWebProviderInitOptions';
-export type { default as IAVMWebWalletConfig } from './IAVMWebWalletConfig';
-export type { default as IAVMWebWalletInitOptions } from './IAVMWebWalletInitOptions';
 export type { default as IBaseResponseMessage } from './IBaseResponseMessage';
 export type { default as IDiscoverParams } from './IDiscoverParams';
 export type { default as IDiscoverResult } from './IDiscoverResult';
@@ -12,6 +12,6 @@ export type { default as IResponseMessageWithError } from './IResponseMessageWit
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
 export type { default as TAVMWebClientListener } from './TAVMWebClientListener';
-export type { default as TAVMWebWalletListener } from './TAVMWebWalletListener';
+export type { default as TAVMWebProviderListener } from './TAVMWebProviderListener';
 export type { default as TRequestParams } from './TRequestParams';
 export type { default as TResponseResults } from './TResponseResults';
