@@ -7,6 +7,7 @@ import type TRequestParams from './TRequestParams';
 interface SendRequestMessageOptions<Params = TRequestParams> {
   method: ARC0027MethodEnum;
   params?: Params;
+  timeout?: number;
 }
 
 export default SendRequestMessageOptions;

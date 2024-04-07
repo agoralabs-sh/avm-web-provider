@@ -1,5 +1,8 @@
 import { v4 as uuid } from 'uuid';
 
+// constants
+import { DEFAULT_REQUEST_TIMEOUT } from '@app/constants';
+
 // controllers
 import BaseController from './BaseController';
 
@@ -21,6 +24,8 @@ import type {
   IDiscoverResult,
   IEnableParams,
   IEnableResult,
+  IPostTransactionsParams,
+  IPostTransactionsResult,
   ISendRequestMessageOptions,
   TAVMWebClientListener,
   TRequestParams,
@@ -31,7 +36,7 @@ import { createMessageReference } from '@app/utils';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   private readonly listeners: Map<string, TAVMWebClientListener>;
-  private readonly requestIds: string[];
+  private requestIds: string[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
@@ -77,6 +82,11 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         })
       );
 
+      // add a timeout to remove the request id and stop handling response messages
+      window.setTimeout(() => {
+        this.requestIds = this.requestIds.filter((value) => value !== id);
+      }, DEFAULT_REQUEST_TIMEOUT);
+
       this.logger.debug(
         `${AVMWebClient.name}#${_functionName}: posted message "${reference}" with id "${id}"`
       );
@@ -104,6 +114,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       switch (message.data.reference) {
         case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.Enable, ARC0027MessageTypeEnum.Response)}`:
+        case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Response)}`:
           this.logger.debug(
             `${AVMWebClient.name}#${_functionName}: received response message "${JSON.stringify(message.data)}"`
           );
@@ -148,7 +159,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
   /**
    * Enables to a client with providers. If the ID of the provider and/or network is specified, that provider/network is
-   * used, otherwise the default provider is enabled.
+   * used, otherwise the all providers available providers are used.
    * @param {IEnableParams} params - [optional] params that specify the provider and/or the network.
    */
   public enable(params?: IEnableParams): void {
@@ -159,7 +170,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   }
 
   /**
-   * Listens to discover messages sent from providers. This will replace any previous set listeners. If null is
+   * Listens to `discover` messages sent from providers. This will replace any previous set listeners. If null is
    * supplied, the listener will be removed.
    * @param {TAVMWebClientListener<IDiscoverResult> | null} listener - callback that is called when a response message
    * is received, or null to remove the listener.
@@ -181,7 +192,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   }
 
   /**
-   * Listens to enable messages sent from providers. This will replace any previous set listeners. If null is supplied,
+   * Listens to `enable` messages sent from providers. This will replace any previous set listeners. If null is supplied,
    * the listener will be removed.
    * @param {TAVMWebClientListener<IEnableResult> | null} listener - callback that is called when a response message
    * is received, or null to remove the listener.
@@ -200,5 +211,40 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     }
 
     this.listeners.set(responseReference, listener);
+  }
+
+  /**
+   * Listens to `post_transactions` messages sent from providers. This will replace any previous set listeners. If null
+   * is supplied, the listener will be removed.
+   * @param {TAVMWebClientListener<IPostTransactionsResult> | null} listener - callback that is called when a response
+   * message is received, or null to remove the listener.
+   */
+  onPostTransactions(
+    listener: TAVMWebClientListener<IPostTransactionsResult> | null
+  ): void {
+    const responseReference: string = createMessageReference(
+      ARC0027MethodEnum.PostTransactions,
+      ARC0027MessageTypeEnum.Response
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(responseReference);
+
+      return;
+    }
+
+    this.listeners.set(responseReference, listener);
+  }
+
+  /**
+   * Request providers to post a list of signed transactions to the network.
+   * @param {IPostTransactionsParams} params - params that specify the provider and the signed transactions.
+   */
+  public postTransactions(params: IPostTransactionsParams): void {
+    return this.sendRequestMessage<IPostTransactionsParams>({
+      method: ARC0027MethodEnum.PostTransactions,
+      params,
+    });
   }
 }

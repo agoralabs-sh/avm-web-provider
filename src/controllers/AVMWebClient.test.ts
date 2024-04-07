@@ -7,13 +7,16 @@ import AVMWebProvider from './AVMWebProvider';
 // enums
 import { ARC0027MethodEnum } from '@app/enums';
 
+// errors
+import { ARC0027MethodNotSupportedError } from '@app/errors';
+
 // types
 import {
   IAVMWebClientConfig,
   IDiscoverResult,
   IEnableResult,
+  IPostTransactionsResult,
 } from '@app/types';
-import { ARC0027MethodNotSupportedError } from '@app/errors';
 
 describe(AVMWebClient.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -161,6 +164,64 @@ describe(AVMWebClient.name, () => {
 
       // act
       client.enable();
+    });
+  });
+
+  describe(`${AVMWebClient.name}#postTransactions`, () => {
+    it('should return an error', (done) => {
+      // arrange
+      const expectedError: ARC0027MethodNotSupportedError =
+        new ARC0027MethodNotSupportedError({
+          method: ARC0027MethodEnum.PostTransactions,
+          providerId,
+        });
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onPostTransactions(
+        async () => await Promise.reject(expectedError)
+      );
+      client.onPostTransactions((result, error) => {
+        // assert
+        expect(result).toBeNull();
+        expect(error).toEqual(expectedError);
+
+        done();
+      });
+
+      // act
+      client.postTransactions({
+        providerId,
+        stxns: ['gqNzaWfEQ...'],
+      });
+    });
+
+    it('should return the transactions IDs', (done) => {
+      // arrange
+      const expectedResult: IPostTransactionsResult = {
+        providerId,
+        txnIDs: ['OKU6A2Q...'],
+      };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onPostTransactions(() => expectedResult);
+      client.onPostTransactions((result, error) => {
+        // assert
+        expect(error).toBeNull();
+        expect(result).toBeDefined();
+        expect(result).toEqual(expectedResult);
+
+        done();
+      });
+
+      // act
+      client.postTransactions({
+        providerId,
+        stxns: ['gqNzaWfEQ...'],
+      });
     });
   });
 });

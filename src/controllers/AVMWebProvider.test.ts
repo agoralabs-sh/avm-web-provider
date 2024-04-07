@@ -3,7 +3,7 @@ import AVMWebClient from './AVMWebClient';
 import AVMWebProvider from './AVMWebProvider';
 
 // types
-import { IAVMWebProviderConfig } from '@app/types';
+import { IAVMWebProviderConfig, IPostTransactionsParams } from '@app/types';
 
 describe(AVMWebProvider.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -77,6 +77,30 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.enable();
+    });
+  });
+
+  describe(`${AVMWebProvider.name}#onPostTransactions`, () => {
+    it('should receive the client request', (done) => {
+      // arrange
+      const stxns: string[] = ['gqNzaWfEQ...'];
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      // assert
+      provider.onPostTransactions((params: IPostTransactionsParams) => {
+        expect(params.providerId).toBe(providerId);
+        expect(params.stxns).toEqual(stxns);
+
+        return done();
+      });
+
+      // act
+      client.postTransactions({
+        providerId,
+        stxns,
+      });
     });
   });
 });
