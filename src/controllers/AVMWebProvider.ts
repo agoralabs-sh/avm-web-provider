@@ -37,7 +37,6 @@ import { createMessageReference } from '@app/utils';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
   private readonly listeners: Map<string, TAVMWebProviderListener>;
-  protected logger: Logger;
 
   private constructor(config: IAVMWebProviderConfig) {
     super(config);

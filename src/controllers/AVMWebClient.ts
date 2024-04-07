@@ -1,5 +1,8 @@
 import { v4 as uuid } from 'uuid';
 
+// constants
+import { DEFAULT_REQUEST_TIMEOUT } from '@app/constants';
+
 // controllers
 import BaseController from './BaseController';
 
@@ -33,7 +36,7 @@ import { createMessageReference } from '@app/utils';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   private readonly listeners: Map<string, TAVMWebClientListener>;
-  private readonly requestIds: string[];
+  private requestIds: string[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
@@ -78,6 +81,11 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
           reference,
         })
       );
+
+      // add a timeout to remove the request id and stop handling response messages
+      window.setTimeout(() => {
+        this.requestIds = this.requestIds.filter((value) => value !== id);
+      }, DEFAULT_REQUEST_TIMEOUT);
 
       this.logger.debug(
         `${AVMWebClient.name}#${_functionName}: posted message "${reference}" with id "${id}"`
