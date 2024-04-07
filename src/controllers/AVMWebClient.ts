@@ -206,7 +206,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   }
 
   /**
-   * Listens to `post_transaction` messages sent from providers. This will replace any previous set listeners. If null
+   * Listens to `post_transactions` messages sent from providers. This will replace any previous set listeners. If null
    * is supplied, the listener will be removed.
    * @param {TAVMWebClientListener<IPostTransactionsResult> | null} listener - callback that is called when a response
    * message is received, or null to remove the listener.
