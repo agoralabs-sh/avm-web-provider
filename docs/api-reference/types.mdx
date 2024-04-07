@@ -92,3 +92,17 @@ This is the basic type for an error. For specific details on errors check out th
 | genesisHash | `string`   | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
 | genesisId   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
 | methods     | `string[]` | yes      | -       | A list of methods available from the provider for the chain.                 |
+
+### `IPostTransactionsParams`
+
+| Name       | Type       | Required | Default | Description                                   |
+|------------|------------|----------|---------|-----------------------------------------------|
+| providerId | `string`   | no       | -       | The ID of the provider.                       |
+| stxns      | `string[]` | yes      | -       | A list of base64 encoded signed transactions. |
+
+### `IPostTransactionsResult`
+
+| Name       | Type       | Required | Default | Description                                                                                          |
+|------------|------------|----------|---------|------------------------------------------------------------------------------------------------------|
+| providerId | `string`   | yes      | -       | The ID of the provider.                                                                              |
+| txnIDs     | `string[]` | yes      | -       | A list of 52-character base32 strings (without padding) corresponding the completed transaction IDs. |
