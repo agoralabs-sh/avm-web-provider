@@ -133,3 +133,35 @@ import TOCInline from '@theme/TOCInline';
 | Type   | Description |
 |--------|-------------|
 | `void` | -           |
+
+### `startListening()`
+
+> Starts listening to responses from providers. This method should not have to be manually called, as it is called as part of the [initialization](#initoptions) process. his method essentially closes a previous connection and opens a new connection to the BroadcastChannel.
+
+:::note
+
+This method must be called if the client needs listen to messages if the [`stopListening()`](#stoplistening) method was previously called.
+
+:::
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
+### `stopListening()`
+
+> Stops listening to responses from providers. This method closes the connection to BroadcastChannel.
+
+:::caution
+
+It is highly recommended you call this method when you no longer need to listen to provider responses or are cleaning up.
+
+:::
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
