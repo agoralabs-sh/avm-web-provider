@@ -10,6 +10,7 @@ const sidebars = {
         'clients/getting-started',
         'clients/discover-providers',
         'clients/enabling-a-client',
+        'clients/posting-transactions',
       ],
       label: 'Clients',
       link: {
@@ -23,6 +24,7 @@ const sidebars = {
         'providers/getting-started',
         'providers/responding-to-discover-requests',
         'providers/responding-to-enable-requests',
+        'providers/responding-to-post-transactions-requests',
       ],
       label: 'Providers',
       link: {
