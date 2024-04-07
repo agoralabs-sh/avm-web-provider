@@ -25,6 +25,8 @@ import type {
   IDiscoverResult,
   IEnableParams,
   IEnableResult,
+  IPostTransactionsParams,
+  IPostTransactionsResult,
   ISendResponseMessageOptions,
   TAVMWebProviderListener,
   TResponseResults,
@@ -133,6 +135,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
         case `${createMessageReference(ARC0027MethodEnum.Enable, ARC0027MessageTypeEnum.Request)}`:
           method = ARC0027MethodEnum.Enable;
           break;
+        case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Request)}`:
+          method = ARC0027MethodEnum.PostTransactions;
+          break;
         default:
           break;
       }
@@ -166,8 +171,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
 
   /**
-   * Listens to discover messages sent from clients. This will replace any previous set listeners. If null is supplied,
-   * the listener will be removed.
+   * Listens to `discover` messages sent from clients. This will replace any previous set listeners. If null is
+   * supplied, the listener will be removed.
    * @param {TAVMWebProviderListener<IDiscoverParams, IDiscoverResult> | null} listener - the listener to call when the
    * request message is sent, or null to remove the listener.
    */
@@ -190,7 +195,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
   }
 
   /**
-   * Listens to enable messages sent from clients. This will replace any previous set listeners. If null is supplied,
+   * Listens to `enable` messages sent from clients. This will replace any previous set listeners. If null is supplied,
    * the listener will be removed.
    * @param {TAVMWebProviderListener<IEnableParams, IEnableResult> | null} listener - the listener to call when the
    * request message is sent, or null to remove the listener.
@@ -200,6 +205,33 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
   ): void {
     const requestReference: string = createMessageReference(
       ARC0027MethodEnum.Enable,
+      ARC0027MessageTypeEnum.Request
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(requestReference);
+
+      return;
+    }
+
+    this.listeners.set(requestReference, listener);
+  }
+
+  /**
+   * Listens to `post_transactions` messages sent from clients. This will replace any previous set listeners. If null is
+   * supplied, the listener will be removed.
+   * @param {TAVMWebProviderListener<IPostTransactionsParams, IPostTransactionsResult> | null} listener - the listener
+   * to call when the request message is sent, or null to remove the listener.
+   */
+  onPostTransactions(
+    listener: TAVMWebProviderListener<
+      IPostTransactionsParams,
+      IPostTransactionsResult
+    > | null
+  ): void {
+    const requestReference: string = createMessageReference(
+      ARC0027MethodEnum.PostTransactions,
       ARC0027MessageTypeEnum.Request
     );
 

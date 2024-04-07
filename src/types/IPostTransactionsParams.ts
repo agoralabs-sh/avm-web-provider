@@ -1,9 +1,9 @@
 /**
- * @property {string} providerId - [optional] a unique identifier for the provider.
+ * @property {string} providerId - a unique identifier for the provider.
  * @property {string[]} stxns - a list of base64 encoded signed transactions.
  */
 interface IPostTransactionsParams {
-  providerId?: string;
+  providerId: string;
   stxns: string[];
 }
 
