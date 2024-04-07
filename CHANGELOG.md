@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2024-04-07)
+
+
+### Features
+
+* implement `post_transactions` method ([#13](https://github.com/agoralabs-sh/avm-web-provider/issues/13)) ([3655d7a](https://github.com/agoralabs-sh/avm-web-provider/commit/3655d7a0bb99e2ecb31e6e25b260cc850be8326f))
+
 # [1.0.0-beta.2](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2024-04-06)
 
 
