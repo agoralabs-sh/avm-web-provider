@@ -2,7 +2,6 @@ import { v4 as uuid } from 'uuid';
 
 // controllers
 import BaseController from './BaseController';
-import Logger from './Logger';
 
 // enums
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
