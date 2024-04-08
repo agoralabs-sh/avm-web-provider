@@ -5,6 +5,8 @@ export type { default as IAVMWebProviderConfig } from './IAVMWebProviderConfig';
 export type { default as IAVMWebProviderInitOptions } from './IAVMWebProviderInitOptions';
 export type { default as IBaseConfig } from './IBaseConfig';
 export type { default as IBaseResponseMessage } from './IBaseResponseMessage';
+export type { default as IDisableParams } from './IDisableParams';
+export type { default as IDisableResult } from './IDisableResult';
 export type { default as IDiscoverParams } from './IDiscoverParams';
 export type { default as IDiscoverResult } from './IDiscoverResult';
 export type { default as IEnableParams } from './IEnableParams';
