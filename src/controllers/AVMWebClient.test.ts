@@ -13,6 +13,7 @@ import { ARC0027MethodNotSupportedError } from '@app/errors';
 // types
 import {
   IAVMWebClientConfig,
+  IDisableResult,
   IDiscoverResult,
   IEnableResult,
   IPostTransactionsResult,
@@ -61,6 +62,68 @@ describe(AVMWebClient.name, () => {
       config = client.getConfig();
 
       expect(config.debug).toBe(debug);
+    });
+  });
+
+  describe(`${AVMWebClient.name}#disable`, () => {
+    it('should return an error', (done) => {
+      // arrange
+      const expectedError: ARC0027MethodNotSupportedError =
+        new ARC0027MethodNotSupportedError({
+          method: ARC0027MethodEnum.Disable,
+          providerId,
+        });
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onDisable(async () => await Promise.reject(expectedError));
+      client.onDisable((result, error) => {
+        // assert
+        expect(result).toBeNull();
+        expect(error).toEqual(expectedError);
+
+        done();
+      });
+
+      // act
+      client.disable();
+    });
+
+    it('should return the removed sessions', (done) => {
+      // arrange
+      const genesisHash: string = randomBytes(32).toString('base64');
+      const sessionIds: string[] = [
+        '25a90d91-8a96-4828-8bd5-da40b5ad33ed',
+        '6d12962e-2d8d-450c-b32e-dd6f7dd11230',
+        'c12424a1-789c-49c1-b6a4-226c3d575060',
+      ];
+      const expectedResult: IDisableResult = {
+        genesisHash,
+        genesisId: 'jest-test-v1.0',
+        providerId,
+        sessionIds,
+      };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onDisable(() => expectedResult);
+      client.onDisable((result, error) => {
+        // assert
+        expect(error).toBeNull();
+        expect(result).toBeDefined();
+        expect(result).toEqual(expectedResult);
+
+        done();
+      });
+
+      // act
+      client.disable({
+        genesisHash,
+        providerId,
+        sessionIds,
+      });
     });
   });
 
