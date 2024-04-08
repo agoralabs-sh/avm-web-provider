@@ -19,6 +19,7 @@ export type { default as IResponseMessageWithResult } from './IResponseMessageWi
 export type { default as IResponseMessageWithError } from './IResponseMessageWithError';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
+export type { default as ISignTransactionsParams } from './ISignTransactionsParams';
 export type { default as TAVMWebClientListener } from './TAVMWebClientListener';
 export type { default as TAVMWebProviderListener } from './TAVMWebProviderListener';
 export type { default as TLogLevel } from './TLogLevel';
