@@ -1,3 +1,10 @@
+# [1.0.0-beta.4](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2024-04-08)
+
+
+### Features
+
+* implement disable method ([#14](https://github.com/agoralabs-sh/avm-web-provider/issues/14)) ([fd37807](https://github.com/agoralabs-sh/avm-web-provider/commit/fd378079546e3115b6808475e2ad1316040d00b9))
+
 # [1.0.0-beta.3](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2024-04-07)
 
 
