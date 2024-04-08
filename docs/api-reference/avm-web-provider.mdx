@@ -38,9 +38,25 @@ import TOCInline from '@theme/TOCInline';
 |--------------------------------------------------------|-------------------------------|
 | [`IAVMWebProviderConfig`](types#iavmwebproviderconfig) | The provider's configuration. |
 
+### `onDisable(listener)`
+
+> Listens to `disable` messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+
+#### Parameters
+
+| Name     | Type                                                                                                                                                                 | Required | Default | Description                                                                            |
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|----------------------------------------------------------------------------------------|
+| listener | (`params`?: [`IDisableParams`](types#idisableparams)) => ([`IDisableResult`](types#idisableresult) \| [`Promise<IDiscoverResult>`](types#idiscoverresult)) \| `null` | yes      | -       | The listener to call when the request message is sent, or null to remove the listener. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
 ### `onDiscover(listener)`
 
-> Listens to discover messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+> Listens to `discover` messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
 
 #### Parameters
 
@@ -56,7 +72,7 @@ import TOCInline from '@theme/TOCInline';
 
 ### `onEnable(listener)`
 
-> Listens to enable messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+> Listens to `enable` messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
 
 #### Parameters
 

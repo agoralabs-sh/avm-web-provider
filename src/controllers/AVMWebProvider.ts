@@ -20,6 +20,8 @@ import {
 import type {
   IAVMWebProviderConfig,
   IAVMWebProviderInitOptions,
+  IDisableParams,
+  IDisableResult,
   IDiscoverParams,
   IDiscoverResult,
   IEnableParams,
@@ -127,6 +129,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
     if (listener) {
       switch (message.data.reference) {
+        case `${createMessageReference(ARC0027MethodEnum.Disable, ARC0027MessageTypeEnum.Request)}`:
+          method = ARC0027MethodEnum.Disable;
+          break;
         case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Request)}`:
           method = ARC0027MethodEnum.Discover;
           break;
@@ -167,6 +172,30 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
   /**
    * public methods
    */
+
+  /**
+   * Listens to `disable` messages sent from clients. This will replace any previous set listeners. If null is supplied,
+   * the listener will be removed.
+   * @param {TAVMWebProviderListener<IDisableParams, IDisableResult> | null} listener - the listener to call when the
+   * request message is sent, or null to remove the listener.
+   */
+  onDisable(
+    listener: TAVMWebProviderListener<IDisableParams, IDisableResult> | null
+  ): void {
+    const requestReference: string = createMessageReference(
+      ARC0027MethodEnum.Disable,
+      ARC0027MessageTypeEnum.Request
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(requestReference);
+
+      return;
+    }
+
+    this.listeners.set(requestReference, listener);
+  }
 
   /**
    * Listens to `discover` messages sent from clients. This will replace any previous set listeners. If null is

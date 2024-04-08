@@ -20,6 +20,8 @@ import {
 import type {
   IAVMWebClientConfig,
   IAVMWebClientInitOptions,
+  IDisableParams,
+  IDisableResult,
   IDiscoverParams,
   IDiscoverResult,
   IEnableParams,
@@ -112,6 +114,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     // ensure we have a listener for the response and the request id is known
     if (listener && this.requestIds.includes(message.data.requestId)) {
       switch (message.data.reference) {
+        case `${createMessageReference(ARC0027MethodEnum.Disable, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.Enable, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Response)}`:
@@ -146,6 +149,17 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    */
 
   /**
+   * Sends a request to remove the client from providers.
+   * @param {IDisableParams} params - [optional] params that specify which provider,network and/or specific session IDs.
+   */
+  public disable(params?: IDisableParams): void {
+    return this.sendRequestMessage<IDisableParams>({
+      method: ARC0027MethodEnum.Disable,
+      params,
+    });
+  }
+
+  /**
    * Sends a request to get information relating to available providers. This should be called before interacting with
    * any providers to ensure networks and methods are supported.
    * @param {IDiscoverParams} params - [optional] params that specify which provider to target.
@@ -167,6 +181,28 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       method: ARC0027MethodEnum.Enable,
       params,
     });
+  }
+
+  /**
+   * Listens to `disable` messages sent from providers. This will replace any previous set listeners. If null is
+   * supplied, the listener will be removed.
+   * @param {TAVMWebClientListener<IDisableResult> | null} listener - callback that is called when a response message
+   * is received, or null to remove the listener.
+   */
+  onDisable(listener: TAVMWebClientListener<IDisableResult> | null): void {
+    const responseReference: string = createMessageReference(
+      ARC0027MethodEnum.Disable,
+      ARC0027MessageTypeEnum.Response
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(responseReference);
+
+      return;
+    }
+
+    this.listeners.set(responseReference, listener);
   }
 
   /**
