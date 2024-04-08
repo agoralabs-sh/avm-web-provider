@@ -145,6 +145,22 @@ import TOCInline from '@theme/TOCInline';
 |--------|-------------|
 | `void` | -           |
 
+### `onSignAndPostTransactions(listener)`
+
+> Listens to `sign_and_post_transactions` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+
+#### Parameters
+
+| Name     | Type                                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`result`?: [`IPostTransactionsResult`](types#iposttransactionsresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
 ### `postTransactions([params])`
 
 > Request providers to post a list of signed transactions to the network.
@@ -154,6 +170,22 @@ import TOCInline from '@theme/TOCInline';
 | Name   | Type                                                       | Required | Default | Description                                                   |
 |--------|------------------------------------------------------------|----------|---------|---------------------------------------------------------------|
 | params | [`IPostTransactionsParams`](types#iposttransactionsparams) | yes      | -       | Params that specify the provider and the signed transactions. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
+### `signAndpostTransactions([params])`
+
+> Request providers to sign and post a list of unsigned transactions to the network.
+
+#### Parameters
+
+| Name   | Type                                                       | Required | Default | Description                                                     |
+|--------|------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
+| params | [`ISignTransactionsParams`](types#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
 
 #### Returns
 

@@ -287,4 +287,78 @@ describe(AVMWebClient.name, () => {
       });
     });
   });
+
+  describe(`${AVMWebClient.name}#signAndPostTransactions`, () => {
+    it('should return an error', (done) => {
+      // arrange
+      const expectedError: ARC0027MethodNotSupportedError =
+        new ARC0027MethodNotSupportedError({
+          method: ARC0027MethodEnum.SignAndPostTransactions,
+          providerId,
+        });
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onSignAndPostTransactions(
+        async () => await Promise.reject(expectedError)
+      );
+      client.onSignAndPostTransactions((result, error) => {
+        // assert
+        expect(result).toBeNull();
+        expect(error).toEqual(expectedError);
+
+        done();
+      });
+
+      // act
+      client.signAndPostTransactions({
+        providerId,
+        txns: [
+          {
+            txn: randomBytes(32).toString('base64'),
+          },
+          {
+            txn: randomBytes(32).toString('base64'),
+            signers: [],
+          },
+        ],
+      });
+    });
+
+    it('should return the transactions IDs', (done) => {
+      // arrange
+      const expectedResult: IPostTransactionsResult = {
+        providerId,
+        txnIDs: ['OKU6A2Q...'],
+      };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onSignAndPostTransactions(() => expectedResult);
+      client.onSignAndPostTransactions((result, error) => {
+        // assert
+        expect(error).toBeNull();
+        expect(result).toBeDefined();
+        expect(result).toEqual(expectedResult);
+
+        done();
+      });
+
+      // act
+      client.signAndPostTransactions({
+        providerId,
+        txns: [
+          {
+            txn: randomBytes(32).toString('base64'),
+          },
+          {
+            txn: randomBytes(32).toString('base64'),
+            signers: [],
+          },
+        ],
+      });
+    });
+  });
 });

@@ -102,6 +102,22 @@ import TOCInline from '@theme/TOCInline';
 |--------|-------------|
 | `void` | -           |
 
+### `onSignPostTransactions(listener)`
+
+> Listens to `sign_and_post_transactions` messages sent from clients. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+
+#### Parameters
+
+| Name     | Type                                                                                                                                                                                                                     | Required | Default | Description                                                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|----------------------------------------------------------------------------------------|
+| listener | (`params`?: [`ISignTransactionsParams`](types#isigntransactionsparams)) => ([`IPostTransactionsResult`](types#iposttransactionsresult) \| [`Promise<IPostTransactionsResult>`](types#iposttransactionsresult)) \| `null` | yes      | -       | The listener to call when the request message is sent, or null to remove the listener. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
 ### `startListening()`
 
 > Starts listening to requests from clients. This method should not have to be manually called, as it is called as part of the [initialization](#initoptions) process. This method essentially closes a previous connection and opens a new connection to the BroadcastChannel.
