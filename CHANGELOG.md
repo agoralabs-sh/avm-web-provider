@@ -1,3 +1,10 @@
+# [1.0.0-beta.6](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2024-04-09)
+
+
+### Features
+
+* implement sign transactions method ([#16](https://github.com/agoralabs-sh/avm-web-provider/issues/16)) ([c89f421](https://github.com/agoralabs-sh/avm-web-provider/commit/c89f421547e0c10f5c2f6a5fe0a76b036dba4e5d))
+
 # [1.0.0-beta.5](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2024-04-09)
 
 
