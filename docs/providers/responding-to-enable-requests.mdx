@@ -79,6 +79,12 @@ provider.onEnable((params?: IEnableParams) => {
   </TabItem>
 </Tabs>
 
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
 ## Responding to a specific provider request
 
 The `enable` request allows the client to specify the provider. This is denoted in the supplied `params.providerId` parameter. Providers with the matching ID should respond:

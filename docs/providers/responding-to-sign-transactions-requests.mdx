@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Responding To Post Transactions Requests
+# Responding To Sign Transactions Requests
 
 <TOCInline
   maxHeadingLevel={4}
@@ -11,9 +11,9 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-As a provider usually has access to the network, the `post_transactions` method allows clients to rely on the provider to send transactions to the network.
+Providers, if supported, can sign single, atomic or multiple transactions. If the provider also supports it, the provider can also sign transactions using multisigs and re-keyed accounts.
 
-## Responding to a post transactions request
+## Responding to a sign transactions request
 
 Once our provider object has been initialized, we can simply listen to events and respond:
 
@@ -29,14 +29,14 @@ Once our provider object has been initialized, we can simply listen to events an
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onPostTransactions((params) => {
+provider.onSignTransactions((params) => {
   if (params.providerId === providerId) {
-    // ... using the `params.stxns` parameter, the provider posts the transactions to the network and returns the transaction ids
+    // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
 
     return {
       providerId,
-      txnIDs: [
-        'OKU6A2Q...',
+      stxns: [
+        'gqNzaWfEQ...',
       ],
     };
   }
@@ -47,19 +47,19 @@ provider.onPostTransactions((params) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IPostTransactionsParams } from '@agoralabs-sh/avm-web-provider';
+import type { ISignTransactionsParams } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onPostTransactions((params: IPostTransactionsParams) => {
+provider.onSignTransactions((params: ISignTransactionsParams) => {
   if (params.providerId === providerId) {
-    // ... using the `params.stxns` parameter, the provider posts the transactions to the network and returns the transaction ids
+    // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
 
     return {
       providerId,
-      txnIDs: [
-        'OKU6A2Q...',
+      stxns: [
+        'gqNzaWfEQ...',
       ],
     };
   }
@@ -84,11 +84,5 @@ If there is a group of atomic transactions, but the computed group ID doesn't ma
 :::caution
 
 If any of the transactions are malformed, then a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) should be thrown.
-
-:::
-
-:::caution
-
-If the transactions fail to be accepted by the network, then a [`FailedToPostSomeTransactionsError`](../../api-reference/errors#failedtopostsometransactionserror) should be thrown.
 
 :::
