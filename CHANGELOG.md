@@ -1,3 +1,10 @@
+# [1.0.0-beta.5](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2024-04-09)
+
+
+### Features
+
+* implement sign and post transactions method ([#15](https://github.com/agoralabs-sh/avm-web-provider/issues/15)) ([3119543](https://github.com/agoralabs-sh/avm-web-provider/commit/311954333f5924f61625ad2ca9a71a8cface406f))
+
 # [1.0.0-beta.4](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2024-04-08)
 
 
