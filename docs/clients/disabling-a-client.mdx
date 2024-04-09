@@ -54,7 +54,7 @@ client.disable();
   <TabItem value="typescript">
 
 ```typescript
-import type { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
+import { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
 client.onDisable((result: IDisableResult: null, error: BaseARC0027Error | null) => {
@@ -83,7 +83,7 @@ client.disable();
 
 :::caution
 
-If any providers do not support the `disable`  method, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) will be returned.
+If any providers do not support the `disable`  method, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be returned.
 
 :::
 
@@ -128,7 +128,7 @@ client.disable({
   <TabItem value="typescript">
 
 ```typescript
-import type { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
+import { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
@@ -162,7 +162,7 @@ client.disable({
 
 :::caution
 
-If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) will be thrown.
+If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
 
 :::
 
@@ -208,7 +208,7 @@ client.disable({
   <TabItem value="typescript">
 
 ```typescript
-import type { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
+import { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
 client.onEnable((result: IDisableResult: null, error: BaseARC0027Error | null) => {
