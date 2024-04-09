@@ -1,4 +1,5 @@
 export type { default as IAccount } from './IAccount';
+export type { default as IARC0001Transaction } from './IARC0001Transaction';
 export type { default as IAVMWebClientConfig } from './IAVMWebClientConfig';
 export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOptions';
 export type { default as IAVMWebProviderConfig } from './IAVMWebProviderConfig';
@@ -19,6 +20,7 @@ export type { default as IResponseMessageWithResult } from './IResponseMessageWi
 export type { default as IResponseMessageWithError } from './IResponseMessageWithError';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
+export type { default as ISignTransactionsParams } from './ISignTransactionsParams';
 export type { default as TAVMWebClientListener } from './TAVMWebClientListener';
 export type { default as TAVMWebProviderListener } from './TAVMWebProviderListener';
 export type { default as TLogLevel } from './TLogLevel';

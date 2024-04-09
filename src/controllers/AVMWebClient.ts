@@ -29,6 +29,7 @@ import type {
   IPostTransactionsParams,
   IPostTransactionsResult,
   ISendRequestMessageOptions,
+  ISignTransactionsParams,
   TAVMWebClientListener,
   TRequestParams,
 } from '@app/types';
@@ -118,6 +119,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.Enable, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Response)}`:
+        case `${createMessageReference(ARC0027MethodEnum.SignAndPostTransactions, ARC0027MessageTypeEnum.Response)}`:
           this.logger.debug(
             `${AVMWebClient.name}#${_functionName}: received response message "${JSON.stringify(message.data)}"`
           );
@@ -189,7 +191,9 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @param {TAVMWebClientListener<IDisableResult> | null} listener - callback that is called when a response message
    * is received, or null to remove the listener.
    */
-  onDisable(listener: TAVMWebClientListener<IDisableResult> | null): void {
+  public onDisable(
+    listener: TAVMWebClientListener<IDisableResult> | null
+  ): void {
     const responseReference: string = createMessageReference(
       ARC0027MethodEnum.Disable,
       ARC0027MessageTypeEnum.Response
@@ -211,7 +215,9 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @param {TAVMWebClientListener<IDiscoverResult> | null} listener - callback that is called when a response message
    * is received, or null to remove the listener.
    */
-  onDiscover(listener: TAVMWebClientListener<IDiscoverResult> | null): void {
+  public onDiscover(
+    listener: TAVMWebClientListener<IDiscoverResult> | null
+  ): void {
     const responseReference: string = createMessageReference(
       ARC0027MethodEnum.Discover,
       ARC0027MessageTypeEnum.Response
@@ -233,7 +239,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @param {TAVMWebClientListener<IEnableResult> | null} listener - callback that is called when a response message
    * is received, or null to remove the listener.
    */
-  onEnable(listener: TAVMWebClientListener<IEnableResult> | null): void {
+  public onEnable(listener: TAVMWebClientListener<IEnableResult> | null): void {
     const responseReference: string = createMessageReference(
       ARC0027MethodEnum.Enable,
       ARC0027MessageTypeEnum.Response
@@ -255,11 +261,35 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @param {TAVMWebClientListener<IPostTransactionsResult> | null} listener - callback that is called when a response
    * message is received, or null to remove the listener.
    */
-  onPostTransactions(
+  public onPostTransactions(
     listener: TAVMWebClientListener<IPostTransactionsResult> | null
   ): void {
     const responseReference: string = createMessageReference(
       ARC0027MethodEnum.PostTransactions,
+      ARC0027MessageTypeEnum.Response
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(responseReference);
+
+      return;
+    }
+
+    this.listeners.set(responseReference, listener);
+  }
+
+  /**
+   * Listens to `sign_and_post_transactions` messages sent from providers. This will replace any previous set listeners.
+   * If null is supplied, the listener will be removed.
+   * @param {TAVMWebClientListener<IPostTransactionsResult> | null} listener - callback that is called when a response
+   * message is received, or null to remove the listener.
+   */
+  public onSignAndPostTransactions(
+    listener: TAVMWebClientListener<IPostTransactionsResult> | null
+  ): void {
+    const responseReference: string = createMessageReference(
+      ARC0027MethodEnum.SignAndPostTransactions,
       ARC0027MessageTypeEnum.Response
     );
 
@@ -280,6 +310,17 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public postTransactions(params: IPostTransactionsParams): void {
     return this.sendRequestMessage<IPostTransactionsParams>({
       method: ARC0027MethodEnum.PostTransactions,
+      params,
+    });
+  }
+
+  /**
+   * Sends a list of unsigned transactions to be signed and posted to the network by the provider.
+   * @param {ISignTransactionsParams} params - params that specify the unsigned transactions and the provider.
+   */
+  public signAndPostTransactions(params: ISignTransactionsParams): void {
+    return this.sendRequestMessage<ISignTransactionsParams>({
+      method: ARC0027MethodEnum.SignAndPostTransactions,
       params,
     });
   }

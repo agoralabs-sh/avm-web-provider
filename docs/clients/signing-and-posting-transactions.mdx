@@ -1,0 +1,169 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Signing And Posting Transactions
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+Providers may have the functionality to both sign & post transactions. This method allows clients to avoid using the previous methods of [signing transactions](signing-transactions) and [posting transactions](posting-transactions) separately and simply performs the functionality of these previous methods within one method.
+
+## Sending transactions to be signed & posted to the provider
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+const algosdk = require('algosdk');
+
+// create a transaction
+try {
+  const client = new algosdk.Algodv2(
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    'http://localhost',
+    '4001',
+  );
+  const encoder = new TextEncoder();
+  const suggestedParams = await client.getTransactionParams().do();
+  const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+    amount: algosdk.algosToMicroalgos(1),
+    from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+    note: encoder.encode('Hello Human!'),
+    suggestedParams,
+    to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+  });
+  const transactionBytes = transaction.toByte();
+} catch (error) {
+  // handle error
+}
+
+// initialized client
+client.onSignAndPostTransactions((result, error) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    txnIDs: [
+      'OKU6A2Q...',
+    ],
+  }
+  */
+});
+
+// broadcast a sign and post transactions request
+client.signAndPostTransactions({
+  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    txns: [
+    {
+      txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
+    },
+  ],
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import {
+  Algodv2,
+  algosToMicroalgos,
+  makePaymentTxnWithSuggestedParamsFromObject,
+  SuggestedParams,
+  Transaction,
+} from 'algosdk';
+import { BaseARC0027Error, IPostTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+
+// create a transaction
+try {
+  const client: Algodv2 = new Algodv2(
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    'http://localhost',
+    '4001',
+  );
+  const encoder: TextEncoder = new TextEncoder();
+  const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
+  const transaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
+    amount: algosToMicroalgos(1),
+    from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+    note: encoder.encode('Hello Human!'),
+    suggestedParams,
+    to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+  });
+  const transactionBytes: Uint8Array = transaction.toByte();
+} catch (error) {
+  // handle error
+}
+
+// initialized client
+client.onSignAndPostTransactions((result: IPostTransactionsResult: null, error: BaseARC0027Error | null) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    txnIDs: [
+      'OKU6A2Q...',
+    ],
+  }
+  */
+});
+
+// broadcast a sign and post transactions request
+client.signAndPostTransactions({
+  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  txns: [
+    {
+      txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
+    },
+  ],
+});
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
+:::caution
+
+If there are a group of atomic transactions, but a computed group ID is invalid, then a [`InvalidGroupIdError`](../../api-reference/errors#invalidgroupiderror) or a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) should be thrown.
+
+:::
+
+:::caution
+
+If any of the transactions are malformed, then a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) may be thrown.
+
+:::
+
+:::caution
+
+If the transactions fail to be accepted by the network, then a [`FailedToPostSomeTransactionsError`](../../api-reference/errors#failedtopostsometransactionserror) should be thrown.
+
+:::

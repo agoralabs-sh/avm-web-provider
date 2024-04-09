@@ -29,6 +29,7 @@ import type {
   IPostTransactionsParams,
   IPostTransactionsResult,
   ISendResponseMessageOptions,
+  ISignTransactionsParams,
   TAVMWebProviderListener,
   TResponseResults,
 } from '@app/types';
@@ -141,6 +142,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
         case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Request)}`:
           method = ARC0027MethodEnum.PostTransactions;
           break;
+        case `${createMessageReference(ARC0027MethodEnum.SignAndPostTransactions, ARC0027MessageTypeEnum.Request)}`:
+          method = ARC0027MethodEnum.SignAndPostTransactions;
+          break;
         default:
           break;
       }
@@ -179,7 +183,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TAVMWebProviderListener<IDisableParams, IDisableResult> | null} listener - the listener to call when the
    * request message is sent, or null to remove the listener.
    */
-  onDisable(
+  public onDisable(
     listener: TAVMWebProviderListener<IDisableParams, IDisableResult> | null
   ): void {
     const requestReference: string = createMessageReference(
@@ -203,7 +207,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TAVMWebProviderListener<IDiscoverParams, IDiscoverResult> | null} listener - the listener to call when the
    * request message is sent, or null to remove the listener.
    */
-  onDiscover(
+  public onDiscover(
     listener: TAVMWebProviderListener<IDiscoverParams, IDiscoverResult> | null
   ): void {
     const requestReference: string = createMessageReference(
@@ -227,7 +231,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TAVMWebProviderListener<IEnableParams, IEnableResult> | null} listener - the listener to call when the
    * request message is sent, or null to remove the listener.
    */
-  onEnable(
+  public onEnable(
     listener: TAVMWebProviderListener<IEnableParams, IEnableResult> | null
   ): void {
     const requestReference: string = createMessageReference(
@@ -251,7 +255,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TAVMWebProviderListener<IPostTransactionsParams, IPostTransactionsResult> | null} listener - the listener
    * to call when the request message is sent, or null to remove the listener.
    */
-  onPostTransactions(
+  public onPostTransactions(
     listener: TAVMWebProviderListener<
       IPostTransactionsParams,
       IPostTransactionsResult
@@ -259,6 +263,33 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
   ): void {
     const requestReference: string = createMessageReference(
       ARC0027MethodEnum.PostTransactions,
+      ARC0027MessageTypeEnum.Request
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(requestReference);
+
+      return;
+    }
+
+    this.listeners.set(requestReference, listener);
+  }
+
+  /**
+   * Listens to `sign_and_post_transactions` messages sent from clients. This will replace any previous set listeners.
+   * If null is supplied, the listener will be removed.
+   * @param {TAVMWebProviderListener<ISignTransactionsParams, IPostTransactionsResult> | null} listener - the listener
+   * to call when the request message is sent, or null to remove the listener.
+   */
+  public onSignAndPostTransactions(
+    listener: TAVMWebProviderListener<
+      ISignTransactionsParams,
+      IPostTransactionsResult
+    > | null
+  ): void {
+    const requestReference: string = createMessageReference(
+      ARC0027MethodEnum.SignAndPostTransactions,
       ARC0027MessageTypeEnum.Request
     );
 

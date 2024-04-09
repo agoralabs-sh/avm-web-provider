@@ -10,8 +10,9 @@ const sidebars = {
         'clients/getting-started',
         'clients/discover-providers',
         'clients/enabling-a-client',
-        'clients/posting-transactions',
         'clients/disabling-a-client',
+        'clients/posting-transactions',
+        'clients/signing-and-posting-transactions',
       ],
       label: 'Clients',
       link: {
@@ -27,6 +28,7 @@ const sidebars = {
         'providers/responding-to-enable-requests',
         'providers/responding-to-disable-requests',
         'providers/responding-to-post-transactions-requests',
+        'providers/responding-to-sign-and-post-transactions-requests',
       ],
       label: 'Providers',
       link: {

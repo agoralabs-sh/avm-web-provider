@@ -62,7 +62,7 @@ client.postTransactions({
   <TabItem value="typescript">
 
 ```typescript
-import type { BaseARC0027Error, IPostTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+import { BaseARC0027Error, IPostTransactionsResult } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
 client.onPostTransactions((result: IPostTransactionsResult: null, error: BaseARC0027Error | null) => {
@@ -97,6 +97,12 @@ client.postTransactions({
 
 :::caution
 
-If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#wmethodnotsupportederror) will be thrown.
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
+:::caution
+
+If the transactions fail to be accepted by the network, then a [`FailedToPostSomeTransactionsError`](../../api-reference/errors#failedtopostsometransactionserror) should be thrown.
 
 :::

@@ -1,9 +1,16 @@
+import { randomBytes } from 'crypto';
+
 // controllers
 import AVMWebClient from './AVMWebClient';
 import AVMWebProvider from './AVMWebProvider';
 
 // types
-import { IAVMWebProviderConfig, IPostTransactionsParams } from '@app/types';
+import type {
+  IARC0001Transaction,
+  IAVMWebProviderConfig,
+  IPostTransactionsParams,
+  ISignTransactionsParams,
+} from '@app/types';
 
 describe(AVMWebProvider.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -114,6 +121,38 @@ describe(AVMWebProvider.name, () => {
       client.postTransactions({
         providerId,
         stxns,
+      });
+    });
+  });
+
+  describe(`${AVMWebProvider.name}#onSignAndPostTransactions`, () => {
+    it('should receive the client request', (done) => {
+      // arrange
+      const txns: IARC0001Transaction[] = [
+        {
+          txn: randomBytes(32).toString('base64'),
+        },
+        {
+          txn: randomBytes(32).toString('base64'),
+          signers: [],
+        },
+      ];
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      // assert
+      provider.onSignAndPostTransactions((params: ISignTransactionsParams) => {
+        expect(params.providerId).toBe(providerId);
+        expect(params.txns).toEqual(txns);
+
+        return done();
+      });
+
+      // act
+      client.signAndPostTransactions({
+        providerId,
+        txns,
       });
     });
   });

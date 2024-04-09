@@ -1,0 +1,70 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Responding To Sign And Post Transactions Requests
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+If your provider is able to both sign and post transactions, this method can simply be implemented to allow clients to perform both these methods within one method.
+
+## Responding to a sign and post transactions request
+
+Once our provider object has been initialized, we can simply listen to events and respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized provider
+provider.onSignAndPostTransactions((params) => {
+  if (params.providerId === providerId) {
+    // ... using the `params.txns` parameter, the provider signs and posts the transactions to the network and returns the transaction ids
+
+    return {
+      providerId,
+      txnIDs: [
+        'OKU6A2Q...',
+      ],
+    };
+  }
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import type { ISignTransactionsParams } from '@agoralabs-sh/avm-web-provider';
+
+const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized provider
+provider.onPostTransactions((params: ISignTransactionsParams) => {
+  if (params.providerId === providerId) {
+    // ... using the `params.txns` parameter, the provider signs and posts the transactions to the network and returns the transaction ids
+
+    return {
+      providerId,
+      txnIDs: [
+        'OKU6A2Q...',
+      ],
+    };
+  }
+});
+```
+
+  </TabItem>
+</Tabs>
