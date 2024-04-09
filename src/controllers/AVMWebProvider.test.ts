@@ -156,4 +156,36 @@ describe(AVMWebProvider.name, () => {
       });
     });
   });
+
+  describe(`${AVMWebProvider.name}#onSignTransactions`, () => {
+    it('should receive the client request', (done) => {
+      // arrange
+      const txns: IARC0001Transaction[] = [
+        {
+          txn: randomBytes(32).toString('base64'),
+        },
+        {
+          txn: randomBytes(32).toString('base64'),
+          signers: [],
+        },
+      ];
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      // assert
+      provider.onSignTransactions((params: ISignTransactionsParams) => {
+        expect(params.providerId).toBe(providerId);
+        expect(params.txns).toEqual(txns);
+
+        return done();
+      });
+
+      // act
+      client.signTransactions({
+        providerId,
+        txns,
+      });
+    });
+  });
 });

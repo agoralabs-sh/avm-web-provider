@@ -30,6 +30,7 @@ import type {
   IPostTransactionsResult,
   ISendResponseMessageOptions,
   ISignTransactionsParams,
+  ISignTransactionsResult,
   TAVMWebProviderListener,
   TResponseResults,
 } from '@app/types';
@@ -144,6 +145,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
           break;
         case `${createMessageReference(ARC0027MethodEnum.SignAndPostTransactions, ARC0027MessageTypeEnum.Request)}`:
           method = ARC0027MethodEnum.SignAndPostTransactions;
+          break;
+        case `${createMessageReference(ARC0027MethodEnum.SignTransactions, ARC0027MessageTypeEnum.Request)}`:
+          method = ARC0027MethodEnum.SignTransactions;
           break;
         default:
           break;
@@ -290,6 +294,33 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
   ): void {
     const requestReference: string = createMessageReference(
       ARC0027MethodEnum.SignAndPostTransactions,
+      ARC0027MessageTypeEnum.Request
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(requestReference);
+
+      return;
+    }
+
+    this.listeners.set(requestReference, listener);
+  }
+
+  /**
+   * Listens to `sign_transactions` messages sent from clients. This will replace any previous set listeners. If null
+   * is supplied, the listener will be removed.
+   * @param {TAVMWebProviderListener<ISignTransactionsParams, ISignTransactionsResult> | null} listener - the listener
+   * to call when the request message is sent, or null to remove the listener.
+   */
+  public onSignTransactions(
+    listener: TAVMWebProviderListener<
+      ISignTransactionsParams,
+      ISignTransactionsResult
+    > | null
+  ): void {
+    const requestReference: string = createMessageReference(
+      ARC0027MethodEnum.SignTransactions,
       ARC0027MessageTypeEnum.Request
     );
 
