@@ -17,6 +17,7 @@ import {
   IDiscoverResult,
   IEnableResult,
   IPostTransactionsResult,
+  ISignTransactionsResult,
 } from '@app/types';
 
 describe(AVMWebClient.name, () => {
@@ -348,6 +349,80 @@ describe(AVMWebClient.name, () => {
 
       // act
       client.signAndPostTransactions({
+        providerId,
+        txns: [
+          {
+            txn: randomBytes(32).toString('base64'),
+          },
+          {
+            txn: randomBytes(32).toString('base64'),
+            signers: [],
+          },
+        ],
+      });
+    });
+  });
+
+  describe(`${AVMWebClient.name}#signTransactions`, () => {
+    it('should return an error', (done) => {
+      // arrange
+      const expectedError: ARC0027MethodNotSupportedError =
+        new ARC0027MethodNotSupportedError({
+          method: ARC0027MethodEnum.SignTransactions,
+          providerId,
+        });
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onSignTransactions(
+        async () => await Promise.reject(expectedError)
+      );
+      client.onSignTransactions((result, error) => {
+        // assert
+        expect(result).toBeNull();
+        expect(error).toEqual(expectedError);
+
+        done();
+      });
+
+      // act
+      client.signTransactions({
+        providerId,
+        txns: [
+          {
+            txn: randomBytes(32).toString('base64'),
+          },
+          {
+            txn: randomBytes(32).toString('base64'),
+            signers: [],
+          },
+        ],
+      });
+    });
+
+    it('should return the signed transactions', (done) => {
+      // arrange
+      const expectedResult: ISignTransactionsResult = {
+        providerId,
+        stxns: ['gqNzaWfEQ...', null],
+      };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onSignTransactions(() => expectedResult);
+      client.onSignTransactions((result, error) => {
+        // assert
+        expect(error).toBeNull();
+        expect(result).toBeDefined();
+        expect(result).toEqual(expectedResult);
+
+        done();
+      });
+
+      // act
+      client.signTransactions({
         providerId,
         txns: [
           {

@@ -69,6 +69,12 @@ If no network or session IDs have been specified, you can assume all sessions fo
 
 :::
 
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
 ## Responding to a specific provider and network request
 
 The `disable` request allows the client to specify the provider and the network. This is denoted in the supplied `params.providerId` and `params.genesisHash` parameters. Providers with the matching ID should respond:

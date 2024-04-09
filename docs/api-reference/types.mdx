@@ -140,3 +140,10 @@ This is the basic type for an error. For specific details on errors check out th
 |------------|-------------------------|----------|---------|---------------------------------------------------|
 | providerId | `string`                | no       | -       | The ID of the provider.                           |
 | txns       | `IARC0001Transaction[]` | yes      | -       | A list of transactions to be signed by providers. |
+
+### `ISignTransactionsResult`
+
+| Name       | Type                    | Required | Default | Description                                                                                                                                                                                                                                 |
+|------------|-------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| providerId | `string`                | yes      | -       | The ID of the provider.                                                                                                                                                                                                                     |
+| stxns      | `(string  \| null)[]`   | yes      | -       | The list of base64 encoded signed transactions that is ready to be posted to the network. If any of the transactions were not signed by the wallet, and no `stxns` were supplied, then null will be in the place of the signed transaction. |

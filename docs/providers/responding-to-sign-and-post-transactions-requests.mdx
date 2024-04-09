@@ -52,7 +52,7 @@ import type { ISignTransactionsParams } from '@agoralabs-sh/avm-web-provider';
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onPostTransactions((params: ISignTransactionsParams) => {
+provider.onSignAndPostTransactions((params: ISignTransactionsParams) => {
   if (params.providerId === providerId) {
     // ... using the `params.txns` parameter, the provider signs and posts the transactions to the network and returns the transaction ids
 
@@ -68,3 +68,27 @@ provider.onPostTransactions((params: ISignTransactionsParams) => {
 
   </TabItem>
 </Tabs>
+
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
+:::caution
+
+If there is a group of atomic transactions, but the computed group ID doesn't match the assigned ID, then a [`InvalidGroupIdError`](../../api-reference/errors#invalidgroupiderror) should be thrown.
+
+:::
+
+:::caution
+
+If any of the transactions are malformed, then a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) should be thrown.
+
+:::
+
+:::caution
+
+If the transactions fail to be accepted by the network, then a [`FailedToPostSomeTransactionsError`](../../api-reference/errors#failedtopostsometransactionserror) should be thrown.
+
+:::

@@ -15,6 +15,12 @@ Providers may have the functionality to both sign & post transactions. This meth
 
 ## Sending transactions to be signed & posted to the provider
 
+:::note
+
+See [signing transactions](signing-transactions) for more examples.
+
+:::
+
 <Tabs
   defaultValue="javascript"
   values={[
@@ -152,13 +158,13 @@ If this method is not supported, then a [`MethodNotSupportedError`](../../api-re
 
 :::caution
 
-If there are a group of atomic transactions, but a computed group ID is invalid, then a [`InvalidGroupIdError`](../../api-reference/errors#invalidgroupiderror) or a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) should be thrown.
+If there is a group of atomic transactions, but the computed group ID is invalid, then a [`InvalidGroupIdError`](../../api-reference/errors#invalidgroupiderror) should be thrown.
 
 :::
 
 :::caution
 
-If any of the transactions are malformed, then a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) may be thrown.
+If any of the transactions are malformed, then a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) should be thrown.
 
 :::
 

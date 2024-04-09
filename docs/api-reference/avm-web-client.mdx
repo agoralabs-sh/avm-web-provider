@@ -155,6 +155,16 @@ import TOCInline from '@theme/TOCInline';
 |----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | listener | (`result`?: [`IPostTransactionsResult`](types#iposttransactionsresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
+### `onSignTransactions(listener)`
+
+> Listens to `sign_transactions` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+
+#### Parameters
+
+| Name     | Type                                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`result`?: [`ISignTransactionsResult`](types#isigntransactionsresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+
 #### Returns
 
 | Type   | Description |
@@ -180,6 +190,16 @@ import TOCInline from '@theme/TOCInline';
 ### `signAndpostTransactions([params])`
 
 > Request providers to sign and post a list of unsigned transactions to the network.
+
+#### Parameters
+
+| Name   | Type                                                       | Required | Default | Description                                                     |
+|--------|------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
+| params | [`ISignTransactionsParams`](types#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
+
+### `signTransactions([params])`
+
+> Request providers to sign a list of unsigned transactions.
 
 #### Parameters
 

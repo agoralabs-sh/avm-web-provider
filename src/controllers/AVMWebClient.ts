@@ -30,6 +30,7 @@ import type {
   IPostTransactionsResult,
   ISendRequestMessageOptions,
   ISignTransactionsParams,
+  ISignTransactionsResult,
   TAVMWebClientListener,
   TRequestParams,
 } from '@app/types';
@@ -120,6 +121,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         case `${createMessageReference(ARC0027MethodEnum.Enable, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Response)}`:
         case `${createMessageReference(ARC0027MethodEnum.SignAndPostTransactions, ARC0027MessageTypeEnum.Response)}`:
+        case `${createMessageReference(ARC0027MethodEnum.SignTransactions, ARC0027MessageTypeEnum.Response)}`:
           this.logger.debug(
             `${AVMWebClient.name}#${_functionName}: received response message "${JSON.stringify(message.data)}"`
           );
@@ -304,6 +306,30 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   }
 
   /**
+   * Listens to `sign_transactions` messages sent from providers. This will replace any previous set listeners. If null
+   * is supplied, the listener will be removed.
+   * @param {TAVMWebClientListener<ISignTransactionsResult> | null} listener - callback that is called when a response
+   * message is received, or null to remove the listener.
+   */
+  public onSignTransactions(
+    listener: TAVMWebClientListener<ISignTransactionsResult> | null
+  ): void {
+    const responseReference: string = createMessageReference(
+      ARC0027MethodEnum.SignTransactions,
+      ARC0027MessageTypeEnum.Response
+    );
+
+    // if the listener is null, delete it from the map
+    if (!listener) {
+      this.listeners.delete(responseReference);
+
+      return;
+    }
+
+    this.listeners.set(responseReference, listener);
+  }
+
+  /**
    * Request providers to post a list of signed transactions to the network.
    * @param {IPostTransactionsParams} params - params that specify the provider and the signed transactions.
    */
@@ -321,6 +347,17 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public signAndPostTransactions(params: ISignTransactionsParams): void {
     return this.sendRequestMessage<ISignTransactionsParams>({
       method: ARC0027MethodEnum.SignAndPostTransactions,
+      params,
+    });
+  }
+
+  /**
+   * Sends a list of unsigned transactions to be signed by the provider.
+   * @param {ISignTransactionsParams} params - params that specify the unsigned transactions and the provider.
+   */
+  public signTransactions(params: ISignTransactionsParams): void {
+    return this.sendRequestMessage<ISignTransactionsParams>({
+      method: ARC0027MethodEnum.SignTransactions,
       params,
     });
   }
