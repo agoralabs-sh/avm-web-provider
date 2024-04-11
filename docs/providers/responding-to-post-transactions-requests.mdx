@@ -29,7 +29,7 @@ Once our provider object has been initialized, we can simply listen to events an
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onPostTransactions((params) => {
+provider.onPostTransactions(({ params }) => {
   if (params.providerId === providerId) {
     // ... using the `params.stxns` parameter, the provider posts the transactions to the network and returns the transaction ids
 
@@ -47,12 +47,12 @@ provider.onPostTransactions((params) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IPostTransactionsParams } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onPostTransactions((params: IPostTransactionsParams) => {
+provider.onPostTransactions(({ params }: IAVMWebProviderListenerOptions) => {
   if (params.providerId === providerId) {
     // ... using the `params.stxns` parameter, the provider posts the transactions to the network and returns the transaction ids
 

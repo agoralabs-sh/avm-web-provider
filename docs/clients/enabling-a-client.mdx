@@ -42,7 +42,7 @@ After [initialization](getting-started), you can simply call:
 
 ```js
 // initialized client
-client.onEnable((result, error) => {
+client.onEnable(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -78,10 +78,10 @@ client.enable();
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IEnableResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onEnable((result: IEnableResult: null, error: BaseARC0027Error | null) => {
+client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -138,7 +138,7 @@ If you want to target a specific provider, you can simply pass the ID of the pro
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onEnable((result, error) => {
+client.onEnable(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -174,12 +174,12 @@ client.enable({ providerId });
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IEnableResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
  const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onEnable((result: IEnableResult: null, error: BaseARC0027Error | null) => {
+client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -230,7 +230,7 @@ If you want to target a specific network, and any providers support it, you can 
 const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
 
 // initialized client
-client.onEnable((result, error) => {
+client.onEnable(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -266,12 +266,12 @@ client.enable({ genesisHash });
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IEnableResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 const genesisHash: string = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
 
 // initialized client
-client.onEnable((result: IEnableResult: null, error: BaseARC0027Error | null) => {
+client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 

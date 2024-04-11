@@ -25,7 +25,7 @@ Once our provider object has been initialized, we can simply listen to events an
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onSignTransactions((params) => {
+provider.onSignTransactions(({ params }) => {
   if (params.providerId === providerId) {
     // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
 
@@ -43,12 +43,12 @@ provider.onSignTransactions((params) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { ISignTransactionsParams } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onSignTransactions((params: ISignTransactionsParams) => {
+provider.onSignTransactions(({ params }: IAVMWebProviderListenerOptions) => {
   if (params.providerId === providerId) {
     // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
 

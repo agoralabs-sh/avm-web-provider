@@ -81,7 +81,7 @@ const config = {
       metadata: [
         {
           name: 'keywords',
-          content: 'algorand, algosdk, arc0027, avm, blockchain',
+          content: 'algorand, algosdk, arc0027, avm, blockchain voi',
         },
       ],
       navbar: {
@@ -130,15 +130,23 @@ const config = {
             items: [
               {
                 label: 'Overview',
-                to: 'overview',
-              },
-              {
-                label: 'API Reference',
-                to: 'api-reference/index',
+                to: '/',
               },
               {
                 label: 'Terminology',
                 to: 'terminology',
+              },
+              {
+                label: 'Clients',
+                to: 'clients/index',
+              },
+              {
+                label: 'Providers',
+                to: 'providers/index',
+              },
+              {
+                label: 'API Reference',
+                to: 'api-reference/index',
               },
             ],
           },

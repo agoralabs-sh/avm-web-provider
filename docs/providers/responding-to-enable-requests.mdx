@@ -27,7 +27,7 @@ For clients that have not specified a provider, it means the client would like t
 
 ```js
 // initialized provider
-provider.onEnable((params) => {
+provider.onEnable(({ params }) => {
   if (!params || !params.providerId) {
     return {
       accounts: [
@@ -52,10 +52,10 @@ provider.onEnable((params) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IEnableParams } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized provider
-provider.onEnable((params?: IEnableParams) => {
+provider.onEnable(({ params }: IAVMWebProviderListenerOptions) => {
   if (!params || !params.providerId) {
     return {
       accounts: [
@@ -101,7 +101,7 @@ The `enable` request allows the client to specify the provider. This is denoted 
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onEnable((params) => {
+provider.onEnable(({ params }) => {
   if (!params || params.providerId === providerId) {
     return {
       accounts: [
@@ -126,12 +126,12 @@ provider.onEnable((params) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IEnableParams } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onEnable((params?: IEnableParams) => {
+provider.onEnable(({ params }: IAVMWebProviderListenerOptions) => {
   if (!params || params.providerId === providerId) {
     return {
       accounts: [

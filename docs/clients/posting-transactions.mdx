@@ -31,7 +31,7 @@ Posting transactions requires the ID of the provider.
 
 ```js
 // initialized client
-client.onPostTransactions((result, error) => {
+client.onPostTransactions(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -62,10 +62,10 @@ client.postTransactions({
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IPostTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onPostTransactions((result: IPostTransactionsResult: null, error: BaseARC0027Error | null) => {
+client.onPostTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 

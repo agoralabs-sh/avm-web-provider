@@ -92,9 +92,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                           | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`IDisableResult`](types#idisableresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 
 ### `onDiscover(listener)`
@@ -103,9 +103,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`IDiscoverResult`](types#idiscoverresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -119,9 +119,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                         | Required | Default | Description                                                                                                                                                   |
-|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`IEnableResult`](types#ienableresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -135,9 +135,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`IPostTransactionsResult`](types#iposttransactionsresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -151,9 +151,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`IPostTransactionsResult`](types#iposttransactionsresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 ### `onSignTransactions(listener)`
 
@@ -161,9 +161,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                             | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`result`?: [`ISignTransactionsResult`](types#isigntransactionsresult) \| `null`, `error`?: [`IBaseError`](types#ibaseerror) \| `null`) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
