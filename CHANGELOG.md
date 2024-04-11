@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0...v1.1.0) (2024-04-11)
+
+
+### Features
+
+* expose the messages ([#18](https://github.com/agoralabs-sh/avm-web-provider/issues/18)) ([e70ae27](https://github.com/agoralabs-sh/avm-web-provider/commit/e70ae27cba800a105748d8b44c521d7ceecf1c9e))
+
 # [1.1.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0...v1.1.0-beta.1) (2024-04-11)
 
 
