@@ -112,26 +112,46 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     const _functionName: string = 'onMessage';
     const listener: TAVMWebClientListener | null =
       this.listeners.get(message.data.reference) || null;
+    let method: ARC0027MethodEnum | null = null;
 
     // ensure we have a listener for the response and the request id is known
     if (listener && this.requestIds.includes(message.data.requestId)) {
       switch (message.data.reference) {
         case `${createMessageReference(ARC0027MethodEnum.Disable, ARC0027MessageTypeEnum.Response)}`:
+          method = ARC0027MethodEnum.Disable;
+          break;
         case `${createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Response)}`:
+          method = ARC0027MethodEnum.Discover;
+          break;
         case `${createMessageReference(ARC0027MethodEnum.Enable, ARC0027MessageTypeEnum.Response)}`:
+          method = ARC0027MethodEnum.Enable;
+          break;
         case `${createMessageReference(ARC0027MethodEnum.PostTransactions, ARC0027MessageTypeEnum.Response)}`:
+          method = ARC0027MethodEnum.PostTransactions;
+          break;
         case `${createMessageReference(ARC0027MethodEnum.SignAndPostTransactions, ARC0027MessageTypeEnum.Response)}`:
+          method = ARC0027MethodEnum.SignAndPostTransactions;
+          break;
         case `${createMessageReference(ARC0027MethodEnum.SignTransactions, ARC0027MessageTypeEnum.Response)}`:
-          this.logger.debug(
-            `${AVMWebClient.name}#${_functionName}: received response message "${JSON.stringify(message.data)}"`
-          );
-
-          return listener(
-            (message.data as ResponseMessageWithResult).result || null,
-            (message.data as ResponseMessageWithError).error || null
-          );
+          method = ARC0027MethodEnum.SignTransactions;
+          break;
         default:
           break;
+      }
+
+      // if we recognize the message, emit the listener
+      if (method) {
+        this.logger.debug(
+          `${AVMWebClient.name}#${_functionName}: received response message "${JSON.stringify(message.data)}"`
+        );
+
+        return listener({
+          error: (message.data as ResponseMessageWithError).error || null,
+          id: message.data.id,
+          method,
+          requestId: message.data.requestId,
+          result: (message.data as ResponseMessageWithResult).result || null,
+        });
       }
     }
   }

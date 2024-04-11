@@ -29,7 +29,7 @@ Assuming a client has been [enabled](enabling-a-client) with one or all provider
 
 ```js
 // initialized client
-client.onDisable((result, error) => {
+client.onDisable(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -54,10 +54,10 @@ client.disable();
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onDisable((result: IDisableResult: null, error: BaseARC0027Error | null) => {
+client.onDisable(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -101,7 +101,7 @@ If you want to target a specific provider and network, you can simply pass the I
 
 ```js
 // initialized client
-client.onDisable((result, error) => {
+client.onDisable(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -128,12 +128,12 @@ client.disable({
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onEnable((result: IDisableResult: null, error: BaseARC0027Error | null) => {
+client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -180,7 +180,7 @@ If you want to remove a specific session, you can provide the session ID(s) in t
 
 ```js
 // initialized client
-client.onDisable((result, error) => {
+client.onDisable(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -208,10 +208,10 @@ client.disable({
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IDisableResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onEnable((result: IDisableResult: null, error: BaseARC0027Error | null) => {
+client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 

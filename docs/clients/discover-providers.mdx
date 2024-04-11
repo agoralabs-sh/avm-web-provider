@@ -27,7 +27,7 @@ The first thing we want to do, after [initialization](getting-started), is start
 
 ```js
 // initialized client
-client.onDiscover((result, error) => {
+client.onDiscover(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -76,10 +76,10 @@ client.discover();
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IDiscoverResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onDiscover((result: IDiscoverResult: null, error: BaseARC0027Error | null) => {
+client.onDiscover(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -145,7 +145,7 @@ As before, let's first add a listener and then broadcast, but this time we will 
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onDiscover((result, error) => {
+client.onDiscover(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -194,12 +194,12 @@ client.discover({ providerId });
   <TabItem value="typescript">
 
 ```typescript
-import { BaseARC0027Error, IDiscoverResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onDiscover((result: IDiscoverResult: null, error: BaseARC0027Error | null) => {
+client.onDiscover(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 

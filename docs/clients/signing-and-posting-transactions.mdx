@@ -54,7 +54,7 @@ try {
 }
 
 // initialized client
-client.onSignAndPostTransactions((result, error) => {
+client.onSignAndPostTransactions(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -94,7 +94,7 @@ import {
   SuggestedParams,
   Transaction,
 } from 'algosdk';
-import { BaseARC0027Error, IPostTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // create a transaction
 try {
@@ -118,7 +118,7 @@ try {
 }
 
 // initialized client
-client.onSignAndPostTransactions((result: IPostTransactionsResult: null, error: BaseARC0027Error | null) => {
+client.onSignAndPostTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 

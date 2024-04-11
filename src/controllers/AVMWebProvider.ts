@@ -77,7 +77,11 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
 
     try {
-      result = await listener(requestMessage.params);
+      result = await listener({
+        id: requestMessage.id,
+        method,
+        params: requestMessage.params,
+      });
 
       // post the result message in the broadcast channel
       return this.channel.postMessage(

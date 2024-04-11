@@ -49,7 +49,7 @@ try {
 }
 
 // initialized client
-client.onSignTransactions((result, error) => {
+client.onSignTransactions(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -89,7 +89,7 @@ import {
   SuggestedParams,
   Transaction,
 } from 'algosdk';
-import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
 // create a transaction
 try {
@@ -113,7 +113,7 @@ try {
 }
 
 // initialized client
-client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -201,7 +201,7 @@ When sending atomic transactions, all transactions, regardless of whether the wa
     }
 
     // initialized client
-    client.onSignTransactions((result, error) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -246,7 +246,7 @@ When sending atomic transactions, all transactions, regardless of whether the wa
       SuggestedParams,
       Transaction,
     } from 'algosdk';
-    import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+    import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
@@ -284,7 +284,7 @@ When sending atomic transactions, all transactions, regardless of whether the wa
     }
 
     // initialized client
-    client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+    client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
       if (error) {
         console.error('error:', error);
 
@@ -372,7 +372,7 @@ For example:
     }
 
     // initialized client
-    client.onSignTransactions((result, error) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -417,7 +417,7 @@ For example:
       SuggestedParams,
       Transaction,
     } from 'algosdk';
-    import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+    import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
@@ -449,7 +449,7 @@ For example:
     }
 
     // initialized client
-    client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+    client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
       if (error) {
         console.error('error:', error);
 
@@ -528,7 +528,7 @@ As you can see from the above example, when the provider skips signing the trans
     }
 
     // initialized client
-    client.onSignTransactions((result, error) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -574,7 +574,7 @@ As you can see from the above example, when the provider skips signing the trans
       SuggestedParams,
       Transaction,
     } from 'algosdk';
-    import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+    import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
@@ -606,7 +606,7 @@ As you can see from the above example, when the provider skips signing the trans
     }
 
     // initialized client
-    client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+    client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
       if (error) {
         console.error('error:', error);
 
@@ -698,7 +698,7 @@ The provider may not support multisig accounts, in which case a [`MethodNotSuppo
     }
 
     // initialized client
-    client.onSignTransactions((result, error) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -741,7 +741,7 @@ The provider may not support multisig accounts, in which case a [`MethodNotSuppo
       SuggestedParams,
       Transaction,
     } from 'algosdk';
-    import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+    import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
@@ -775,7 +775,7 @@ The provider may not support multisig accounts, in which case a [`MethodNotSuppo
     }
 
     // initialized client
-    client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+    client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
       if (error) {
         console.error('error:', error);
 
@@ -854,7 +854,7 @@ If you want to only use one address, you can use the `signers` list to instruct 
     }
 
     // initialized client
-    client.onSignTransactions((result, error) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -900,7 +900,7 @@ If you want to only use one address, you can use the `signers` list to instruct 
       SuggestedParams,
       Transaction,
     } from 'algosdk';
-    import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+    import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
@@ -934,7 +934,7 @@ If you want to only use one address, you can use the `signers` list to instruct 
     }
 
     // initialized client
-    client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+    client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
       if (error) {
         console.error('error:', error);
 
@@ -1020,7 +1020,7 @@ The provider may not support re-keyed accounts, in which case a [`MethodNotSuppo
     }
 
     // initialized client
-    client.onSignTransactions((result, error) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -1061,7 +1061,7 @@ The provider may not support re-keyed accounts, in which case a [`MethodNotSuppo
       SuggestedParams,
       Transaction,
     } from 'algosdk';
-    import { BaseARC0027Error, ISignTransactionsResult } from '@agoralabs-sh/avm-web-provider';
+    import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
@@ -1085,7 +1085,7 @@ The provider may not support re-keyed accounts, in which case a [`MethodNotSuppo
     }
 
     // initialized client
-    client.onSignTransactions((result: ISignTransactionsResult: null, error: BaseARC0027Error | null) => {
+    client.onSignTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
       if (error) {
         console.error('error:', error);
 
