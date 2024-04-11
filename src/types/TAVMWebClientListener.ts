@@ -1,12 +1,9 @@
-// errors
-import { BaseARC0027Error } from '@app/errors';
-
 // types
+import type IAVMWebClientListenerOptions from './IAVMWebClientListenerOptions';
 import type TResponseResults from './TResponseResults';
 
 type TAVMWebClientListener<Result = TResponseResults> = (
-  result: Result | null,
-  error: BaseARC0027Error | null
+  options: IAVMWebClientListenerOptions<Result>
 ) => void | Promise<void>;
 
 export default TAVMWebClientListener;

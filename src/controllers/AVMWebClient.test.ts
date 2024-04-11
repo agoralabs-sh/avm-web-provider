@@ -79,10 +79,11 @@ describe(AVMWebClient.name, () => {
       client = AVMWebClient.init();
 
       provider.onDisable(async () => await Promise.reject(expectedError));
-      client.onDisable((result, error) => {
+      client.onDisable(({ error, method, result }) => {
         // assert
-        expect(result).toBeNull();
+        expect(method).toEqual(ARC0027MethodEnum.Disable);
         expect(error).toEqual(expectedError);
+        expect(result).toBeNull();
 
         done();
       });
@@ -105,14 +106,21 @@ describe(AVMWebClient.name, () => {
         providerId,
         sessionIds,
       };
+      let actualRequestId: string;
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
 
-      provider.onDisable(() => expectedResult);
-      client.onDisable((result, error) => {
+      provider.onDisable(({ id }) => {
+        actualRequestId = id;
+
+        return expectedResult;
+      });
+      client.onDisable(({ error, method, result, requestId }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.Disable);
         expect(error).toBeNull();
+        expect(requestId).toBe(actualRequestId);
         expect(result).toBeDefined();
         expect(result).toEqual(expectedResult);
 
@@ -149,14 +157,21 @@ describe(AVMWebClient.name, () => {
         ],
         providerId,
       };
+      let actualRequestId: string;
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
 
-      provider.onDiscover(() => expectedResult);
-      client.onDiscover((result, error) => {
+      provider.onDiscover(({ id }) => {
+        actualRequestId = id;
+
+        return expectedResult;
+      });
+      client.onDiscover(({ error, method, result, requestId }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.Discover);
         expect(error).toBeNull();
+        expect(requestId).toBe(actualRequestId);
         expect(result).toBeDefined();
         expect(result).toEqual(expectedResult);
 
@@ -181,8 +196,9 @@ describe(AVMWebClient.name, () => {
       client = AVMWebClient.init();
 
       provider.onEnable(async () => await Promise.reject(expectedError));
-      client.onEnable((result, error) => {
+      client.onEnable(({ error, method, result }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.Enable);
         expect(result).toBeNull();
         expect(error).toEqual(expectedError);
 
@@ -212,14 +228,21 @@ describe(AVMWebClient.name, () => {
         genesisId: 'jest-test-v1.0',
         providerId,
       };
+      let actualRequestId: string;
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
 
-      provider.onEnable(() => expectedResult);
-      client.onEnable((result, error) => {
+      provider.onEnable(({ id }) => {
+        actualRequestId = id;
+
+        return expectedResult;
+      });
+      client.onEnable(({ error, method, result, requestId }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.Enable);
         expect(error).toBeNull();
+        expect(requestId).toBe(actualRequestId);
         expect(result).toBeDefined();
         expect(result).toEqual(expectedResult);
 
@@ -246,8 +269,9 @@ describe(AVMWebClient.name, () => {
       provider.onPostTransactions(
         async () => await Promise.reject(expectedError)
       );
-      client.onPostTransactions((result, error) => {
+      client.onPostTransactions(({ error, method, result }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.PostTransactions);
         expect(result).toBeNull();
         expect(error).toEqual(expectedError);
 
@@ -267,14 +291,21 @@ describe(AVMWebClient.name, () => {
         providerId,
         txnIDs: ['OKU6A2Q...'],
       };
+      let actualRequestId: string;
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
 
-      provider.onPostTransactions(() => expectedResult);
-      client.onPostTransactions((result, error) => {
+      provider.onPostTransactions(({ id }) => {
+        actualRequestId = id;
+
+        return expectedResult;
+      });
+      client.onPostTransactions(({ error, method, result, requestId }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.PostTransactions);
         expect(error).toBeNull();
+        expect(requestId).toBe(actualRequestId);
         expect(result).toBeDefined();
         expect(result).toEqual(expectedResult);
 
@@ -304,8 +335,9 @@ describe(AVMWebClient.name, () => {
       provider.onSignAndPostTransactions(
         async () => await Promise.reject(expectedError)
       );
-      client.onSignAndPostTransactions((result, error) => {
+      client.onSignAndPostTransactions(({ error, method, result }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.SignAndPostTransactions);
         expect(result).toBeNull();
         expect(error).toEqual(expectedError);
 
@@ -333,19 +365,28 @@ describe(AVMWebClient.name, () => {
         providerId,
         txnIDs: ['OKU6A2Q...'],
       };
+      let actualRequestId: string;
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
 
-      provider.onSignAndPostTransactions(() => expectedResult);
-      client.onSignAndPostTransactions((result, error) => {
-        // assert
-        expect(error).toBeNull();
-        expect(result).toBeDefined();
-        expect(result).toEqual(expectedResult);
+      provider.onSignAndPostTransactions(({ id }) => {
+        actualRequestId = id;
 
-        done();
+        return expectedResult;
       });
+      client.onSignAndPostTransactions(
+        ({ error, method, result, requestId }) => {
+          // assert
+          expect(method).toEqual(ARC0027MethodEnum.SignAndPostTransactions);
+          expect(error).toBeNull();
+          expect(requestId).toBe(actualRequestId);
+          expect(result).toBeDefined();
+          expect(result).toEqual(expectedResult);
+
+          done();
+        }
+      );
 
       // act
       client.signAndPostTransactions({
@@ -378,8 +419,9 @@ describe(AVMWebClient.name, () => {
       provider.onSignTransactions(
         async () => await Promise.reject(expectedError)
       );
-      client.onSignTransactions((result, error) => {
+      client.onSignTransactions(({ error, method, result }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.SignTransactions);
         expect(result).toBeNull();
         expect(error).toEqual(expectedError);
 
@@ -407,14 +449,21 @@ describe(AVMWebClient.name, () => {
         providerId,
         stxns: ['gqNzaWfEQ...', null],
       };
+      let actualRequestId: string;
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
 
-      provider.onSignTransactions(() => expectedResult);
-      client.onSignTransactions((result, error) => {
+      provider.onSignTransactions(({ id }) => {
+        actualRequestId = id;
+
+        return expectedResult;
+      });
+      client.onSignTransactions(({ error, method, result, requestId }) => {
         // assert
+        expect(method).toEqual(ARC0027MethodEnum.SignTransactions);
         expect(error).toBeNull();
+        expect(requestId).toBe(actualRequestId);
         expect(result).toBeDefined();
         expect(result).toEqual(expectedResult);
 

@@ -4,13 +4,11 @@ import { randomBytes } from 'crypto';
 import AVMWebClient from './AVMWebClient';
 import AVMWebProvider from './AVMWebProvider';
 
+// enums
+import { ARC0027MethodEnum } from '@app/enums';
+
 // types
-import type {
-  IARC0001Transaction,
-  IAVMWebProviderConfig,
-  IPostTransactionsParams,
-  ISignTransactionsParams,
-} from '@app/types';
+import type { IARC0001Transaction, IAVMWebProviderConfig } from '@app/types';
 
 describe(AVMWebProvider.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -66,7 +64,11 @@ describe(AVMWebProvider.name, () => {
       client = AVMWebClient.init();
 
       // assert
-      provider.onDisable(done);
+      provider.onDisable(({ method }) => {
+        expect(method).toBe(ARC0027MethodEnum.Disable);
+
+        return done();
+      });
 
       // act
       client.disable();
@@ -80,7 +82,11 @@ describe(AVMWebProvider.name, () => {
       client = AVMWebClient.init();
 
       // assert
-      provider.onDiscover(done);
+      provider.onDiscover(({ method }) => {
+        expect(method).toBe(ARC0027MethodEnum.Discover);
+
+        return done();
+      });
 
       // act
       client.discover();
@@ -94,7 +100,11 @@ describe(AVMWebProvider.name, () => {
       client = AVMWebClient.init();
 
       // assert
-      provider.onEnable(done);
+      provider.onEnable(({ method }) => {
+        expect(method).toBe(ARC0027MethodEnum.Enable);
+
+        return done();
+      });
 
       // act
       client.enable();
@@ -110,9 +120,11 @@ describe(AVMWebProvider.name, () => {
       client = AVMWebClient.init();
 
       // assert
-      provider.onPostTransactions((params: IPostTransactionsParams) => {
-        expect(params.providerId).toBe(providerId);
-        expect(params.stxns).toEqual(stxns);
+      provider.onPostTransactions(({ method, params }) => {
+        expect(method).toBe(ARC0027MethodEnum.PostTransactions);
+        expect(params).toBeDefined();
+        expect(params?.providerId).toBe(providerId);
+        expect(params?.stxns).toEqual(stxns);
 
         return done();
       });
@@ -142,9 +154,11 @@ describe(AVMWebProvider.name, () => {
       client = AVMWebClient.init();
 
       // assert
-      provider.onSignAndPostTransactions((params: ISignTransactionsParams) => {
-        expect(params.providerId).toBe(providerId);
-        expect(params.txns).toEqual(txns);
+      provider.onSignAndPostTransactions(({ method, params }) => {
+        expect(method).toBe(ARC0027MethodEnum.SignAndPostTransactions);
+        expect(params).toBeDefined();
+        expect(params?.providerId).toBe(providerId);
+        expect(params?.txns).toEqual(txns);
 
         return done();
       });
@@ -174,9 +188,11 @@ describe(AVMWebProvider.name, () => {
       client = AVMWebClient.init();
 
       // assert
-      provider.onSignTransactions((params: ISignTransactionsParams) => {
-        expect(params.providerId).toBe(providerId);
-        expect(params.txns).toEqual(txns);
+      provider.onSignTransactions(({ method, params }) => {
+        expect(method).toBe(ARC0027MethodEnum.SignTransactions);
+        expect(params).toBeDefined();
+        expect(params?.providerId).toBe(providerId);
+        expect(params?.txns).toEqual(txns);
 
         return done();
       });
