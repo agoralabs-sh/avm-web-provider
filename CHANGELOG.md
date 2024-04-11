@@ -1,3 +1,10 @@
+# [1.2.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.1.0...v1.2.0-beta.1) (2024-04-11)
+
+
+### Features
+
+* expose full request message to listeners ([#20](https://github.com/agoralabs-sh/avm-web-provider/issues/20)) ([f65962f](https://github.com/agoralabs-sh/avm-web-provider/commit/f65962f4e154845c4fff27be1369f112dad1eca7))
+
 # [1.1.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.0.0...v1.1.0) (2024-04-11)
 
 
