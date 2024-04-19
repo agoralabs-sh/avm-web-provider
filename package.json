@@ -32,7 +32,7 @@
     "node": ">=20.9.0"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "build": "tspc --build tsconfig.build.json --force",
     "docs:build": "docusaurus build --out-dir .docs",
     "docs:serve": "docusaurus serve --dir .docs --no-open",
     "docs:start": "docusaurus start --no-open --port 8080",
@@ -79,7 +79,9 @@
     "semantic-release": "^23.0.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "ts-patch": "^3.1.2",
+    "typescript": "^5.3.3",
+    "typescript-transform-paths": "^3.4.7"
   },
   "dependencies": {
     "uuid": "^9.0.1"

@@ -2,6 +2,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
+    "plugins": [
+      {
+        "afterDeclarations": true,
+        "transform": "typescript-transform-paths"
+      }
+    ],
     "rootDir": "src"
   },
   "include": ["src/**/*.ts"],
