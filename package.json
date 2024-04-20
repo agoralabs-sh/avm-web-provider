@@ -90,5 +90,8 @@
   },
   "dependencies": {
     "uuid": "^9.0.1"
+  },
+  "resolutions": {
+    "webpack-dev-middleware": "^5.3.4"
   }
 }
