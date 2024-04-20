@@ -8,7 +8,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "./bin/update_issue_templates.sh ${nextRelease.version}"
+        "prepareCmd": "./scripts/update_issue_templates.sh ${nextRelease.version}"
       }
     ],
     [
@@ -21,6 +21,9 @@
     [
       "@semantic-release/github",
       {
+        "assets": [
+          { "label": "JS minified distribution" ,"path": "dist/avm-web-provider.min.js" }
+        ],
         "releasedLabels": ["🚀 released"]
       }
     ]
