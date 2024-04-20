@@ -32,7 +32,9 @@
     "node": ">=20.9.0"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "build": "rm -rf dist && yarn build:declaration && yarn build:bundle",
+    "build:bundle": "TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
+    "build:declaration": "tspc --build tsconfig.build.json --force",
     "docs:build": "docusaurus build --out-dir .docs",
     "docs:serve": "docusaurus serve --dir .docs --no-open",
     "docs:start": "docusaurus start --no-open --port 8080",
@@ -78,10 +80,18 @@
     "sass": "^1.70.0",
     "semantic-release": "^23.0.0",
     "ts-jest": "^29.1.2",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "ts-patch": "^3.1.2",
+    "typescript": "^5.3.3",
+    "typescript-transform-paths": "^3.4.7",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "uuid": "^9.0.1"
+  },
+  "resolutions": {
+    "webpack-dev-middleware": "^5.3.4"
   }
 }
