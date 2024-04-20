@@ -1,3 +1,10 @@
+# [1.3.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.2.0...v1.3.0-beta.1) (2024-04-20)
+
+
+### Features
+
+* bundle single javascript file for non-package manager apps ([#22](https://github.com/agoralabs-sh/avm-web-provider/issues/22)) ([77414ee](https://github.com/agoralabs-sh/avm-web-provider/commit/77414eef80008cbfe36c473bcda540d9ddc201bc))
+
 # [1.2.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.1.0...v1.2.0) (2024-04-11)
 
 
