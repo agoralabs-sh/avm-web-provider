@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.3.0...v1.3.1) (2024-04-21)
+
+
+### Bug Fixes
+
+* resolve path alias in compiled js files ([#24](https://github.com/agoralabs-sh/avm-web-provider/issues/24)) ([fed8ba7](https://github.com/agoralabs-sh/avm-web-provider/commit/fed8ba71e65a70cb821cd60d9dfbeebdf8125396))
+
 # [1.3.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.2.0...v1.3.0) (2024-04-20)
 
 
