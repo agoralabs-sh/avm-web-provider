@@ -3,6 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "plugins": [
+      // resolve paths in .js files
+      {
+        "transform": "typescript-transform-paths"
+      },
+      // resolve paths in .d.ts files
       {
         "afterDeclarations": true,
         "transform": "typescript-transform-paths"

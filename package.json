@@ -32,9 +32,9 @@
     "node": ">=20.9.0"
   },
   "scripts": {
-    "build": "rm -rf dist && yarn build:declaration && yarn build:bundle",
+    "build": "rm -rf dist && yarn build:module && yarn build:bundle",
     "build:bundle": "TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
-    "build:declaration": "tspc --build tsconfig.build.json --force",
+    "build:module": "tspc --build tsconfig.build.json --force",
     "docs:build": "docusaurus build --out-dir .docs",
     "docs:serve": "docusaurus serve --dir .docs --no-open",
     "docs:start": "docusaurus start --no-open --port 8080",
