@@ -5,13 +5,17 @@ import { ARC0027MethodEnum } from '@app/enums';
 import { RequestMessage } from '@app/messages';
 
 // types
-import type TAVMWebProviderListener from './TAVMWebProviderListener';
+import type TAVMWebProviderCallback from './TAVMWebProviderCallback';
 import type TRequestParams from './TRequestParams';
+import type TResponseResults from './TResponseResults';
 
-interface ISendResponseMessageOptions<RequestParams = TRequestParams> {
-  listener: TAVMWebProviderListener;
+interface ISendResponseMessageOptions<
+  Params = TRequestParams,
+  Result = TResponseResults,
+> {
+  callback: TAVMWebProviderCallback<Params, Result>;
   method: ARC0027MethodEnum;
-  requestMessage: RequestMessage<RequestParams>;
+  requestMessage: RequestMessage<Params>;
 }
 
 export default ISendResponseMessageOptions;
