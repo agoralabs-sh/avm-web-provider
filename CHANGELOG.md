@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.3.1...v1.4.0) (2024-04-22)
+
+
+### Features
+
+* use window dispatch event ([#25](https://github.com/agoralabs-sh/avm-web-provider/issues/25)) ([4e59039](https://github.com/agoralabs-sh/avm-web-provider/commit/4e59039ec642df992860f008c82ab59d07b2bb58))
+
 # [1.4.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.3.1...v1.4.0-beta.1) (2024-04-22)
 
 
