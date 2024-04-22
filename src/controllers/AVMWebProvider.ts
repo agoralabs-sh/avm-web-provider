@@ -41,12 +41,8 @@ import type {
 import { createMessageReference } from '@app/utils';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
-  private readonly listeners: Map<string, TProviderCustomEventListener>;
-
   private constructor(config: IAVMWebProviderConfig) {
     super(config);
-
-    this.listeners = new Map<string, TProviderCustomEventListener>();
   }
 
   /**
@@ -71,10 +67,17 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       });
     };
     const listenerID: string = uuid();
+    const reference: string = createMessageReference(
+      method,
+      ARC0027MessageTypeEnum.Request
+    );
 
-    // start listening to response events and add listener to the map
-    window.addEventListener(listenerID, listener);
-    this.listeners.set(listenerID, listener);
+    // start listening to request events and add the listener to the map
+    window.addEventListener(reference, listener);
+    this.listeners.set(listenerID, {
+      listener,
+      reference,
+    });
 
     return listenerID;
   }
@@ -102,11 +105,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
         params: requestMessage.params,
       });
 
-      this.logger.debug(
-        `${AVMWebProvider.name}#${_functionName}: posted response message "${reference}" with id "${id}"`
-      );
-
-      // dispatch a response event with the result message
+      // dispatch a response event with the result
       window.dispatchEvent(
         new CustomEvent<ResponseMessageWithResult<Result>>(reference, {
           detail: new ResponseMessageWithResult<Result>({
@@ -116,6 +115,10 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
             result,
           }),
         })
+      );
+
+      this.logger.debug(
+        `${AVMWebProvider.name}#${_functionName}: posted response message "${reference}" with id "${id}"`
       );
 
       return;
@@ -272,22 +275,5 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       ARC0027MethodEnum.SignTransactions,
       callback
     );
-  }
-
-  /**
-   * Removes the listener, by the ID.
-   * @param {string} id - the listener ID to remove.
-   */
-  public removeListener(id: string): void {
-    const listener: TProviderCustomEventListener | null =
-      this.listeners.get(id) || null;
-
-    if (!listener) {
-      return;
-    }
-
-    // remove the listener from the DOM and the map
-    window.removeEventListener(id, listener);
-    this.listeners.delete(id);
   }
 }

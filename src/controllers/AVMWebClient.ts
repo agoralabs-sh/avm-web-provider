@@ -44,13 +44,11 @@ import type {
 import { createMessageReference } from '@app/utils';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
-  private readonly listeners: Map<string, TClientCustomEventListener>;
   private requestIds: string[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
 
-    this.listeners = new Map<string, TClientCustomEventListener>();
     this.requestIds = [];
   }
 
@@ -83,10 +81,17 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       });
     };
     const listenerID: string = uuid();
+    const reference: string = createMessageReference(
+      method,
+      ARC0027MessageTypeEnum.Response
+    );
 
-    // start listening to response events and add listener to the map
-    window.addEventListener(listenerID, listener);
-    this.listeners.set(listenerID, listener);
+    // start listening to response events and add the listener to the map
+    window.addEventListener(reference, listener);
+    this.listeners.set(listenerID, {
+      listener,
+      reference,
+    });
 
     return listenerID;
   }
@@ -278,23 +283,6 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       method: ARC0027MethodEnum.PostTransactions,
       params,
     });
-  }
-
-  /**
-   * Removes the listener, by the ID.
-   * @param {string} id - the listener ID to remove.
-   */
-  public removeListener(id: string): void {
-    const listener: TClientCustomEventListener | null =
-      this.listeners.get(id) || null;
-
-    if (!listener) {
-      return;
-    }
-
-    // remove the listener from the DOM and the map
-    window.removeEventListener(id, listener);
-    this.listeners.delete(id);
   }
 
   /**

@@ -15,6 +15,7 @@ export type { default as IDiscoverResult } from './IDiscoverResult';
 export type { default as IEnableParams } from './IEnableParams';
 export type { default as IEnableResult } from './IEnableResult';
 export type { default as INetworkConfiguration } from './INetworkConfiguration';
+export type { default as IListenerItem } from './IListenerItem';
 export type { default as IPostTransactionsParams } from './IPostTransactionsParams';
 export type { default as IPostTransactionsResult } from './IPostTransactionsResult';
 export type { default as IRequestMessage } from './IRequestMessage';
