@@ -7,7 +7,7 @@ import { BaseARC0027Error } from '@app/errors';
 // types
 import type TResponseResults from './TResponseResults';
 
-interface IAVMWebClientListenerOptions<Result = TResponseResults> {
+interface IAVMWebClientCallbackOptions<Result = TResponseResults> {
   error: BaseARC0027Error | null;
   id: string;
   method: ARC0027MethodEnum;
@@ -15,4 +15,4 @@ interface IAVMWebClientListenerOptions<Result = TResponseResults> {
   requestId: string;
 }
 
-export default IAVMWebClientListenerOptions;
+export default IAVMWebClientCallbackOptions;

@@ -6,12 +6,6 @@ slug: /
 
 import TOCInline from '@theme/TOCInline';
 
-<!-- components -->
-import CenteredImage from '@site/docs/components/CenteredImage';
-
-<!-- images -->
-import simpleMessageBusDiagramImage from '@site/docs/static/images/simple_message_bus.png';
-
 <TOCInline
   maxHeadingLevel={4}
   toc={toc}
@@ -21,33 +15,31 @@ import simpleMessageBusDiagramImage from '@site/docs/static/images/simple_messag
 
 The AVM Web Provider is an interface that bridges the gap between clients (e.g. dApps) and providers (e.g. wallets), allowing clients to connect and interact with providers in a standardized way.
 
-The AVM Web Provider works towards achieving three main goals:
+The AVM Web Provider works towards achieving two main goals:
 
 1. Creating a common interface between clients and providers.
 2. Allowing clients to choose what provider to use.
 
 ## How it works
 
-Traditionally, web-based providers inject script into a web page's document and "hijack" a property on the global object. This can be problematic for a user that may use multiple providers and could lead to provider B overwriting this global property that was already initialized by provider A.
+Traditionally, web-based provider inject script into a web page's document and "hijack" a property on the global object. This can be problematic as browser extensions are loaded in the web page in an unpredictable and unstable order, so for a user that uses multiple providers this will cause the last provider loaded to re-initialize the global property that was already initialized by another provider.
 
-It is also common for web-based providers to use injected code to use the [`window.postMessage`][post-message] for  communication to the extension's content scripts. This opens up a client to cross-origin communication; any messages sent to via [`window.postMessage`][post-message] can be received by a page, and a pop-up that it spawned, or between a page and an iframe embedded within it.
+In order to prevent provider collisions, the client emits an event and instantiates an event listener. The provider listens to the client's incoming events and upon receiving an event, emits an event in response. This forms an event concurrency loop.
 
-As of March 2022, the [`BroadcastChannel`][broadcastchannel] API is fully supported by all major browsers and is a clean and efficient way to broadcast/listen for messages. It provides several advantages over [`window.postMessage`][post-message]:
-* It provides a higher-level abstraction for communication. It is simpler to use compared to manually injecting scripts and handling [`window.postMessage`][post-message] events.
-* It is limited to a named channel and the same origin, meaning only the origin page, the client, and the browsing context (for instance, a web extension's content script) can broadcast/listen to messages.
+Since the client code and provider code aren’t guaranteed to run in a particular order, the events are designed to handle such race conditions.
 
-The AVM Web Provider leverages the [`BroadcastChannel`][broadcastchannel] API as a transport layer to deliver messages and allows clients and web-based providers to securely communicate without interfering with other providers.
+Both clients and providers use the [`window.dispatchEvent`][dispatch-event] function to emit events, and use the [`window.addEventListener`][add-event-listener] function to observe events.
 
-A client will broadcast a message and the provider(s) will listen for these broadcasted messages and act upon them, responding with another broadcast message that references the original request broadcast.
+:::note
 
-The client will, itself, listen to broadcasted responses from any provider(s). Below is a diagram demonstrating a web extension provider for the flow of data for an enable request.
+Browser extension providers **MUST** take advantage of the [content scripts][content-scripts] that will allow the provider access to the `window` object.
 
-<CenteredImage
-  label="Diagram of a simple message bus using the BroadcastChannel API"
-  maxWidth="100%"
-  src={simpleMessageBusDiagramImage}
-/>
+:::
+
+The AVM Web Provider leverages the [`EventTarget`][event-target] API as a transport layer to deliver messages and allows clients and web-based providers to securely communicate without interfering with other providers.
 
 <!-- links -->
-[broadcastchannel]: https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel
-[post-message]: https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
+[add-event-listener]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+[content-scripts]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts
+[dispatch-event]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
+[event-target]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget

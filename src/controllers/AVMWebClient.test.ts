@@ -26,13 +26,7 @@ describe(AVMWebClient.name, () => {
   let provider: AVMWebProvider;
 
   afterEach(() => {
-    if (client) {
-      client.stopListening();
-    }
-
-    if (provider) {
-      provider.stopListening();
-    }
+    provider?.removeAllListeners();
   });
 
   describe(`${AVMWebClient.name}#init`, () => {

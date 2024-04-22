@@ -2,26 +2,18 @@
 import Logger from './Logger';
 
 // types
-import { IBaseConfig } from '@app/types';
-
-// utils
-import { createChannelName } from '@app/utils';
+import type { IBaseConfig, IListenerItem } from '@app/types';
 
 export default abstract class BaseController<Config extends IBaseConfig> {
-  protected channel: BroadcastChannel | null = null;
   protected readonly config: Config;
+  protected readonly listeners: Map<string, IListenerItem>;
   protected logger: Logger;
 
   protected constructor(config: Config) {
     this.config = config;
+    this.listeners = new Map<string, IListenerItem>();
     this.logger = new Logger(config.debug ? 'debug' : 'error');
   }
-
-  /**
-   * protected abstract methods
-   */
-
-  protected abstract onMessage(message: MessageEvent): Promise<void>;
 
   /**
    * public methods
@@ -36,26 +28,31 @@ export default abstract class BaseController<Config extends IBaseConfig> {
   }
 
   /**
-   * Starts listening to events.
+   * Removes all listeners.
    */
-  public startListening(): void {
-    this.stopListening(); // close any previous channels
+  public removeAllListeners(): void {
+    // remove all the listeners
+    this.listeners.forEach(({ listener, reference }) =>
+      window.removeEventListener(reference, listener)
+    );
 
-    // create a new channel
-    this.channel = new BroadcastChannel(createChannelName());
-
-    // start listening to events
-    this.channel.onmessage = this.onMessage.bind(this);
+    // clear the map
+    this.listeners.clear();
   }
 
   /**
-   * Stops listening to events.
-   *
-   * **NOTE:** this does not clear any event listeners.
+   * Removes the listener, by the ID.
+   * @param {string} id - the listener ID to remove.
    */
-  public stopListening(): void {
-    this.channel && this.channel.close();
+  public removeListener(id: string): void {
+    const item: IListenerItem | null = this.listeners.get(id) || null;
 
-    this.channel = null;
+    if (!item) {
+      return;
+    }
+
+    // remove the listener from the dom and the map
+    window.removeEventListener(item.reference, item.listener);
+    this.listeners.delete(id);
   }
 }
