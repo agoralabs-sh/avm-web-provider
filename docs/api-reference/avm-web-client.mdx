@@ -39,9 +39,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
 
 ### `discover([params])`
 
@@ -55,9 +55,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
 
 ### `enable([params])`
 
@@ -71,9 +71,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
 
 ### `getConfig()`
 
@@ -86,90 +86,101 @@ import TOCInline from '@theme/TOCInline';
 | [`IAVMWebClientConfig`](types#iavmwebclientconfig) | The client's configuration. |
 
 
-### `onDisable(listener)`
+### `onDisable(callback)`
 
-> Listens to `disable` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
-
-#### Parameters
-
-| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
-
-
-### `onDiscover(listener)`
-
-> Listens to `discover` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+> Listens to `disable` messages sent from providers.
 
 #### Parameters
 
-| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
 
-### `onEnable(listener)`
+### `onDiscover(callback)`
 
-> Listens to `enable` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+> Listens to `discover` messages sent from providers.
 
 #### Parameters
 
-| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
 
-### `onPostTransactions(listener)`
+### `onEnable(callback)`
 
-> Listens to `post_transactions` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+> Listens to `enable` messages sent from providers.
 
 #### Parameters
 
-| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
 
-### `onSignAndPostTransactions(listener)`
+### `onPostTransactions(callback)`
 
-> Listens to `sign_and_post_transactions` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
-
-#### Parameters
-
-| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
-
-### `onSignTransactions(listener)`
-
-> Listens to `sign_transactions` messages sent from providers. This will replace any previous set listeners. If null is supplied, the listener will be removed.
+> Listens to `post_transactions` messages sent from providers.
 
 #### Parameters
 
-| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                                                   |
-|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| listener | (`options`: [`IAVMWebClientListenerOptions`](types#iavmwebclientlisteneroptions)) => (`void` \| `Promise<void>`) \| `null` | yes      | -       | The callback is called when a response message is received, or null to remove the listener. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onSignAndPostTransactions(callback)`
+
+> Listens to `sign_and_post_transactions` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onSignTransactions(callback)`
+
+> Listens to `sign_transactions` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
 
 ### `postTransactions([params])`
 
@@ -180,6 +191,32 @@ import TOCInline from '@theme/TOCInline';
 | Name   | Type                                                       | Required | Default | Description                                                   |
 |--------|------------------------------------------------------------|----------|---------|---------------------------------------------------------------|
 | params | [`IPostTransactionsParams`](types#iposttransactionsparams) | yes      | -       | Params that specify the provider and the signed transactions. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `removeAllListeners()`
+
+> Removes all listeners.
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
+### `removeListener(id)`
+
+> Removes the listener, by the ID.
+
+#### Parameters
+
+| Name | Type     | Required | Default | Description                |
+|------|----------|----------|---------|----------------------------|
+| id   | `string` | yes      | -       | The listener ID to remove. |
 
 #### Returns
 
@@ -197,6 +234,12 @@ import TOCInline from '@theme/TOCInline';
 |--------|------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
 | params | [`ISignTransactionsParams`](types#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
 
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
 ### `signTransactions([params])`
 
 > Request providers to sign a list of unsigned transactions.
@@ -209,38 +252,6 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
-
-### `startListening()`
-
-> Starts listening to responses from providers. This method should not have to be manually called, as it is called as part of the [initialization](#initoptions) process. his method essentially closes a previous connection and opens a new connection to the BroadcastChannel.
-
-:::note
-
-This method must be called if the client needs listen to messages if the [`stopListening()`](#stoplistening) method was previously called.
-
-:::
-
-#### Returns
-
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
-
-### `stopListening()`
-
-> Stops listening to responses from providers. This method closes the connection to BroadcastChannel.
-
-:::caution
-
-It is highly recommended you call this method when you no longer need to listen to provider responses or are cleaning up.
-
-:::
-
-#### Returns
-
-| Type   | Description |
-|--------|-------------|
-| `void` | -           |
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
