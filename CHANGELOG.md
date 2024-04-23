@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.4.0...v1.4.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* use stringified object when communicating from provider to client ([#26](https://github.com/agoralabs-sh/avm-web-provider/issues/26)) ([dd7e51d](https://github.com/agoralabs-sh/avm-web-provider/commit/dd7e51d61a3d23aaa28667c9413c3f30e8a9e56c))
+
 # [1.4.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.3.1...v1.4.0) (2024-04-22)
 
 
