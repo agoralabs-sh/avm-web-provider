@@ -82,6 +82,14 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     return listenerID;
   }
 
+  /**
+   * Dispatches an event to the web page with the result/error from the `options.callback` function.
+   * NOTE: the event uses the detail property of the `CustomEvent` but due to Firefox's limitation of only allowing
+   * non-string properties, the response message MUST be a serializable object as it will be stringified to allow
+   * transport.
+   * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts}
+   * @private
+   */
   private async sendResponseMessage<
     Params = TRequestParams,
     Result = TResponseResults,
@@ -107,13 +115,15 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
       // dispatch a response event with the result
       window.dispatchEvent(
-        new CustomEvent<ResponseMessageWithResult<Result>>(reference, {
-          detail: new ResponseMessageWithResult<Result>({
-            id,
-            reference,
-            requestId: requestMessage.id,
-            result,
-          }),
+        new CustomEvent(reference, {
+          detail: JSON.stringify(
+            new ResponseMessageWithResult<Result>({
+              id,
+              reference,
+              requestId: requestMessage.id,
+              result,
+            })
+          ),
         })
       );
 
@@ -128,13 +138,15 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       // if we have an arc-0027 error, send it in the response
       if ((error as BaseARC0027Error).code) {
         window.dispatchEvent(
-          new CustomEvent<ResponseMessageWithError>(reference, {
-            detail: new ResponseMessageWithError({
-              error,
-              id,
-              reference,
-              requestId: requestMessage.id,
-            }),
+          new CustomEvent(reference, {
+            detail: JSON.stringify(
+              new ResponseMessageWithError({
+                error,
+                id,
+                reference,
+                requestId: requestMessage.id,
+              })
+            ),
           })
         );
 
@@ -143,16 +155,18 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
       // otherwise, wrap the message in an unknown error
       window.dispatchEvent(
-        new CustomEvent<ResponseMessageWithError>(reference, {
-          detail: new ResponseMessageWithError({
-            error: new ARC0027UnknownError({
-              message: error.message,
-              providerId: this.config.providerId,
-            }),
-            id,
-            reference,
-            requestId: requestMessage.id,
-          }),
+        new CustomEvent(reference, {
+          detail: JSON.stringify(
+            new ResponseMessageWithError({
+              error: new ARC0027UnknownError({
+                message: error.message,
+                providerId: this.config.providerId,
+              }),
+              id,
+              reference,
+              requestId: requestMessage.id,
+            })
+          ),
         })
       );
 

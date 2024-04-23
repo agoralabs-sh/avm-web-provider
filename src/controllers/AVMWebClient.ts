@@ -62,22 +62,31 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   ): string {
     const _functionName: string = 'addListener';
     const listener: TClientCustomEventListener = (event) => {
+      let detail: ResponseMessageWithError | ResponseMessageWithResult<Result>;
+
+      try {
+        detail = JSON.parse(event.detail); // the event.detail should be a stringified object
+      } catch (error) {
+        console.error(`${AVMWebClient.name}#${_functionName}:`, error);
+
+        return;
+      }
+
       // if the request event is not known, ignore
-      if (!this.requestIds.includes(event.detail.requestId)) {
+      if (!this.requestIds.includes(detail.requestId)) {
         return;
       }
 
       this.logger.debug(
         `${AVMWebClient.name}#${_functionName}: received response event:`,
-        event.detail
+        detail
       );
 
       callback({
-        ...event.detail,
-        error: (event.detail as ResponseMessageWithError).error || null,
+        ...detail,
+        error: (detail as ResponseMessageWithError).error || null,
         method,
-        result:
-          (event.detail as ResponseMessageWithResult<Result>).result || null,
+        result: (detail as ResponseMessageWithResult<Result>).result || null,
       });
     };
     const listenerID: string = uuid();
