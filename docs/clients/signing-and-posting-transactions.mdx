@@ -94,7 +94,7 @@ import {
   SuggestedParams,
   Transaction,
 } from 'algosdk';
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // create a transaction
 try {
@@ -118,7 +118,7 @@ try {
 }
 
 // initialized client
-client.onSignAndPostTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onSignAndPostTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 

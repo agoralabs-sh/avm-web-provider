@@ -62,10 +62,10 @@ client.postTransactions({
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onPostTransactions(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onPostTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 

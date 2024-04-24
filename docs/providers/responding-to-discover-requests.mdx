@@ -66,10 +66,10 @@ For clients that have not specified a provider, it means the client would like t
   <TabItem value="typescript">
 
     ```typescript
-    import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+    import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
     // initialized provider
-    provider.onDiscover(({ params }: IAVMWebProviderListenerOptions) => {
+    provider.onDiscover(({ params }: IAVMWebProviderCallbackOptions) => {
       if (!params?.providerId) {
         return {
           host: 'https://awesome-wallet.com',
@@ -162,12 +162,12 @@ The `discover` request allow the client to specify the provider. This is denoted
   <TabItem value="typescript">
 
     ```typescript
-    import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+    import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
     const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
     // initialized provider
-    provider.onDiscover(({ params }: IAVMWebProviderListenerOptions) => {
+    provider.onDiscover(({ params }: IAVMWebProviderCallbackOptions) => {
       if (!params || params.providerId === providerId) {
         return {
           host: 'https://awesome-wallet.com',

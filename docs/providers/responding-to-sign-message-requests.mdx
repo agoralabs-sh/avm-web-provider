@@ -41,12 +41,12 @@ provider.onSignMessage(({ params }) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onSignMessage(({ params }: IAVMWebProviderListenerOptions) => {
+provider.onSignMessage(({ params }: IAVMWebProviderCallbackOptions) => {
   if (params.providerId === providerId) {
     // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 

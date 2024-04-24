@@ -52,10 +52,10 @@ provider.onEnable(({ params }) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized provider
-provider.onEnable(({ params }: IAVMWebProviderListenerOptions) => {
+provider.onEnable(({ params }: IAVMWebProviderCallbackOptions) => {
   if (!params || !params.providerId) {
     return {
       accounts: [
@@ -126,12 +126,12 @@ provider.onEnable(({ params }) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onEnable(({ params }: IAVMWebProviderListenerOptions) => {
+provider.onEnable(({ params }: IAVMWebProviderCallbackOptions) => {
   if (!params || params.providerId === providerId) {
     return {
       accounts: [
