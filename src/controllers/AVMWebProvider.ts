@@ -29,6 +29,8 @@ import type {
   IPostTransactionsParams,
   IPostTransactionsResult,
   ISendResponseMessageOptions,
+  ISignMessageParams,
+  ISignMessageResult,
   ISignTransactionsParams,
   ISignTransactionsResult,
   TAVMWebProviderCallback,
@@ -269,6 +271,21 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
   ): string {
     return this.addListener<ISignTransactionsParams, IPostTransactionsResult>(
       ARC0027MethodEnum.SignAndPostTransactions,
+      callback
+    );
+  }
+
+  /**
+   * Listens to `sign_message` messages sent from clients.
+   * @param {TAVMWebProviderCallback<ISignMessageParams, ISignMessageResult>} callback - the callback to handle requests from
+   * the client.
+   * @returns {string} the ID of the listener.
+   */
+  public onSignMessage(
+    callback: TAVMWebProviderCallback<ISignMessageParams, ISignMessageResult>
+  ): string {
+    return this.addListener<ISignMessageParams, ISignMessageResult>(
+      ARC0027MethodEnum.SignMessage,
       callback
     );
   }

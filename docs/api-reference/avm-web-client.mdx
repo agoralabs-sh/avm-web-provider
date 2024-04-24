@@ -166,6 +166,16 @@ import TOCInline from '@theme/TOCInline';
 |----------|-------------------------|
 | `string` | the ID of the listener. |
 
+### `onSignMessage(callback)`
+
+> Listens to `sign_message` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
 ### `onSignTransactions(callback)`
 
 > Listens to `sign_transactions` messages sent from providers.
@@ -233,6 +243,22 @@ import TOCInline from '@theme/TOCInline';
 | Name   | Type                                                       | Required | Default | Description                                                     |
 |--------|------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
 | params | [`ISignTransactionsParams`](types#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `signMessage([params])`
+
+> Request providers sign a UTF-8 encoded message.
+
+#### Parameters
+
+| Name   | Type                                             | Required | Default | Description                                                           |
+|--------|--------------------------------------------------|----------|---------|-----------------------------------------------------------------------|
+| params | [`ISignMessageParams`](types#isignmessageparams) | yes      | -       | Params that specify the message to sign, the signer and the provider. |
 
 #### Returns
 

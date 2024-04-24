@@ -17,6 +17,7 @@ import {
   IDiscoverResult,
   IEnableResult,
   IPostTransactionsResult,
+  ISignMessageResult,
   ISignTransactionsResult,
 } from '@app/types';
 
@@ -394,6 +395,72 @@ describe(AVMWebClient.name, () => {
             signers: [],
           },
         ],
+      });
+    });
+  });
+
+  describe(`${AVMWebClient.name}#signMessage`, () => {
+    it('should return an error', (done) => {
+      // arrange
+      const expectedError: ARC0027MethodNotSupportedError =
+        new ARC0027MethodNotSupportedError({
+          method: ARC0027MethodEnum.SignMessage,
+          providerId,
+        });
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onSignMessage(async () => await Promise.reject(expectedError));
+      client.onSignMessage(({ error, method, result }) => {
+        // assert
+        expect(method).toEqual(ARC0027MethodEnum.SignMessage);
+        expect(result).toBeNull();
+        expect(error).toEqual(expectedError);
+
+        done();
+      });
+
+      // act
+      client.signMessage({
+        message: 'Hello humie!',
+        providerId,
+        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      });
+    });
+
+    it('should return the signature of the signed message', (done) => {
+      // arrange
+      const expectedResult: ISignMessageResult = {
+        providerId,
+        signature: 'gqNzaWfEQ...',
+      };
+      let actualRequestId: string;
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onSignMessage(({ id }) => {
+        actualRequestId = id;
+
+        return expectedResult;
+      });
+      client.onSignMessage(({ error, method, result, requestId }) => {
+        // assert
+        expect(method).toEqual(ARC0027MethodEnum.SignMessage);
+        expect(error).toBeNull();
+        expect(requestId).toBe(actualRequestId);
+        expect(result).toBeDefined();
+        expect(result).toEqual(expectedResult);
+
+        done();
+      });
+
+      // act
+      client.signMessage({
+        message: 'Hello humie!',
+        providerId,
+        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
       });
     });
   });

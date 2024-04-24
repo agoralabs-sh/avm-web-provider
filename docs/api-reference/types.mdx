@@ -151,6 +151,21 @@ This is the basic type for an error. For specific details on errors check out th
 | providerId | `string`   | yes      | -       | The ID of the provider.                                                                              |
 | txnIDs     | `string[]` | yes      | -       | A list of 52-character base32 strings (without padding) corresponding the completed transaction IDs. |
 
+### `ISignMessageParams`
+
+| Name       | Type     | Required | Default | Description                                 |
+|------------|----------|----------|---------|---------------------------------------------|
+| message    | `string` | yes      | -       | A human-readable UTF-8 string to sign.      |
+| providerId | `string` | no       | -       | The ID of the provider.                     |
+| signer     | `string` | yes      | -       | The address to be used to sign the message. |
+
+### `ISignMessageResult`
+
+| Name       | Type     | Required | Default | Description                                                                                 |
+|------------|----------|----------|---------|---------------------------------------------------------------------------------------------|
+| providerId | `string` | yes      | -       | The ID of the provider.                                                                     |
+| signature  | `string` | yes      | -       | A base64 encoded signature of the message signed by the private key of the intended signer. |
+
 ### `ISignTransactionsParams`
 
 | Name       | Type                    | Required | Default | Description                                       |
