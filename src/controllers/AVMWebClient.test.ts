@@ -431,9 +431,12 @@ describe(AVMWebClient.name, () => {
 
     it('should return the signature of the signed message', (done) => {
       // arrange
+      const signer: string =
+        'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
       const expectedResult: ISignMessageResult = {
         providerId,
         signature: 'gqNzaWfEQ...',
+        signer,
       };
       let actualRequestId: string;
 
@@ -460,7 +463,7 @@ describe(AVMWebClient.name, () => {
       client.signMessage({
         message: 'Hello humie!',
         providerId,
-        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+        signer,
       });
     });
   });
