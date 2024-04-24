@@ -109,7 +109,7 @@ This will compile the Typescript source code into a `dist/` directory.
 
 ### 4.1. Useful Information
 
-* [ARC-0027][arc-0027]: this code is an implementation of ARC-0027 and leverages the [BroadcastChannel][boradcastchannel] API as a message bus between the webpage (dApp) and a web-based provider (wallet).
+* [ARC-0027][arc-0027]: this code is an implementation of the ARC-0027 spec and leverages the [EventTarget][event-target] as a message bus between the webpage (dApp) and a web extension provider (wallet).
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
@@ -156,7 +156,7 @@ Please refer to the [LICENSE][license] file.
 
 <!-- Links -->
 [arc-0027]: https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0027.md
-[boradcastchannel]: https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
+[event-target]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
 [contribute]: ./CONTRIBUTING.md
 [documentation]: https://avm-web-provider.agoralabs.sh
 [license]: ./LICENSE
