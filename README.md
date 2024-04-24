@@ -109,7 +109,7 @@ This will compile the Typescript source code into a `dist/` directory.
 
 ### 4.1. Useful Information
 
-* [ARC-0027][arc-0027]: this code is an implementation of the ARC-0027 spec and leverages the [EventTarget][event-target] as a message bus between the webpage (dApp) and a web extension provider (wallet).
+* [ARC-0027][arc-0027]: this code is an implementation of the ARC-0027 spec and leverages the [EventTarget][event-target] as a message bus between the webpage (dApp) and a web-based provider (wallet).
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
