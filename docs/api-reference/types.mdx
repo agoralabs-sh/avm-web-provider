@@ -157,7 +157,7 @@ This is the basic type for an error. For specific details on errors check out th
 |------------|----------|----------|---------|---------------------------------------------|
 | message    | `string` | yes      | -       | A human-readable UTF-8 string to sign.      |
 | providerId | `string` | no       | -       | The ID of the provider.                     |
-| signer     | `string` | yes      | -       | The address to be used to sign the message. |
+| signer     | `string` | no       | -       | The address to be used to sign the message. |
 
 ### `ISignMessageResult`
 
@@ -165,6 +165,7 @@ This is the basic type for an error. For specific details on errors check out th
 |------------|----------|----------|---------|---------------------------------------------------------------------------------------------|
 | providerId | `string` | yes      | -       | The ID of the provider.                                                                     |
 | signature  | `string` | yes      | -       | A base64 encoded signature of the message signed by the private key of the intended signer. |
+| signer     | `string` | yes      | -       | The address used to sign the message.                                                       |
 
 ### `ISignTransactionsParams`
 
