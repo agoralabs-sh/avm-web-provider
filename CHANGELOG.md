@@ -1,3 +1,10 @@
+# [1.5.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.4.1...v1.5.0-beta.1) (2024-04-24)
+
+
+### Features
+
+* implement sign message method ([#28](https://github.com/agoralabs-sh/avm-web-provider/issues/28)) ([ef1e929](https://github.com/agoralabs-sh/avm-web-provider/commit/ef1e92978a74a15876f7ac4d0a8d84fbd82eb6d2))
+
 ## [1.4.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.4.0...v1.4.1) (2024-04-23)
 
 
