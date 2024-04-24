@@ -23,6 +23,8 @@ export type { default as IResponseMessageWithResult } from './IResponseMessageWi
 export type { default as IResponseMessageWithError } from './IResponseMessageWithError';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
+export type { default as ISignMessageParams } from './ISignMessageParams';
+export type { default as ISignMessageResult } from './ISignMessageResult';
 export type { default as ISignTransactionsParams } from './ISignTransactionsParams';
 export type { default as ISignTransactionsResult } from './ISignTransactionsResult';
 export type { default as TAVMWebClientCallback } from './TAVMWebClientCallback';

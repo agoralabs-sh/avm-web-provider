@@ -54,10 +54,10 @@ client.disable();
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onDisable(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onDisable(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -128,12 +128,12 @@ client.disable({
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -208,10 +208,10 @@ client.disable({
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 

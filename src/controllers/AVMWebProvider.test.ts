@@ -8,7 +8,11 @@ import AVMWebProvider from './AVMWebProvider';
 import { ARC0027MethodEnum } from '@app/enums';
 
 // types
-import type { IARC0001Transaction, IAVMWebProviderConfig } from '@app/types';
+import type {
+  IARC0001Transaction,
+  IAVMWebProviderConfig,
+  ISignMessageParams,
+} from '@app/types';
 
 describe(AVMWebProvider.name, () => {
   const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -162,6 +166,32 @@ describe(AVMWebProvider.name, () => {
         providerId,
         txns,
       });
+    });
+  });
+
+  describe(`${AVMWebProvider.name}#onSignMessage`, () => {
+    it('should receive the client request', (done) => {
+      // arrange
+      const params: ISignMessageParams = {
+        message: 'Hello humie!',
+        providerId,
+        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      // assert
+      provider.onSignMessage(({ method, params }) => {
+        expect(method).toBe(ARC0027MethodEnum.SignMessage);
+        expect(params).toBeDefined();
+        expect(params).toEqual(params);
+
+        return done();
+      });
+
+      // act
+      client.signMessage(params);
     });
   });
 

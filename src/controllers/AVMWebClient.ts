@@ -32,6 +32,8 @@ import type {
   IPostTransactionsParams,
   IPostTransactionsResult,
   ISendRequestMessageOptions,
+  ISignMessageParams,
+  ISignMessageResult,
   ISignTransactionsParams,
   ISignTransactionsResult,
   TAVMWebClientCallback,
@@ -268,6 +270,21 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   }
 
   /**
+   * Listens to `sign_message` messages sent from providers.
+   * @param {TAVMWebClientCallback<ISignTransactionsResult> | null} callback - callback that is called when a response
+   * message is received.
+   * @returns {string} the ID of the listener.
+   */
+  public onSignMessage(
+    callback: TAVMWebClientCallback<ISignMessageResult>
+  ): string {
+    return this.addListener<ISignMessageResult>(
+      ARC0027MethodEnum.SignMessage,
+      callback
+    );
+  }
+
+  /**
    * Listens to `sign_transactions` messages sent from providers.
    * @param {TAVMWebClientCallback<ISignTransactionsResult> | null} callback - callback that is called when a response
    * message is received.
@@ -302,6 +319,18 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public signAndPostTransactions(params: ISignTransactionsParams): string {
     return this.sendRequestMessage<ISignTransactionsParams>({
       method: ARC0027MethodEnum.SignAndPostTransactions,
+      params,
+    });
+  }
+
+  /**
+   * Sends a UTF-8 encoded message to be signed by the provider.
+   * @param {ISignMessageParams} params - params that specify the message to sign, the signer and the provider.
+   * @returns {string} the ID of the request message
+   */
+  public signMessage(params: ISignMessageParams): string {
+    return this.sendRequestMessage<ISignMessageParams>({
+      method: ARC0027MethodEnum.SignMessage,
       params,
     });
   }

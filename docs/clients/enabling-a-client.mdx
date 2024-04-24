@@ -78,10 +78,10 @@ client.enable();
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -174,12 +174,12 @@ client.enable({ providerId });
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
  const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized client
-client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -266,12 +266,12 @@ client.enable({ genesisHash });
   <TabItem value="typescript">
 
 ```typescript
-import { IAVMWebClientListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 const genesisHash: string = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
 
 // initialized client
-client.onEnable(({ error, result }: IAVMWebClientListenerOptions) => {
+client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 

@@ -2,14 +2,14 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Responding To Sign Transactions Requests
+# Responding To Sign Message Requests
 
 <TOCInline
   maxHeadingLevel={4}
   toc={toc}
 />
 
-## Responding to a sign transactions request
+## Responding to a sign message request
 
 Once our provider object has been initialized, we can simply listen to events and respond:
 
@@ -25,15 +25,13 @@ Once our provider object has been initialized, we can simply listen to events an
 const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onSignTransactions(({ params }) => {
+provider.onSignMessage(({ params }) => {
   if (params.providerId === providerId) {
-    // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
+    // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 
     return {
       providerId,
-      stxns: [
-        'gqNzaWfEQ...',
-      ],
+      signature:  'gqNzaWfEQ...', // base64 encoded signature
     };
   }
 });
@@ -48,15 +46,13 @@ import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provi
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onSignTransactions(({ params }: IAVMWebProviderCallbackOptions) => {
+provider.onSignMessage(({ params }: IAVMWebProviderCallbackOptions) => {
   if (params.providerId === providerId) {
-    // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
+    // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 
     return {
       providerId,
-      stxns: [
-        'gqNzaWfEQ...',
-      ],
+      signature:  'gqNzaWfEQ...', // base64 encoded signature
     };
   }
 });
@@ -73,12 +69,6 @@ If this method is not supported, then a [`MethodNotSupportedError`](../../api-re
 
 :::caution
 
-If there is a group of atomic transactions, but the computed group ID doesn't match the assigned ID, then a [`InvalidGroupIdError`](../../api-reference/errors#invalidgroupiderror) should be thrown.
-
-:::
-
-:::caution
-
-If any of the transactions are malformed, then a [`InvalidInputError`](../../api-reference/errors#invalidinputerror) should be thrown.
+If the signer, supplied in the `params`, is not known, or not authorized, a [`UnauthorizedSignerError`](../../api-reference/errors#unauthorizedsignererror) should be thrown.
 
 :::

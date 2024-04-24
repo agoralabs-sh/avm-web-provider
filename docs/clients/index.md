@@ -7,3 +7,4 @@
 * [Signing Transactions](clients/signing-transactions)
 * [Posting Transactions](clients/posting-transactions)
 * [Signing And Posting Transactions](clients/signing-and-posting-transactions)
+* [Signing A Message](clients/signing-a-message)

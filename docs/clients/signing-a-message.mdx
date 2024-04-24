@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Posting Transactions
+# Signing A Message
 
 <TOCInline
   maxHeadingLevel={4}
@@ -11,15 +11,9 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-Providers, if supported, can commit transactions to the network using their connection to a node.
+Providers, if supported, can sign an arbitrary UTF-8 string.
 
-## Sending transactions to the provider
-
-:::note
-
-Posting transactions requires the ID of the provider.
-
-:::
+## Signing a message
 
 <Tabs
   defaultValue="javascript"
@@ -31,7 +25,7 @@ Posting transactions requires the ID of the provider.
 
 ```js
 // initialized client
-client.onPostTransactions(({ error, result }) => {
+client.onSignMessage(({ error, result }) => {
   if (error) {
     console.error('error:', error);
 
@@ -42,19 +36,16 @@ client.onPostTransactions(({ error, result }) => {
   /*
   {
     providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    txnIDs: [
-      'OKU6A2Q...',
-    ],
+    signature: 'gqNzaWfEQ...',
   }
   */
 });
 
-// send a post transactions request
-client.postTransactions({
+// send a sign message request
+client.signMessage({
+  message: 'Hello humie!',
   providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  stxns: [
-    'gqNzaWfEQ...',
-  ],
+  signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
 });
 ```
 
@@ -65,7 +56,7 @@ client.postTransactions({
 import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 // initialized client
-client.onPostTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
+client.onSignMessage(({ error, result }: IAVMWebClientCallbackOptions) => {
   if (error) {
     console.error('error:', error);
 
@@ -76,19 +67,16 @@ client.onPostTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
   /*
   {
     providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    txnIDs: [
-      'OKU6A2Q...',
-    ],
+    signature: 'gqNzaWfEQ...',
   }
   */
 });
 
-// send a post transactions request
-client.postTransactions({
+// send a sign message request
+client.signMessage({
+  message: 'Hello humie!',
   providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  stxns: [
-    'gqNzaWfEQ...',
-  ],
+  signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
 });
 ```
 
@@ -97,12 +85,12 @@ client.postTransactions({
 
 :::caution
 
-If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) will be sent in the `error` parameter.
 
 :::
 
 :::caution
 
-If the transactions fail to be accepted by the network, then a [`FailedToPostSomeTransactionsError`](../../api-reference/errors#failedtopostsometransactionserror) should be thrown.
+If the signer is not known, or not authorized, then a [`UnauthorizedSignerError`](../../api-reference/errors#unauthorizedsignererror) will be sent in the `error` parameter.
 
 :::

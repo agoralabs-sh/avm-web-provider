@@ -47,12 +47,12 @@ provider.onPostTransactions(({ params }) => {
   <TabItem value="typescript">
 
 ```typescript
-import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
 const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
 // initialized provider
-provider.onPostTransactions(({ params }: IAVMWebProviderListenerOptions) => {
+provider.onPostTransactions(({ params }: IAVMWebProviderCallbackOptions) => {
   if (params.providerId === providerId) {
     // ... using the `params.stxns` parameter, the provider posts the transactions to the network and returns the transaction ids
 
