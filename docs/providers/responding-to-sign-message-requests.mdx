@@ -1,0 +1,74 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Responding To Sign Message Requests
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Responding to a sign message request
+
+Once our provider object has been initialized, we can simply listen to events and respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized provider
+provider.onSignMessage(({ params }) => {
+  if (params.providerId === providerId) {
+    // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
+
+    return {
+      providerId,
+      signature:  'gqNzaWfEQ...', // base64 encoded signature
+    };
+  }
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import type { IAVMWebProviderListenerOptions } from '@agoralabs-sh/avm-web-provider';
+
+const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized provider
+provider.onSignMessage(({ params }: IAVMWebProviderListenerOptions) => {
+  if (params.providerId === providerId) {
+    // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
+
+    return {
+      providerId,
+      signature:  'gqNzaWfEQ...', // base64 encoded signature
+    };
+  }
+});
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
+:::caution
+
+If the signer, supplied in the `params`, is not known, or not authorized, a [`UnauthorizedSignerError`](../../api-reference/errors#unauthorizedsignererror) should be thrown.
+
+:::

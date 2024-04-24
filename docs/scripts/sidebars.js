@@ -14,6 +14,7 @@ const sidebars = {
         'clients/signing-transactions',
         'clients/posting-transactions',
         'clients/signing-and-posting-transactions',
+        'clients/signing-a-message',
       ],
       label: 'Clients',
       link: {
@@ -31,6 +32,7 @@ const sidebars = {
         'providers/responding-to-sign-transactions-requests',
         'providers/responding-to-post-transactions-requests',
         'providers/responding-to-sign-and-post-transactions-requests',
+        'providers/responding-to-sign-message-requests',
       ],
       label: 'Providers',
       link: {
