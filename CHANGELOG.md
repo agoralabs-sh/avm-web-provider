@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.5.0...v1.6.0) (2024-04-24)
+
+
+### Features
+
+* make signer optional in sign message method ([#29](https://github.com/agoralabs-sh/avm-web-provider/issues/29)) ([e97b736](https://github.com/agoralabs-sh/avm-web-provider/commit/e97b736f2ed16b673dcfb39078ec83b2a68c9af7))
+
 # [1.6.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.5.0...v1.6.0-beta.1) (2024-04-24)
 
 
