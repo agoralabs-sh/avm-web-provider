@@ -22,7 +22,8 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "label": "JS minified distribution" ,"path": "dist/avm-web-provider.min.js" }
+          { "label": "avm-web-client.min.js" ,"path": "dist/avm-web-client.min.js" },
+          { "label": "avm-web-provider.min.js" ,"path": "dist/avm-web-provider.min.js" }
         ],
         "releasedLabels": ["🚀 released"]
       }
