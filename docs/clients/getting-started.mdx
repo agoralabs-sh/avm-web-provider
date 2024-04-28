@@ -21,34 +21,40 @@ npm install --save @agoralabs-sh/avm-web-provider
 
 ### Download via a CDN
 
-1. Download the latest minified browser bundle [here](https://github.com/agoralabs-sh/avm-web-provider/releases/latest/download/avm-web-provider.min.js).
-
-2. Include the minified browser bundle directly in your HTML like so:
+Include the minified browser bundle directly in your HTML like so:
 
 ```html
 <html>
   ...
-  <script src="avm-web-provider.min.js"></script>
+  <script src="https://github.com/agoralabs-sh/avm-web-provider/releases/latest/download/avm-web-client.min.js"></script>
   ...
 </html>
 ```
 
 ## Initialization
 
-Firstly, we want to initialize the AVM client:
+Firstly, we want to initialize the AVM web client:
 
 <Tabs
-  defaultValue="javascript"
+  defaultValue="javascript-via-package-manager"
   values={[
-    { label: 'Javascript', value: 'javascript' },
+    { label: 'JavaScript (via package manager)', value: 'javascript-via-package-manager' },
+    { label: 'JavaScript (via CDN)', value: 'javascript-via-cdn' },
     { label: 'TypeScript', value: 'typescript' },
   ]}>
-  <TabItem value="javascript">
+  <TabItem value="javascript-via-package-manager">
 
     ```js
     const { AVMWebClient } = require('@agoralabs-sh/avm-web-provider');
 
     const client = AVMWebClient.init();
+    ```
+
+  </TabItem>
+  <TabItem value="javascript-via-cdn">
+
+    ```js
+    var client = AVMWebClient.init('02657eaf-be17-4efc-b0a4-19d654b2448e');
     ```
 
   </TabItem>
