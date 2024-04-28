@@ -44,31 +44,24 @@
 
 ### Table of contents
 
-* [1. Installation](#-1-installation)
+* [1. Overview](#-1-overview)
 * [2. Documentation](#-2-documentation)
 * [3. Development](#-3-development)
   * [3.1. Requirements](#31-requirements)
   * [3.2. Setup](#32-setup)
   * [3.3. Build](#33-build)
 * [4. Appendix](#-4-appendix)
-  * [4.1. Useful Information](#41-useful-information)
-  * [4.2. Supported Wallets](#42-supported-wallets)
-  * [4.3. Useful Commands](#43-useful-commands)
+  * [4.1. Useful Commands](#41-useful-commands)
 * [5. How To Contribute](#-5-how-to-contribute)
 * [6. License](#-6-license)
-* [7. Credits](#-7-credits)
 
-## 📦 1. Installation
+## 🔭 1. Overview
 
-* Using npm:
-```shell
-npm install @agoralabs-sh/avm-web-provider
-```
+The AVM Web Provider is an interface that bridges the gap between clients (e.g. dApps) and providers (e.g. wallets), allowing clients to connect and interact with providers in a standardized way.
 
-* Using yarn:
-```shell
-yarn add @agoralabs-sh/avm-web-provider
-```
+Both clients and providers use the [`window.dispatchEvent`][dispatch-event] function to emit events, and use the [`window.addEventListener`][add-event-listener] function to observe events.
+
+The message schema is based on the [ARC-0027][arc-0027] standard.
 
 ## 📚 2. Documentation
 
@@ -107,23 +100,7 @@ This will compile the Typescript source code into a `dist/` directory.
 
 ## 📑 4. Appendix
 
-### 4.1. Useful Information
-
-* [ARC-0027][arc-0027]: this code is an implementation of the ARC-0027 spec and leverages the [EventTarget][event-target] as a message bus between the webpage (dApp) and a web-based provider (wallet).
-
-<sup>[Back to top ^][table-of-contents]</sup>
-
-### 4.2. Supported Wallets
-
-#### Kibisis Wallet
-
-* Provider ID: `f6d1c86b-4493-42fb-b88d-a62407b4cdf6`
-* Website: [https://kibis.is](https://kibis.is)
-* Download: [https://kibis.is](https://kibis.is)
-* Support/Issues: [Discord](https://discord.com/channels/1055863853633785857/1181252381816655952)
-
-
-### 4.3. Useful Commands
+### 4.1. Useful Commands
 
 | Command               | Description                                                                        |
 |-----------------------|------------------------------------------------------------------------------------|
@@ -149,14 +126,10 @@ Please refer to the [LICENSE][license] file.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 🎉 7. Credits
-
-...TBC
-
-<sup>[Back to top ^][table-of-contents]</sup>
-
 <!-- Links -->
+[add-event-listener]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
 [arc-0027]: https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0027.md
+[dispatch-event]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
 [event-target]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
 [contribute]: ./CONTRIBUTING.md
 [documentation]: https://avm-web-provider.agoralabs.sh

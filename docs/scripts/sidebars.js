@@ -55,6 +55,7 @@ const sidebars = {
       },
       type: 'category',
     },
+    'supported-wallets',
   ],
 };
 

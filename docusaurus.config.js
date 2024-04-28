@@ -148,6 +148,10 @@ const config = {
                 label: 'API Reference',
                 to: 'api-reference/index',
               },
+              {
+                label: 'Supported Wallets',
+                to: 'supported-wallets',
+              },
             ],
           },
           {
