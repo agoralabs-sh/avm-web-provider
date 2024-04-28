@@ -1,3 +1,10 @@
+## [1.6.1-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.6.0...v1.6.1-beta.1) (2024-04-28)
+
+
+### Bug Fixes
+
+* manual export as global ([#31](https://github.com/agoralabs-sh/avm-web-provider/issues/31)) ([6b2d8fa](https://github.com/agoralabs-sh/avm-web-provider/commit/6b2d8faf6ad7fd959f866485f18b5b6f3357d108))
+
 # [1.6.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.5.0...v1.6.0) (2024-04-24)
 
 
