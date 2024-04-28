@@ -5,7 +5,26 @@ const distPath: string = resolve(process.cwd(), 'dist');
 const srcPath: string = resolve(process.cwd(), 'src');
 
 const config: Configuration = {
-  entry: resolve(srcPath, 'index.ts'),
+  entry: {
+    ['avm-web-client']: {
+      chunkLoading: false,
+      import: resolve(srcPath, 'controllers', 'AVMWebClient.ts'),
+      library: {
+        export: 'default',
+        name: 'AVMWebClient',
+        type: 'window',
+      },
+    },
+    ['avm-web-provider']: {
+      chunkLoading: false,
+      import: resolve(srcPath, 'controllers', 'AVMWebProvider.ts'),
+      library: {
+        export: 'default',
+        name: 'AVMWebProvider',
+        type: 'window',
+      },
+    },
+  },
   mode: 'production',
   module: {
     rules: [
@@ -30,7 +49,7 @@ const config: Configuration = {
     splitChunks: false,
   },
   output: {
-    filename: 'avm-web-provider.min.js',
+    filename: '[name].min.js',
     path: distPath,
   },
   resolve: {
