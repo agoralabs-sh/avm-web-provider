@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.6.1...v1.6.2) (2024-05-30)
+
+
+### Bug Fixes
+
+* add avm web provider to use wallet ([#33](https://github.com/agoralabs-sh/avm-web-provider/issues/33)) ([b4c13ae](https://github.com/agoralabs-sh/avm-web-provider/commit/b4c13aec74b73e9955d887149a55523680effaca))
+
 ## [1.6.2-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.6.1...v1.6.2-beta.1) (2024-05-30)
 
 
