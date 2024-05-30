@@ -6,21 +6,11 @@ const srcPath: string = resolve(process.cwd(), 'src');
 
 const config: Configuration = {
   entry: {
-    ['avm-web-client']: {
-      chunkLoading: false,
-      import: resolve(srcPath, 'controllers', 'AVMWebClient.ts'),
-      library: {
-        export: 'default',
-        name: 'AVMWebClient',
-        type: 'window',
-      },
-    },
     ['avm-web-provider']: {
       chunkLoading: false,
-      import: resolve(srcPath, 'controllers', 'AVMWebProvider.ts'),
+      import: resolve(srcPath, 'index.ts'),
       library: {
-        export: 'default',
-        name: 'AVMWebProvider',
+        name: 'AVMWebProviderSDK',
         type: 'window',
       },
     },
