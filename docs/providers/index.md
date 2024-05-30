@@ -8,3 +8,4 @@
 * [Responding To Post Transactions Requests](providers/responding-to-post-transactions-requests)
 * [Responding To Sign And Post Transactions Requests](providers/responding-to-sign-and-post-transactions-requests)
 * [Responding To Sign Message Requests](providers/responding-to-sign-message-requests)
+* [Throwing An Error](providers/throwing-an-error)

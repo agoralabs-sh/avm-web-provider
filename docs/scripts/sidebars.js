@@ -33,6 +33,7 @@ const sidebars = {
         'providers/responding-to-post-transactions-requests',
         'providers/responding-to-sign-and-post-transactions-requests',
         'providers/responding-to-sign-message-requests',
+        'providers/throwing-an-error',
       ],
       label: 'Providers',
       link: {

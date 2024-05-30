@@ -45,7 +45,7 @@ jobs:
       - name: "🏗️ Build"
         run: yarn docs:build
 
-  build_pakage:
+  build_package:
     name: "Build Package"
     needs: install
     runs-on: ubuntu-latest
