@@ -16,50 +16,13 @@ When receiving a request from the client, you can throw errors within the listen
 ## Throwing an error
 
 <Tabs
-  defaultValue="javascript"
+  defaultValue="javascript-via-package-manager"
   values={[
     { label: 'JavaScript (via package manager)', value: 'javascript-via-package-manager' },
-    { label: 'Javascript', value: 'javascript' },
+    { label: 'Javascript (via CDN)', value: 'javascript-via-cdn' },
     { label: 'TypeScript', value: 'typescript' },
   ]}>
   <TabItem value="javascript-via-package-manager">
-
-    ```js
-    // AVMWebClient
-    client.onDisable(({ error, result }) => {
-      if (error) {
-        console.error(error);
-        /*
-        {
-          code: 4003,
-          data: {
-            method: 'disable',
-          },
-          message: 'disable method is not supported',
-          name: 'MethodNotSupportedError',
-          providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        }
-        */
-
-        return;
-      }
-    });
-
-    // send a client request
-    client.disable();
-
-    // AVMWebProvider
-    provider.onDisable(({ params }) => {
-      throw new window.AVMWebProvideSDK.ARC0027MethodSupportedError({
-        method: 'disable',
-        message: 'disable method is not supported',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      });
-    });
-    ```
-
-  </TabItem>
-  <TabItem value="javascript">
 
   ```js
   // AVMWebClient
@@ -96,6 +59,43 @@ When receiving a request from the client, you can throw errors within the listen
     });
   });
   ```
+
+  </TabItem>
+  <TabItem value="javascript-via-cdn">
+
+    ```js
+    // AVMWebClient
+    client.onDisable(({ error, result }) => {
+      if (error) {
+      console.error(error);
+      /*
+      {
+        code: 4003,
+        data: {
+          method: 'disable',
+        },
+        message: 'disable method is not supported',
+        name: 'MethodNotSupportedError',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      }
+      */
+
+      return;
+    }
+  });
+
+    // send a client request
+    client.disable();
+
+    // AVMWebProvider
+    provider.onDisable(({ params }) => {
+      throw new window.AVMWebProviderSDK.ARC0027MethodSupportedError({
+        method: 'disable',
+        message: 'disable method is not supported',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      });
+    });
+    ```
 
   </TabItem>
   <TabItem value="typescript">
