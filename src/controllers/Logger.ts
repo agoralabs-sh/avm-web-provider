@@ -4,10 +4,10 @@
 import type { TLogLevel } from '@app/types';
 
 export default class Logger {
-  private readonly level: TLogLevel;
+  private readonly _level: TLogLevel;
 
   constructor(level: TLogLevel) {
-    this.level = level;
+    this._level = level;
   }
 
   /**
@@ -15,7 +15,7 @@ export default class Logger {
    */
 
   private canLog(allowedLevel: TLogLevel): boolean {
-    switch (this.level) {
+    switch (this._level) {
       case 'error':
         return allowedLevel === 'error';
       case 'warn':

@@ -5,7 +5,7 @@ import type TResponseResults from './TResponseResults';
 
 type TAVMWebProviderCallback<
   Params = TRequestParams,
-  Result = TResponseResults,
+  Result = TResponseResults | void,
 > = (
   options: IAVMWebProviderCallbackOptions<Params>
 ) => Result | Promise<Result>;
