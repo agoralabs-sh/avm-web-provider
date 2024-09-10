@@ -13,9 +13,9 @@ import TOCInline from '@theme/TOCInline';
 
 It is likely that clients will want to find out the capabilities of your provider before they start interacting with it. Therefore, it is good practice to handle discover request from clients, responding with your provider's supported networks & methods.
 
-## Responding to an anonymous request
+## Responding to a discover request
 
-For clients that have not specified a provider, it means the client would like to know all available providers. Once our provider object has been initialized, we can simply listen to events and respond:
+Once our provider object has been initialized, we can simply listen to events and respond:
 
 <Tabs
   defaultValue="javascript"
@@ -28,37 +28,35 @@ For clients that have not specified a provider, it means the client would like t
     ```js
     // initialized provider
     provider.onDiscover(({ params }) => {
-      if (!params || !params.providerId) {
-        return {
-          host: 'https://awesome-wallet.com',
-          name: 'Awesome Wallet',
-          networks: [
-            {
-              genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-              genesisId: 'testnet-v1.0',
-              methods: [
-                'disable',
-                'enable',
-                'post_transactions',
-                'sign_and_post_transactions',
-                'sign_transactions',
-              ],
-            },
-            {
-              genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-              genesisId: 'voitest-v1',
-              methods: [
-                'disable',
-                'enable',
-                'post_transactions',
-                'sign_and_post_transactions',
-                'sign_transactions',
-              ],
-            },
-          ],
-          providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        };
-      }
+      return {
+        host: 'https://awesome-wallet.com',
+        name: 'Awesome Wallet',
+        networks: [
+          {
+            genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+            genesisId: 'testnet-v1.0',
+            methods: [
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_transactions',
+            ],
+          },
+          {
+            genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+            genesisId: 'voitest-v1',
+            methods: [
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_transactions',
+            ],
+          },
+        ],
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      };
     });
     ```
 
@@ -70,135 +68,35 @@ For clients that have not specified a provider, it means the client would like t
 
     // initialized provider
     provider.onDiscover(({ params }: IAVMWebProviderCallbackOptions) => {
-      if (!params?.providerId) {
-        return {
-          host: 'https://awesome-wallet.com',
-          name: 'Awesome Wallet',
-          networks: [
-            {
-              genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-              genesisId: 'testnet-v1.0',
-              methods: [
-              'disable',
-              'enable',
-              'post_transactions',
-              'sign_and_post_transactions',
-              'sign_transactions',
-              ],
-            },
-            {
-              genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-              genesisId: 'voitest-v1',
-              methods: [
-              'disable',
-              'enable',
-              'post_transactions',
-              'sign_and_post_transactions',
-              'sign_transactions',
-              ],
-            },
-          ],
-          providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        };
-      }
-    });
-    ```
-
-  </TabItem>
-</Tabs>
-
-## Responding to a specific provider request
-
-The `discover` request allow the client to specify the provider. This is denoted in the supplied `params.providerId` parameter. Providers with the matching ID should respond:
-
-<Tabs
-  defaultValue="javascript"
-  values={[
-    { label: 'Javascript', value: 'javascript' },
-    { label: 'TypeScript', value: 'typescript' },
-  ]}>
-  <TabItem value="javascript">
-
-    ```js
-    const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-    // initialized provider
-    provider.onDiscover(({ params }) => {
-      if (!params || params.providerId === providerId) {
-        return {
-          host: 'https://awesome-wallet.com',
-          name: 'Awesome Wallet',
-          networks: [
-            {
-              genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-              genesisId: 'testnet-v1.0',
-              methods: [
-                'disable',
-                'enable',
-                'post_transactions',
-                'sign_and_post_transactions',
-                'sign_transactions',
-              ],
-            },
-            {
-              genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-              genesisId: 'voitest-v1',
-              methods: [
-                'disable',
-                'enable',
-                'post_transactions',
-                'sign_and_post_transactions',
-                'sign_transactions',
-              ],
-            },
-          ],
-          providerId,
-        };
-      }
-    });
-    ```
-
-  </TabItem>
-  <TabItem value="typescript">
-
-    ```typescript
-    import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
-    const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-    // initialized provider
-    provider.onDiscover(({ params }: IAVMWebProviderCallbackOptions) => {
-      if (!params || params.providerId === providerId) {
-        return {
-          host: 'https://awesome-wallet.com',
-          name: 'Awesome Wallet',
-          networks: [
-            {
-              genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-              genesisId: 'testnet-v1.0',
-              methods: [
-                'disable',
-                'enable',
-                'post_transactions',
-                'sign_and_post_transactions',
-                'sign_transactions',
-              ],
-            },
-            {
-              genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-              genesisId: 'voitest-v1',
-              methods: [
-                'disable',
-                'enable',
-                'post_transactions',
-                'sign_and_post_transactions',
-                'sign_transactions',
-              ],
-            },
-          ],
-          providerId,
-        };
-      }
+      return {
+        host: 'https://awesome-wallet.com',
+        name: 'Awesome Wallet',
+        networks: [
+          {
+            genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+            genesisId: 'testnet-v1.0',
+            methods: [
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_transactions',
+            ],
+          },
+          {
+            genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+            genesisId: 'voitest-v1',
+            methods: [
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_transactions',
+            ],
+          },
+        ],
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      };
     });
     ```
 
