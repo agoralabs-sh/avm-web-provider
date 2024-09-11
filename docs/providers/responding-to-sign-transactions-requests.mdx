@@ -21,12 +21,11 @@ Once our provider object has been initialized, we can simply listen to events an
   ]}>
   <TabItem value="javascript">
 
-```js
-const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  ```js
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
-// initialized provider
-provider.onSignTransactions(({ params }) => {
-  if (params.providerId === providerId) {
+  // initialized provider
+  provider.onSignTransactions(({ params }) => {
     // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
 
     return {
@@ -35,21 +34,19 @@ provider.onSignTransactions(({ params }) => {
         'gqNzaWfEQ...',
       ],
     };
-  }
-});
-```
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
-const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
-// initialized provider
-provider.onSignTransactions(({ params }: IAVMWebProviderCallbackOptions) => {
-  if (params.providerId === providerId) {
+  // initialized provider
+  provider.onSignTransactions(({ params }: IAVMWebProviderCallbackOptions) => {
     // ... using the `params.txns` parameter, the provider signs the transactions and returns the base64 encoded signed transactions
 
     return {
@@ -58,9 +55,8 @@ provider.onSignTransactions(({ params }: IAVMWebProviderCallbackOptions) => {
         'gqNzaWfEQ...',
       ],
     };
-  }
-});
-```
+  });
+  ```
 
   </TabItem>
 </Tabs>

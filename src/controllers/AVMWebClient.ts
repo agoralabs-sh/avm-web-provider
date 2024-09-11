@@ -46,40 +46,52 @@ import type {
 import { createMessageReference } from '@app/utils';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
-  private requestIds: string[];
+  private _requestIds: string[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
 
-    this.requestIds = [];
+    this._requestIds = [];
+  }
+
+  /**
+   * public static methods
+   */
+
+  public static init(
+    { debug }: IAVMWebClientInitOptions = { debug: false }
+  ): AVMWebClient {
+    return new AVMWebClient({
+      debug: debug || false,
+    });
   }
 
   /**
    * private methods
    */
 
-  private addListener<Result = TResponseResults>(
+  private _addListener<Result extends TResponseResults>(
     method: ARC0027MethodEnum,
     callback: TAVMWebClientCallback<Result>
   ): string {
-    const _functionName: string = 'addListener';
+    const _functionName = '_addListener';
     const listener: TClientCustomEventListener = (event) => {
       let detail: ResponseMessageWithError | ResponseMessageWithResult<Result>;
 
       try {
         detail = JSON.parse(event.detail); // the event.detail should be a stringified object
       } catch (error) {
-        console.error(`${AVMWebClient.name}#${_functionName}:`, error);
+        this._logger.error(`${AVMWebClient.name}#${_functionName}:`, error);
 
         return;
       }
 
       // if the request event is not known, ignore
-      if (!this.requestIds.includes(detail.requestId)) {
+      if (!this._requestIds.includes(detail.requestId)) {
         return;
       }
 
-      this.logger.debug(
+      this._logger.debug(
         `${AVMWebClient.name}#${_functionName}: received response event:`,
         detail
       );
@@ -91,15 +103,15 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         result: (detail as ResponseMessageWithResult<Result>).result || null,
       });
     };
-    const listenerID: string = uuid();
-    const reference: string = createMessageReference(
+    const listenerID = uuid();
+    const reference = createMessageReference(
       method,
       ARC0027MessageTypeEnum.Response
     );
 
     // start listening to response events and add the listener to the map
     window.addEventListener(reference, listener);
-    this.listeners.set(listenerID, {
+    this._listeners.set(listenerID, {
       listener,
       reference,
     });
@@ -107,13 +119,13 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     return listenerID;
   }
 
-  private sendRequestMessage<Params = TRequestParams>({
+  private _sendRequestMessage<Params extends TRequestParams>({
     method,
     params,
   }: ISendRequestMessageOptions<Params>): string {
-    const _functionName: string = 'sendRequestMessage';
-    const id: string = uuid();
-    const reference: string = createMessageReference(
+    const _functionName = '_sendRequestMessage';
+    const id = uuid();
+    const reference = createMessageReference(
       method,
       ARC0027MessageTypeEnum.Request
     );
@@ -132,34 +144,22 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
       // add a timeout to remove the request id and stop handling response messages
       window.setTimeout(() => {
-        this.requestIds = this.requestIds.filter((value) => value !== id);
+        this._requestIds = this._requestIds.filter((value) => value !== id);
       }, DEFAULT_REQUEST_TIMEOUT);
 
-      this.logger.debug(
+      this._logger.debug(
         `${AVMWebClient.name}#${_functionName}: posted request message "${reference}" with id "${id}"`
       );
 
       // add the id to the internal state
-      this.requestIds.push(id);
+      this._requestIds.push(id);
 
       return id;
     } catch (error) {
-      this.logger.error(error);
+      this._logger.error(error);
 
       throw new ARC0027UnknownError(error.message);
     }
-  }
-
-  /**
-   * public static methods
-   */
-
-  public static init(
-    { debug }: IAVMWebClientInitOptions = { debug: false }
-  ): AVMWebClient {
-    return new AVMWebClient({
-      debug: debug || false,
-    });
   }
 
   /**
@@ -172,7 +172,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message.
    */
   public disable(params?: IDisableParams): string {
-    return this.sendRequestMessage<IDisableParams>({
+    return this._sendRequestMessage<IDisableParams>({
       method: ARC0027MethodEnum.Disable,
       params,
     });
@@ -185,7 +185,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message.
    */
   public discover(params?: IDiscoverParams): string {
-    return this.sendRequestMessage<IDiscoverParams>({
+    return this._sendRequestMessage<IDiscoverParams>({
       method: ARC0027MethodEnum.Discover,
       params,
     });
@@ -198,7 +198,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message.
    */
   public enable(params?: IEnableParams): string {
-    return this.sendRequestMessage<IEnableParams>({
+    return this._sendRequestMessage<IEnableParams>({
       method: ARC0027MethodEnum.Enable,
       params,
     });
@@ -211,7 +211,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the listener.
    */
   public onDisable(callback: TAVMWebClientCallback<IDisableResult>): string {
-    return this.addListener<IDisableResult>(
+    return this._addListener<IDisableResult>(
       ARC0027MethodEnum.Disable,
       callback
     );
@@ -224,7 +224,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the listener.
    */
   public onDiscover(callback: TAVMWebClientCallback<IDiscoverResult>): string {
-    return this.addListener<IDiscoverResult>(
+    return this._addListener<IDiscoverResult>(
       ARC0027MethodEnum.Discover,
       callback
     );
@@ -237,7 +237,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the listener.
    */
   public onEnable(callback: TAVMWebClientCallback<IEnableResult>): string {
-    return this.addListener<IEnableResult>(ARC0027MethodEnum.Enable, callback);
+    return this._addListener<IEnableResult>(ARC0027MethodEnum.Enable, callback);
   }
 
   /**
@@ -249,7 +249,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public onPostTransactions(
     callback: TAVMWebClientCallback<IPostTransactionsResult>
   ): string {
-    return this.addListener<IPostTransactionsResult>(
+    return this._addListener<IPostTransactionsResult>(
       ARC0027MethodEnum.PostTransactions,
       callback
     );
@@ -263,7 +263,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public onSignAndPostTransactions(
     callback: TAVMWebClientCallback<IPostTransactionsResult>
   ): string {
-    return this.addListener<IPostTransactionsResult>(
+    return this._addListener<IPostTransactionsResult>(
       ARC0027MethodEnum.SignAndPostTransactions,
       callback
     );
@@ -278,7 +278,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public onSignMessage(
     callback: TAVMWebClientCallback<ISignMessageResult>
   ): string {
-    return this.addListener<ISignMessageResult>(
+    return this._addListener<ISignMessageResult>(
       ARC0027MethodEnum.SignMessage,
       callback
     );
@@ -293,7 +293,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public onSignTransactions(
     callback: TAVMWebClientCallback<ISignTransactionsResult>
   ): string {
-    return this.addListener<ISignTransactionsResult>(
+    return this._addListener<ISignTransactionsResult>(
       ARC0027MethodEnum.SignTransactions,
       callback
     );
@@ -305,7 +305,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message
    */
   public postTransactions(params: IPostTransactionsParams): string {
-    return this.sendRequestMessage<IPostTransactionsParams>({
+    return this._sendRequestMessage<IPostTransactionsParams>({
       method: ARC0027MethodEnum.PostTransactions,
       params,
     });
@@ -317,7 +317,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message
    */
   public signAndPostTransactions(params: ISignTransactionsParams): string {
-    return this.sendRequestMessage<ISignTransactionsParams>({
+    return this._sendRequestMessage<ISignTransactionsParams>({
       method: ARC0027MethodEnum.SignAndPostTransactions,
       params,
     });
@@ -329,7 +329,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message
    */
   public signMessage(params: ISignMessageParams): string {
-    return this.sendRequestMessage<ISignMessageParams>({
+    return this._sendRequestMessage<ISignMessageParams>({
       method: ARC0027MethodEnum.SignMessage,
       params,
     });
@@ -341,7 +341,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the request message
    */
   public signTransactions(params: ISignTransactionsParams): string {
-    return this.sendRequestMessage<ISignTransactionsParams>({
+    return this._sendRequestMessage<ISignTransactionsParams>({
       method: ARC0027MethodEnum.SignTransactions,
       params,
     });

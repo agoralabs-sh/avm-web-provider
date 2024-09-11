@@ -11,7 +11,7 @@ import { ARC0027MethodEnum } from '@app/enums';
 import { ARC0027MethodNotSupportedError } from '@app/errors';
 
 // types
-import {
+import type {
   IAVMWebClientConfig,
   IDisableResult,
   IDiscoverResult,

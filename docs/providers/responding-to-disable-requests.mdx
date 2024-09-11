@@ -13,9 +13,9 @@ import TOCInline from '@theme/TOCInline';
 
 Providers that implement a session for a client, a disable request can be called by a client that instructs the provider to remove the client's session.
 
-## Responding to an anonymous request
+## Responding to a disable request
 
-For clients that have not specified a provider, it means the client would like to disable with all providers. Once our provider object has been initialized, we can simply listen to events and respond:
+Once our provider object has been initialized, we can simply listen to events and respond:
 
 <Tabs
   defaultValue="javascript"
@@ -27,16 +27,14 @@ For clients that have not specified a provider, it means the client would like t
 
   ```js
   // initialized provider
-  provider.onDisable(({ params }) => {
-    if (!params || !params.providerId) {
-      // ... remove all sessions
+  provider.onDisable(() => {
+    // ... remove all sessions
 
-      return {
-        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-        genesisId: 'testnet-v1.0',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      };
-    }
+    return {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
   });
   ```
 
@@ -44,19 +42,15 @@ For clients that have not specified a provider, it means the client would like t
   <TabItem value="typescript">
 
   ```typescript
-  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
   // initialized provider
-  provider.onEnable(({ params }: IAVMWebProviderCallbackOptions) => {
-    if (!params || !params.providerId) {
-      // ... remove all sessions
+  provider.onDisable(() => {
+    // ... remove all sessions
 
-      return {
-        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-        genesisId: 'testnet-v1.0',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      };
-    }
+    return {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
   });
   ```
 
@@ -75,9 +69,9 @@ If this method is not supported, then a [`MethodNotSupportedError`](../../api-re
 
 :::
 
-## Responding to a specific provider and network request
+## Responding to a disable request with a specific network
 
-The `disable` request allows the client to specify the provider and the network. This is denoted in the supplied `params.providerId` and `params.genesisHash` parameters. Providers with the matching ID should respond:
+The `disable` request allows the client to specify the network. This is denoted in the supplied `params.genesisHash` parameter.
 
 <Tabs
   defaultValue="javascript"
@@ -95,23 +89,21 @@ The `disable` request allows the client to specify the provider and the network.
 
   // initialized provider
   provider.onDisable(({ params }) => {
-    if (!params || params.providerId === providerId) {
-      // if the genesis hash has been defined, it is recommended that you throw and error
-      if (param.genesisHash && param.genesisHash !== genesisHash) {
-        throw new ARC0027NetworkNotSupportedError({
-          genesisHashes: [param.genesisHash],
-          providerId,
-        });
-      }
-
-      // ... remove all sessions for the network
-
-      return {
-        genesisHash,
-        genesisId: 'testnet-v1.0',
+    // if the genesis hash has been defined, it is recommended that you throw and error
+    if (param.genesisHash && param.genesisHash !== genesisHash) {
+      throw new ARC0027NetworkNotSupportedError({
+        genesisHashes: [param.genesisHash],
         providerId,
-      };
+      });
     }
+
+    // ... remove all sessions for the network
+
+    return {
+      genesisHash,
+      genesisId: 'testnet-v1.0',
+      providerId,
+    };
   });
   ```
 
@@ -122,27 +114,25 @@ The `disable` request allows the client to specify the provider and the network.
   import type { ARC0027NetworkNotSupportedError, IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
   const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
-  const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
   // initialized provider
   provider.onDisable(({ params }: IAVMWebProviderCallbackOptions) => {
-    if (!params || params.providerId === providerId) {
-      // if the genesis hash has been defined, it is recommended that you throw and error
-      if (param.genesisHash && param.genesisHash !== genesisHash) {
-        throw new ARC0027NetworkNotSupportedError({
-          genesisHashes: [param.genesisHash],
-          providerId,
-        });
-      }
-
-      // ... remove all sessions for the network
-
-      return {
-        genesisHash,
-        genesisId: 'testnet-v1.0',
+    // if the genesis hash has been defined, it is recommended that you throw and error
+    if (param.genesisHash && param.genesisHash !== genesisHash) {
+      throw new ARC0027NetworkNotSupportedError({
+        genesisHashes: [param.genesisHash],
         providerId,
-      };
+      });
     }
+
+    // ... remove all sessions for the network
+
+    return {
+      genesisHash,
+      genesisId: 'testnet-v1.0',
+      providerId,
+    };
   });
   ```
 
@@ -151,7 +141,7 @@ The `disable` request allows the client to specify the provider and the network.
 
 :::caution
 
-If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
+If the network is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
 
 :::
 
@@ -192,8 +182,8 @@ A requesting client can specify the particular session. This can be used instead
   ```typescript
   import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
-  const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-  const sessionId: string = '2802dff6-930e-4f79-8f67-ba9d41e88cf8';
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const sessionId = '2802dff6-930e-4f79-8f67-ba9d41e88cf8';
 
   // initialized provider
   provider.onDisable(({ params }: IAVMWebProviderCallbackOptions) => {

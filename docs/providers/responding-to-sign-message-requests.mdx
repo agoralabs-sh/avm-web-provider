@@ -21,12 +21,11 @@ Once our provider object has been initialized, we can simply listen to events an
   ]}>
   <TabItem value="javascript">
 
-```js
-const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  ```js
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
-// initialized provider
-provider.onSignMessage(({ params }) => {
-  if (params.providerId === providerId) {
+  // initialized provider
+  provider.onSignMessage(({ params }) => {
     // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 
     return {
@@ -34,21 +33,19 @@ provider.onSignMessage(({ params }) => {
       signature:  'gqNzaWfEQ...', // base64 encoded signature
       signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
     };
-  }
-});
-```
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
-const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
 
-// initialized provider
-provider.onSignMessage(({ params }: IAVMWebProviderCallbackOptions) => {
-  if (params.providerId === providerId) {
+  // initialized provider
+  provider.onSignMessage(({ params }: IAVMWebProviderCallbackOptions) => {
     // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 
     return {
@@ -56,9 +53,8 @@ provider.onSignMessage(({ params }: IAVMWebProviderCallbackOptions) => {
       signature:  'gqNzaWfEQ...', // base64 encoded signature
       signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
     };
-  }
-});
-```
+  });
+  ```
 
   </TabItem>
 </Tabs>
