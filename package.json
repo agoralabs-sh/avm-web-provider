@@ -45,8 +45,8 @@
     "types:check": "tsc --noEmit --project tsconfig.build.json"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.6.0",
-    "@commitlint/config-conventional": "^18.6.0",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@docusaurus/core": "^3.5.2",
     "@docusaurus/module-type-aliases": "^3.5.2",
     "@docusaurus/preset-classic": "^3.5.2",
