@@ -1,0 +1,146 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Throwing An Error
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+When receiving a request from the client, you can throw errors within the listener function and these errors will propagate back to the client's listener arguments.
+
+## Throwing an error
+
+<Tabs
+  defaultValue="javascript-via-package-manager"
+  values={[
+    { label: 'JavaScript (via package manager)', value: 'javascript-via-package-manager' },
+    { label: 'Javascript (via CDN)', value: 'javascript-via-cdn' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript-via-package-manager">
+
+  ```js
+  // AVMWebClient
+  client.onDisable(({ error, result }) => {
+    if (error) {
+      console.error(error);
+      /*
+      {
+        code: 4003,
+        data: {
+          method: 'disable',
+        },
+        message: 'disable method is not supported',
+        name: 'MethodNotSupportedError',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      }
+      */
+
+      return;
+    }
+  });
+
+  // send a client request
+  client.disable();
+
+  // AVMWebProvider
+  const { ARC0027MethodSupportedError } = require('@agoralabs-sh/avm-web-provider');
+
+  provider.onDisable(({ params }) => {
+    throw new ARC0027MethodSupportedError({
+      method: 'disable',
+      message: 'disable method is not supported',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    });
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="javascript-via-cdn">
+
+    ```js
+    // AVMWebClient
+    client.onDisable(({ error, result }) => {
+      if (error) {
+      console.error(error);
+      /*
+      {
+        code: 4003,
+        data: {
+          method: 'disable',
+        },
+        message: 'disable method is not supported',
+        name: 'MethodNotSupportedError',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      }
+      */
+
+      return;
+    }
+  });
+
+    // send a client request
+    client.disable();
+
+    // AVMWebProvider
+    provider.onDisable(({ params }) => {
+      throw new window.AVMWebProviderSDK.ARC0027MethodSupportedError({
+        method: 'disable',
+        message: 'disable method is not supported',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      });
+    });
+    ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  // AVMWebClient
+  client.onDisable(({ error, result }) => {
+    if (error) {
+      console.error(error);
+      /*
+      {
+        code: 4003,
+        data: {
+          method: 'disable',
+        },
+        message: 'disable method is not supported',
+        name: 'MethodNotSupportedError',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      }
+      */
+
+      return;
+    }
+  });
+
+  // send a client request
+  client.disable();
+
+  // AVMWebProvider
+  import { ARC0027MethodEnum, ARC0027MethodSupportedError } from '@agoralabs-sh/avm-web-provider';
+
+  provider.onDisable(({ params }) => {
+    throw new ARC0027MethodSupportedError({
+      method: ARC0027MethodEnum.Disable,
+      message: `${ARC0027MethodEnum.Disable} method is not supported`,
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    });
+  });
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::note
+
+The SDK provides several common errors, see [errors](../api-reference/errors).
+
+:::

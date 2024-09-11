@@ -18,12 +18,28 @@ jobs:
         uses: ./.github/actions/use-yarn-dependencies
 
   ##
+  # validation
+  ##
+
+  validate_pr_title:
+    name: "Validate PR Title"
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🧶 Setup Yarn Dependencies"
+        uses: ./.github/actions/use-yarn-dependencies
+      - name: "✅ Validate"
+        run: echo ${{ github.event.pull_request.title }} | yarn commitlint
+
+  ##
   # lint, build documentation, build package and test
   ##
 
   lint:
     name: "Lint"
-    needs: install
+    needs: [install, validate_pr_title]
     runs-on: ubuntu-latest
     steps:
       - name: "🛎 Checkout"
@@ -33,9 +49,21 @@ jobs:
       - name: "👕 Lint"
         run: yarn lint
 
-  build_documenation:
+  type_check:
+    name: "Type Check"
+    needs: [install, validate_pr_title]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "🛎 Checkout"
+        uses: actions/checkout@v4
+      - name: "🧶 Setup Yarn Dependencies"
+        uses: ./.github/actions/use-yarn-dependencies
+      - name: "🔍 Type Check"
+        run: yarn types:check
+
+  build_documentation:
     name: "Build Documentation"
-    needs: install
+    needs: [install, validate_pr_title]
     runs-on: ubuntu-latest
     steps:
       - name: "🛎 Checkout"
@@ -47,7 +75,7 @@ jobs:
 
   build_package:
     name: "Build Package"
-    needs: install
+    needs: [install, validate_pr_title]
     runs-on: ubuntu-latest
     steps:
       - name: "🛎 Checkout"
@@ -59,7 +87,7 @@ jobs:
 
   test:
     name: "Test"
-    needs: install
+    needs: [install, validate_pr_title]
     runs-on: ubuntu-latest
     steps:
       - name: "🛎 Checkout"

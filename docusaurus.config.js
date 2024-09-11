@@ -99,6 +99,12 @@ const config = {
           },
           {
             type: 'doc',
+            docId: 'usage/index',
+            position: 'left',
+            label: 'Usage',
+          },
+          {
+            type: 'doc',
             docId: 'api-reference/index',
             position: 'left',
             label: 'API',
@@ -121,7 +127,7 @@ const config = {
       footer: {
         copyright: `
 <div class="footer__copyright-container">
-    <p class="footer__text">Licensed under <a class="footer__text--link" href="${githubLink}/blob/main/LICENSE" target="_blank">MIT</a>.</p>
+    <p class="footer__text">Licensed under <a class="footer__text--link" href="${githubLink}/blob/main/LICENSE" target="_blank">CC0</a>.</p>
 </div>
         `,
         links: [
@@ -137,12 +143,8 @@ const config = {
                 to: 'terminology',
               },
               {
-                label: 'Clients',
-                to: 'clients/index',
-              },
-              {
-                label: 'Providers',
-                to: 'providers/index',
+                label: 'Usage',
+                to: 'usage/index',
               },
               {
                 label: 'API Reference',
