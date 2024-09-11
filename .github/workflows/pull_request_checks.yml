@@ -28,8 +28,8 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🔧 Setup"
-        uses: ./.github/actions/use-dependencies
+      - name: "🧶 Setup Yarn Dependencies"
+        uses: ./.github/actions/use-yarn-dependencies
       - name: "✅ Validate"
         run: echo ${{ github.event.pull_request.title }} | yarn commitlint
 
