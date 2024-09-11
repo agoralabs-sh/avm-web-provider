@@ -1,0 +1,248 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Discover Providers
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+Before we can start interacting with a provider, we first need to find out what providers are available and what AVM networks & methods these providers support.
+
+## Discovering all providers
+
+The first thing we want to do, after [initialization](getting-started), is start listening to discover messages. The callback passed will be called everytime a `discover` message is responded to by a provider. However, before we receive any `discover` messages we need then broadcast to any providers a request.
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+// initialized client
+client.onDiscover(({ error, result }) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
+
+// send a discover request
+client.discover();
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+// initialized client
+client.onDiscover(({ error, result }: IAVMWebClientCallbackOptions) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
+
+// send a discover request
+client.discover();
+```
+
+  </TabItem>
+</Tabs>
+
+## Discovering a specific provider
+
+If you know the ID of the provider, you can request only a response from that provider.
+
+As before, let's first add a listener and then broadcast, but this time we will specify the provider ID:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized client
+client.onDiscover(({ error, result }) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
+
+// send a discover request
+client.discover({ providerId });
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+// initialized client
+client.onDiscover(({ error, result }: IAVMWebClientCallbackOptions) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    host: 'https://awesome-wallet.com',
+    name: 'Awesome Wallet',
+    networks: [
+      {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+      {
+        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+        genesisId: 'voitest-v1',
+        methods: [
+          'disable',
+          'enable',
+          'post_transactions',
+          'sign_and_post_transactions',
+          'sign_transactions',
+        ],
+      },
+    ],
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  }
+  */
+});
+
+// send a discover request
+client.discover({ providerId });
+```
+
+  </TabItem>
+</Tabs>

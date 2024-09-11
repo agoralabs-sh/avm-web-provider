@@ -1,0 +1,210 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Responding To Disable Requests
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+Providers that implement a session for a client, a disable request can be called by a client that instructs the provider to remove the client's session.
+
+## Responding to a disable request
+
+Once our provider object has been initialized, we can simply listen to events and respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  // initialized provider
+  provider.onDisable(() => {
+    // ... remove all sessions
+
+    return {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  // initialized provider
+  provider.onDisable(() => {
+    // ... remove all sessions
+
+    return {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
+  });
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::note
+
+If no network or session IDs have been specified, you can assume all sessions for this client should be removed.
+
+:::
+
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
+## Responding to a disable request with a specific network
+
+The `disable` request allows the client to specify the network. This is denoted in the supplied `params.genesisHash` parameter.
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  const { ARC0027NetworkNotSupportedError } = require('@agoralabs-sh/avm-web-provider');
+
+  const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+  // initialized provider
+  provider.onDisable(({ params }) => {
+    // if the genesis hash has been defined, it is recommended that you throw and error
+    if (param.genesisHash && param.genesisHash !== genesisHash) {
+      throw new ARC0027NetworkNotSupportedError({
+        genesisHashes: [param.genesisHash],
+        providerId,
+      });
+    }
+
+    // ... remove all sessions for the network
+
+    return {
+      genesisHash,
+      genesisId: 'testnet-v1.0',
+      providerId,
+    };
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  import type { ARC0027NetworkNotSupportedError, IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+  const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+  // initialized provider
+  provider.onDisable(({ params }: IAVMWebProviderCallbackOptions) => {
+    // if the genesis hash has been defined, it is recommended that you throw and error
+    if (param.genesisHash && param.genesisHash !== genesisHash) {
+      throw new ARC0027NetworkNotSupportedError({
+        genesisHashes: [param.genesisHash],
+        providerId,
+      });
+    }
+
+    // ... remove all sessions for the network
+
+    return {
+      genesisHash,
+      genesisId: 'testnet-v1.0',
+      providerId,
+    };
+  });
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If the network is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
+
+:::
+
+## Responding to specific session IDs
+
+A requesting client can specify the particular session. This can be used instead of specifying the network, or if the provider supports multiple sessions.
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const sessionId = '2802dff6-930e-4f79-8f67-ba9d41e88cf8';
+
+  // initialized provider
+  provider.onDisable(({ params }) => {
+    if (params && params.sessionIds.indexOf(sessionId) >= 0) {
+      // ... remove sessions specified in the session ids list
+
+      return {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        providerId,
+        sessionIds: [sessionId],
+      };
+    }
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const sessionId = '2802dff6-930e-4f79-8f67-ba9d41e88cf8';
+
+  // initialized provider
+  provider.onDisable(({ params }: IAVMWebProviderCallbackOptions) => {
+    if (params && params.sessionIds.includes(sessionId)) {
+      // ... remove sessions specified in the session ids list
+
+      return {
+        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+        genesisId: 'testnet-v1.0',
+        providerId,
+        sessionIds: [sessionId],
+      };
+    }
+  });
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::note
+
+It is recommended that when removing specific session IDs, only return the removed session IDs in the result.
+
+:::
