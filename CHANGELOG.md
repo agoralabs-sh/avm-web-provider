@@ -1,3 +1,10 @@
+# [1.7.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.6.2...v1.7.0-beta.1) (2024-09-11)
+
+
+### Features
+
+* enforce provider id message filtering ([#36](https://github.com/agoralabs-sh/avm-web-provider/issues/36)) ([5762685](https://github.com/agoralabs-sh/avm-web-provider/commit/5762685b0a3fadd7d85e2a64231d0e7fcaa79524))
+
 ## [1.6.2](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.6.1...v1.6.2) (2024-05-30)
 
 
