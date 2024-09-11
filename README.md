@@ -111,6 +111,7 @@ This will compile the Typescript source code into a `dist/` directory.
 | `yarn run lint`       | Runs the linter on `.js` and `.ts` files.                                          |
 | `yarn run prettier`   | Runs the prettier on `.js` and `.ts` files.                                        |
 | `yarn test`           | Runs the tests.                                                                    |
+| `yarn types:check`    | Performs a type check on the `src/` directory.                                     |
 
 <sup>[Back to top ^][table-of-contents]</sup>
 

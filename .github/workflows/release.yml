@@ -27,6 +27,10 @@ jobs:
   release:
     name: "Release"
     needs: install
+    permissions:
+      contents: write # to be able to publish a github release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
     runs-on: ubuntu-latest
     steps:
       - name: "🛎 Checkout"
