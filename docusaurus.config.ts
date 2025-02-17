@@ -39,7 +39,7 @@ const config = {
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      {
         blog: false,
         docs: {
           remarkPlugins: [
@@ -67,14 +67,14 @@ const config = {
             require.resolve(path.resolve(stylesDir, 'navbar.scss')),
           ],
         },
-      }),
+      },
     ],
   ],
   staticDirectories: [staticDir],
   tagline,
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
+    {
       // TODO: create a social card
       // image: 'img/docusaurus-social-card.jpg',
       metadata: [
@@ -182,7 +182,7 @@ const config = {
         darkTheme: themes.dracula,
         theme: themes.github,
       },
-    }),
+    },
   title,
   trailingSlash: false,
   url,
