@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { randomBytes } from 'crypto';
-import { v4 as uuid } from 'uuid';
+import { encode as encodeBase64 } from '@stablelib/base64';
+import { encode as encodeUTF8 } from '@stablelib/utf8';
+import { uuid } from '@stablelib/uuid';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // controllers
@@ -11,10 +13,10 @@ import AVMWebProvider from './AVMWebProvider';
 import { ARC0027MethodEnum } from '@app/enums';
 
 // types
-import type { IARC0001Transaction, IAVMWebProviderConfig, ISignMessageParams } from '@app/types';
+import type { IARC0001Transaction, IAuthenticateParams, IAVMWebProviderConfig, ISignMessageParams } from '@app/types';
 
 describe(AVMWebProvider.name, () => {
-  const genesisHash = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const genesisHash = encodeBase64(randomBytes(32));
   const genesisId = 'localhost-v1';
   const name = 'Awesome Wallet';
   const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
@@ -24,6 +26,60 @@ describe(AVMWebProvider.name, () => {
 
   afterEach(() => {
     provider?.removeAllListeners();
+  });
+
+  describe(`${AVMWebProvider.name}#authenticate`, () => {
+    it('should not receive the client request, if a different provider id is provided', () => {
+      // arrange
+      const callback = vi.fn();
+      const params: IAuthenticateParams = {
+        data: encodeBase64(encodeUTF8('authenticate message')),
+        providerId: uuid(), // call random provider
+        signer,
+      };
+
+      provider = AVMWebProvider.init(providerId);
+      client = AVMWebClient.init();
+
+      provider.onAuthenticate(callback);
+
+      // act
+      client.authenticate(params);
+
+      // assert
+      expect(callback.mock.calls.length).toBe(0);
+    });
+
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const params: IAuthenticateParams = {
+          data: encodeBase64(encodeUTF8('authenticate message')),
+          providerId,
+          signer,
+        };
+
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
+
+        // assert
+        provider.onAuthenticate(({ method, params }) => {
+          expect(method).toBe(ARC0027MethodEnum.Authenticate);
+          expect(params).toBeDefined();
+          expect(params).toEqual(params);
+
+          done();
+
+          return {
+            providerId,
+            signature: 'gqNzaWfEQ...',
+            signer,
+          };
+        });
+
+        // act
+        client.authenticate(params);
+      }));
   });
 
   describe(`${AVMWebProvider.name}#init`, () => {
@@ -42,7 +98,7 @@ describe(AVMWebProvider.name, () => {
 
     it('should initialize the provider with the specified options', () => {
       // arrange
-      const debug: boolean = true;
+      const debug = true;
       let config: IAVMWebProviderConfig;
 
       // act
@@ -279,10 +335,10 @@ describe(AVMWebProvider.name, () => {
       const callback = vi.fn();
       const txns: IARC0001Transaction[] = [
         {
-          txn: randomBytes(32).toString('base64'),
+          txn: encodeBase64(randomBytes(32)),
         },
         {
-          txn: randomBytes(32).toString('base64'),
+          txn: encodeBase64(randomBytes(32)),
           signers: [],
         },
       ];
@@ -307,10 +363,10 @@ describe(AVMWebProvider.name, () => {
         // arrange
         const txns: IARC0001Transaction[] = [
           {
-            txn: randomBytes(32).toString('base64'),
+            txn: encodeBase64(randomBytes(32)),
           },
           {
-            txn: randomBytes(32).toString('base64'),
+            txn: encodeBase64(randomBytes(32)),
             signers: [],
           },
         ];
@@ -401,10 +457,10 @@ describe(AVMWebProvider.name, () => {
       const callback = vi.fn();
       const txns: IARC0001Transaction[] = [
         {
-          txn: randomBytes(32).toString('base64'),
+          txn: encodeBase64(randomBytes(32)),
         },
         {
-          txn: randomBytes(32).toString('base64'),
+          txn: encodeBase64(randomBytes(32)),
           signers: [],
         },
       ];
@@ -429,10 +485,10 @@ describe(AVMWebProvider.name, () => {
         // arrange
         const txns: IARC0001Transaction[] = [
           {
-            txn: randomBytes(32).toString('base64'),
+            txn: encodeBase64(randomBytes(32)),
           },
           {
-            txn: randomBytes(32).toString('base64'),
+            txn: encodeBase64(randomBytes(32)),
             signers: [],
           },
         ];

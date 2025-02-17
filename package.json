@@ -63,8 +63,9 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^9.2.6",
     "@semantic-release/release-notes-generator": "^14.0.1",
+    "@stablelib/base64": "^2.0.1",
+    "@stablelib/utf8": "^2.0.1",
     "@types/node": "^20.11.16",
-    "@types/uuid": "^9.0.8",
     "algosdk": "^2.7.0",
     "clsx": "^2.1.0",
     "docusaurus-plugin-sass": "^0.2.5",
@@ -89,7 +90,7 @@
     "vitest": "^3.0.5"
   },
   "dependencies": {
-    "uuid": "^9.0.1"
+    "@stablelib/uuid": "^2.0.1"
   },
   "resolutions": {
     "body-parser": "^1.20.3",

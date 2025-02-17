@@ -1,5 +1,7 @@
 export type { default as IAccount } from './IAccount';
 export type { default as IARC0001Transaction } from './IARC0001Transaction';
+export type { default as IAuthenticateParams } from './IAuthenticateParams';
+export type { default as IAuthenticateResult } from './IAuthenticateResult';
 export type { default as IAVMWebClientConfig } from './IAVMWebClientConfig';
 export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOptions';
 export type { default as IAVMWebClientCallbackOptions } from './IAVMWebClientCallbackOptions';

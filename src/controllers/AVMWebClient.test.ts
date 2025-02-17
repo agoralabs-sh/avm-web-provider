@@ -1,4 +1,6 @@
 // @vitest-environment jsdom
+import { encode as encodeBase64 } from '@stablelib/base64';
+import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { randomBytes } from 'crypto';
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -14,6 +16,7 @@ import { ARC0027MethodNotSupportedError } from '@app/errors';
 
 // types
 import type {
+  IAuthenticateResult,
   IAVMWebClientConfig,
   IDisableResult,
   IDiscoverResult,
@@ -24,7 +27,11 @@ import type {
 } from '@app/types';
 
 describe(AVMWebClient.name, () => {
+  const genesisHash = encodeBase64(randomBytes(32));
+  const genesisId = 'localhost-v1';
+  const name = 'Awesome Wallet';
   const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
   let client: AVMWebClient;
   let provider: AVMWebProvider;
 
@@ -32,35 +39,70 @@ describe(AVMWebClient.name, () => {
     provider?.removeAllListeners();
   });
 
-  describe(`${AVMWebClient.name}#init`, () => {
-    it('should initialize the provider with default options', () => {
-      // arrange
-      let config: IAVMWebClientConfig;
+  describe(`${AVMWebClient.name}#authenticate`, () => {
+    it('should return an error', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const expectedError = new ARC0027MethodNotSupportedError({
+          method: ARC0027MethodEnum.Authenticate,
+          providerId,
+        });
 
-      // act
-      client = AVMWebClient.init();
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      config = client.getConfig();
+        provider.onAuthenticate(async () => await Promise.reject(expectedError));
+        client.onAuthenticate(({ error, method, result }) => {
+          // assert
+          expect(method).toEqual(ARC0027MethodEnum.Authenticate);
+          expect(error).toEqual(expectedError);
+          expect(result).toBeNull();
 
-      expect(config.debug).toBe(false);
-    });
+          done();
+        });
 
-    it('should initialize the provider with the specified options', () => {
-      // arrange
-      const debug: boolean = true;
-      let config: IAVMWebClientConfig;
+        // act
+        client.authenticate({
+          data: encodeBase64(encodeUTF8('authenticate message')),
+          providerId,
+        });
+      }));
 
-      // act
-      client = AVMWebClient.init({
-        debug,
-      });
+    it('should return the signed auth data', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const expectedResult: IAuthenticateResult = {
+          providerId,
+          signature: 'gqNzaWfEQ...',
+          signer,
+        };
+        let actualRequestId: string;
 
-      // assert
-      config = client.getConfig();
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      expect(config.debug).toBe(debug);
-    });
+        provider.onAuthenticate(({ id }) => {
+          actualRequestId = id;
+
+          return expectedResult;
+        });
+        client.onAuthenticate(({ error, method, result, requestId }) => {
+          // assert
+          expect(method).toEqual(ARC0027MethodEnum.Authenticate);
+          expect(error).toBeNull();
+          expect(requestId).toBe(actualRequestId);
+          expect(result).toBeDefined();
+          expect(result).toEqual(expectedResult);
+
+          done();
+        });
+
+        // act
+        client.authenticate({
+          data: encodeBase64(encodeUTF8('authenticate message')),
+          providerId,
+        });
+      }));
   });
 
   describe(`${AVMWebClient.name}#disable`, () => {
@@ -92,7 +134,6 @@ describe(AVMWebClient.name, () => {
     it('should return the removed sessions', () =>
       new Promise<void>((done) => {
         // arrange
-        const genesisHash: string = randomBytes(32).toString('base64');
         const sessionIds: string[] = [
           '25a90d91-8a96-4828-8bd5-da40b5ad33ed',
           '6d12962e-2d8d-450c-b32e-dd6f7dd11230',
@@ -140,12 +181,13 @@ describe(AVMWebClient.name, () => {
         // arrange
         const expectedResult: IDiscoverResult = {
           host: 'https://awesome-wallet.com',
-          name: 'Awesome Wallet',
+          name,
           networks: [
             {
-              genesisHash: randomBytes(32).toString('base64'),
-              genesisId: 'jest-test-v1.0',
+              genesisHash,
+              genesisId,
               methods: [
+                ARC0027MethodEnum.Authenticate,
                 ARC0027MethodEnum.Disable,
                 ARC0027MethodEnum.Enable,
                 ARC0027MethodEnum.PostTransactions,
@@ -252,6 +294,37 @@ describe(AVMWebClient.name, () => {
       }));
   });
 
+  describe(`${AVMWebClient.name}#init`, () => {
+    it('should initialize the provider with default options', () => {
+      // arrange
+      let config: IAVMWebClientConfig;
+
+      // act
+      client = AVMWebClient.init();
+
+      // assert
+      config = client.getConfig();
+
+      expect(config.debug).toBe(false);
+    });
+
+    it('should initialize the provider with the specified options', () => {
+      // arrange
+      const debug: boolean = true;
+      let config: IAVMWebClientConfig;
+
+      // act
+      client = AVMWebClient.init({
+        debug,
+      });
+
+      // assert
+      config = client.getConfig();
+
+      expect(config.debug).toBe(debug);
+    });
+  });
+
   describe(`${AVMWebClient.name}#postTransactions`, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
@@ -344,10 +417,10 @@ describe(AVMWebClient.name, () => {
           providerId,
           txns: [
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
             },
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
               signers: [],
             },
           ],
@@ -387,10 +460,10 @@ describe(AVMWebClient.name, () => {
           providerId,
           txns: [
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
             },
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
               signers: [],
             },
           ],
@@ -424,14 +497,13 @@ describe(AVMWebClient.name, () => {
         client.signMessage({
           message: 'Hello humie!',
           providerId,
-          signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          signer,
         });
       }));
 
     it('should return the signature of the signed message', () =>
       new Promise<void>((done) => {
         // arrange
-        const signer: string = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
         const expectedResult: ISignMessageResult = {
           providerId,
           signature: 'gqNzaWfEQ...',
@@ -494,10 +566,10 @@ describe(AVMWebClient.name, () => {
           providerId,
           txns: [
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
             },
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
               signers: [],
             },
           ],
@@ -537,10 +609,10 @@ describe(AVMWebClient.name, () => {
           providerId,
           txns: [
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
             },
             {
-              txn: randomBytes(32).toString('base64'),
+              txn: encodeBase64(randomBytes(32)),
               signers: [],
             },
           ],

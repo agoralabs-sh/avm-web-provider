@@ -22,9 +22,9 @@ importers:
 
   .:
     dependencies:
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
+      '@stablelib/uuid':
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       '@anolilab/semantic-release-pnpm':
         specifier: 1.1.8
@@ -80,12 +80,15 @@ importers:
       '@semantic-release/release-notes-generator':
         specifier: ^14.0.1
         version: 14.0.3(semantic-release@24.2.3(typescript@5.7.3))
+      '@stablelib/base64':
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@stablelib/utf8':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@types/node':
         specifier: ^20.11.16
         version: 20.17.19
-      '@types/uuid':
-        specifier: ^9.0.8
-        version: 9.0.8
       algosdk:
         specifier: ^2.7.0
         version: 2.11.0
@@ -2057,6 +2060,30 @@ packages:
   '@slorber/remark-comment@1.0.0':
     resolution: {integrity: sha512-RCE24n7jsOj1M0UPvIQCHTe7fI0sFL4S2nwKVWwHyVr/wI/H8GosgsJGyhnsZoGFnD/P2hLf1mSbrrgSLN93NA==}
 
+  '@stablelib/base64@2.0.1':
+    resolution: {integrity: sha512-P2z89A7N1ETt6RxgpVdDT2xlg8cnm3n6td0lY9gyK7EiWK3wdq388yFX/hLknkCC0we05OZAD1rfxlQJUbl5VQ==}
+
+  '@stablelib/binary@2.0.1':
+    resolution: {integrity: sha512-U9iAO8lXgEDONsA0zPPSgcf3HUBNAqHiJmSHgZz62OvC3Hi2Bhc5kTnQ3S1/L+sthDTHtCMhcEiklmIly6uQ3w==}
+
+  '@stablelib/hex@2.0.1':
+    resolution: {integrity: sha512-nsAgs3109myeijRQg3HASq3vlxe/8uDKHEUuIwn9ZLxfWtXavgojAGLBjI7Sda6seOhy7rKrpmeehYo0Z5VGQA==}
+
+  '@stablelib/int@2.0.1':
+    resolution: {integrity: sha512-Ht63fQp3wz/F8U4AlXEPb7hfJOIILs8Lq55jgtD7KueWtyjhVuzcsGLSTAWtZs3XJDZYdF1WcSKn+kBtbzupww==}
+
+  '@stablelib/random@2.0.1':
+    resolution: {integrity: sha512-W6GAtXEEs7r+dSbuBsvoFmlyL3gLxle41tQkjKu17dDWtDdjhVUbtRfRCQcCUeczwkgjQxMPopgwYEvxXtHXGw==}
+
+  '@stablelib/utf8@2.0.1':
+    resolution: {integrity: sha512-7+C2Iap42fbLyoKMaEIIDSb1TrcQVo+lGDItYAwb2JoAJr7QffyuDnbtvV/qzTyokOIMBrJgT+Rpsp1bPR8SjA==}
+
+  '@stablelib/uuid@2.0.1':
+    resolution: {integrity: sha512-6tPZoUOhrqcXP8n3BvooLa1QFcY//F37/TIMEOt/nwODEfrLr50JcXNz2L9YA+GF+scwy8yIxGi022aXoyCTyw==}
+
+  '@stablelib/wipe@2.0.1':
+    resolution: {integrity: sha512-1eU2K9EgOcV4qc9jcP6G72xxZxEm5PfeI5H55l08W95b4oRJaqhmlWRc4xZAm6IVSKhVNxMi66V67hCzzuMTAg==}
+
   '@svgr/babel-plugin-add-jsx-attribute@8.0.0':
     resolution: {integrity: sha512-b9MIk7yhdS1pMCZM8VeNfUlSKVRhsHZNMl5O9SfaX0l0t5wjdgu4IDzGB8bpnGBBOjGST3rRFVsaaEtI4W6f7g==}
     engines: {node: '>=14'}
@@ -2308,9 +2335,6 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
-
-  '@types/uuid@9.0.8':
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
   '@types/ws@8.5.14':
     resolution: {integrity: sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw==}
@@ -7101,10 +7125,6 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
-
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -10251,6 +10271,31 @@ snapshots:
       micromark-util-character: 1.2.0
       micromark-util-symbol: 1.1.0
 
+  '@stablelib/base64@2.0.1': {}
+
+  '@stablelib/binary@2.0.1':
+    dependencies:
+      '@stablelib/int': 2.0.1
+
+  '@stablelib/hex@2.0.1': {}
+
+  '@stablelib/int@2.0.1': {}
+
+  '@stablelib/random@2.0.1':
+    dependencies:
+      '@stablelib/binary': 2.0.1
+      '@stablelib/wipe': 2.0.1
+
+  '@stablelib/utf8@2.0.1': {}
+
+  '@stablelib/uuid@2.0.1':
+    dependencies:
+      '@stablelib/hex': 2.0.1
+      '@stablelib/random': 2.0.1
+      '@stablelib/wipe': 2.0.1
+
+  '@stablelib/wipe@2.0.1': {}
+
   '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@7.26.9)':
     dependencies:
       '@babel/core': 7.26.9
@@ -10539,8 +10584,6 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
-
-  '@types/uuid@9.0.8': {}
 
   '@types/ws@8.5.14':
     dependencies:
@@ -15992,8 +16035,6 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid@8.3.2: {}
-
-  uuid@9.0.1: {}
 
   v8-compile-cache-lib@3.0.1: {}
 

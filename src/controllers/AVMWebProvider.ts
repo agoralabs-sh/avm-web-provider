@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { uuid } from '@stablelib/uuid';
 
 // controllers
 import BaseController from './BaseController';
@@ -10,14 +10,12 @@ import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
 import { ARC0027UnknownError, BaseARC0027Error } from '@app/errors';
 
 // messages
-import {
-  RequestMessage,
-  ResponseMessageWithError,
-  ResponseMessageWithResult,
-} from '@app/messages';
+import { RequestMessage, ResponseMessageWithError, ResponseMessageWithResult } from '@app/messages';
 
 // types
 import type {
+  IAuthenticateParams,
+  IAuthenticateResult,
   IAVMWebProviderConfig,
   IAVMWebProviderInitOptions,
   IDisableParams,
@@ -51,10 +49,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * private methods
    */
 
-  private _addListener<
-    Params extends TRequestParams,
-    Result extends TResponseResults,
-  >(
+  private _addListener<Params extends TRequestParams, Result extends TResponseResults>(
     method: ARC0027MethodEnum,
     callback: TAVMWebProviderCallback<Params, Result>
   ): string {
@@ -72,10 +67,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       });
     };
     const listenerID = uuid();
-    const reference = createMessageReference(
-      method,
-      ARC0027MessageTypeEnum.Request
-    );
+    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
 
     // start listening to request events and add the listener to the map
     window.addEventListener(reference, listener);
@@ -95,10 +87,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts}
    * @private
    */
-  private async _sendResponseMessage<
-    Params extends TRequestParams,
-    Result extends TResponseResults,
-  >({
+  private async _sendResponseMessage<Params extends TRequestParams, Result extends TResponseResults>({
     callback,
     method,
     requestMessage,
@@ -109,10 +98,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     let result: Result;
 
     // if the provider id is supplied in the request, and it does not match the registered provider id, ignore
-    if (
-      requestMessage.params?.providerId &&
-      requestMessage.params.providerId !== this._config.providerId
-    ) {
+    if (requestMessage.params?.providerId && requestMessage.params.providerId !== this._config.providerId) {
       this._logger.debug(
         `[${this._config.providerId}]${AVMWebProvider.name}#${_functionName}: message "${requestMessage.reference}" is for provider "${requestMessage.params.providerId}", skipping`
       );
@@ -195,10 +181,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * public static methods
    */
 
-  public static init(
-    providerId: string,
-    { debug }: IAVMWebProviderInitOptions = { debug: false }
-  ): AVMWebProvider {
+  public static init(providerId: string, { debug }: IAVMWebProviderInitOptions = { debug: false }): AVMWebProvider {
     return new AVMWebProvider({
       debug: debug || false,
       providerId,
@@ -210,18 +193,23 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
 
   /**
+   * Listens to `authenticate` messages sent from clients.
+   * @param {TAVMWebProviderCallback<IAuthenticateParams, IAuthenticateResult>} callback - the callback to handle requests from
+   * the client.
+   * @returns {string} the ID of the listener.
+   */
+  public onAuthenticate(callback: TAVMWebProviderCallback<IAuthenticateParams, IAuthenticateResult>): string {
+    return this._addListener<IAuthenticateParams, IAuthenticateResult>(ARC0027MethodEnum.Authenticate, callback);
+  }
+
+  /**
    * Listens to `disable` messages sent from clients.
    * @param {TAVMWebProviderCallback<IDisableParams, IDisableResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    */
-  public onDisable(
-    callback: TAVMWebProviderCallback<IDisableParams, IDisableResult>
-  ): string {
-    return this._addListener<IDisableParams, IDisableResult>(
-      ARC0027MethodEnum.Disable,
-      callback
-    );
+  public onDisable(callback: TAVMWebProviderCallback<IDisableParams, IDisableResult>): string {
+    return this._addListener<IDisableParams, IDisableResult>(ARC0027MethodEnum.Disable, callback);
   }
 
   /**
@@ -230,13 +218,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * the client.
    * @returns {string} the ID of the listener.
    */
-  public onDiscover(
-    callback: TAVMWebProviderCallback<IDiscoverParams, IDiscoverResult>
-  ): string {
-    return this._addListener<IDiscoverParams, IDiscoverResult>(
-      ARC0027MethodEnum.Discover,
-      callback
-    );
+  public onDiscover(callback: TAVMWebProviderCallback<IDiscoverParams, IDiscoverResult>): string {
+    return this._addListener<IDiscoverParams, IDiscoverResult>(ARC0027MethodEnum.Discover, callback);
   }
 
   /**
@@ -245,13 +228,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * the client.
    * @returns {string} the ID of the listener.
    */
-  public onEnable(
-    callback: TAVMWebProviderCallback<IEnableParams, IEnableResult>
-  ): string {
-    return this._addListener<IEnableParams, IDisableResult>(
-      ARC0027MethodEnum.Enable,
-      callback
-    );
+  public onEnable(callback: TAVMWebProviderCallback<IEnableParams, IEnableResult>): string {
+    return this._addListener<IEnableParams, IDisableResult>(ARC0027MethodEnum.Enable, callback);
   }
 
   /**
@@ -261,10 +239,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @returns {string} the ID of the listener.
    */
   public onPostTransactions(
-    callback: TAVMWebProviderCallback<
-      IPostTransactionsParams,
-      IPostTransactionsResult
-    >
+    callback: TAVMWebProviderCallback<IPostTransactionsParams, IPostTransactionsResult>
   ): string {
     return this._addListener<IPostTransactionsParams, IPostTransactionsResult>(
       ARC0027MethodEnum.PostTransactions,
@@ -279,10 +254,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @returns {string} the ID of the listener.
    */
   public onSignAndPostTransactions(
-    callback: TAVMWebProviderCallback<
-      ISignTransactionsParams,
-      IPostTransactionsResult
-    >
+    callback: TAVMWebProviderCallback<ISignTransactionsParams, IPostTransactionsResult>
   ): string {
     return this._addListener<ISignTransactionsParams, IPostTransactionsResult>(
       ARC0027MethodEnum.SignAndPostTransactions,
@@ -296,13 +268,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * the client.
    * @returns {string} the ID of the listener.
    */
-  public onSignMessage(
-    callback: TAVMWebProviderCallback<ISignMessageParams, ISignMessageResult>
-  ): string {
-    return this._addListener<ISignMessageParams, ISignMessageResult>(
-      ARC0027MethodEnum.SignMessage,
-      callback
-    );
+  public onSignMessage(callback: TAVMWebProviderCallback<ISignMessageParams, ISignMessageResult>): string {
+    return this._addListener<ISignMessageParams, ISignMessageResult>(ARC0027MethodEnum.SignMessage, callback);
   }
 
   /**
@@ -312,10 +279,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @returns {string} the ID of the listener.
    */
   public onSignTransactions(
-    callback: TAVMWebProviderCallback<
-      ISignTransactionsParams,
-      ISignTransactionsResult
-    >
+    callback: TAVMWebProviderCallback<ISignTransactionsParams, ISignTransactionsResult>
   ): string {
     return this._addListener<ISignTransactionsParams, ISignTransactionsResult>(
       ARC0027MethodEnum.SignTransactions,

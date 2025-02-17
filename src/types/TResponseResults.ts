@@ -1,4 +1,5 @@
 // types
+import type IAuthenticateResult from './IAuthenticateResult';
 import type IDisableResult from './IDisableResult';
 import type IDiscoverResult from './IDiscoverResult';
 import type IEnableResult from './IEnableResult';
@@ -7,6 +8,7 @@ import type ISignMessageResult from './ISignMessageResult';
 import type ISignTransactionsResult from './ISignTransactionsResult';
 
 type TResponseResults =
+  | IAuthenticateResult
   | IDisableResult
   | IDiscoverResult
   | IEnableResult

@@ -1,4 +1,5 @@
 enum ARC0027MethodEnum {
+  Authenticate = 'authenticate',
   Disable = 'disable',
   Discover = 'discover',
   Enable = 'enable',
