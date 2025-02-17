@@ -269,18 +269,11 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 ### Docusaurus
-.docusaurus
-.cache-loader
+.docusaurus/
+.cache/
+.cache-loader/
 
 ### Miscellaneous
 
 # documentation
-.docs
-
-# dependencies
-.npmrc
-/.pnp
-.pnp.js
-
-# testing
-/coverage
+.docs/

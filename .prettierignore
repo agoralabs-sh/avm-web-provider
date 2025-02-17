@@ -1,4 +1,4 @@
 .docs/
+.docusaurus/
 dist/
-coverage/
 node_modules/

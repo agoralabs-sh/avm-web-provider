@@ -1,5 +1,7 @@
+// @vitest-environment jsdom
 import { randomBytes } from 'crypto';
 import { v4 as uuid } from 'uuid';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // controllers
 import AVMWebClient from './AVMWebClient';
@@ -9,14 +11,14 @@ import AVMWebProvider from './AVMWebProvider';
 import { ARC0027MethodEnum } from '@app/enums';
 
 // types
-import type {
-  IARC0001Transaction,
-  IAVMWebProviderConfig,
-  ISignMessageParams,
-} from '@app/types';
+import type { IARC0001Transaction, IAVMWebProviderConfig, ISignMessageParams } from '@app/types';
 
 describe(AVMWebProvider.name, () => {
+  const genesisHash = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const genesisId = 'localhost-v1';
+  const name = 'Awesome Wallet';
   const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
   let client: AVMWebClient;
   let provider: AVMWebProvider;
 
@@ -59,7 +61,7 @@ describe(AVMWebProvider.name, () => {
   describe(`${AVMWebProvider.name}#onDisable`, () => {
     it('should not receive the client request, if a different provider id is provided', () => {
       // arrange
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
@@ -75,63 +77,84 @@ describe(AVMWebProvider.name, () => {
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request, if the matching provider id is provided', (done) => {
-      // arrange
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+    it('should receive the client request, if the matching provider id is provided', () =>
+      new Promise<void>((done) => {
+        // arrange
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onDisable(({ method }) => {
-        expect(method).toBe(ARC0027MethodEnum.Disable);
+        // assert
+        provider.onDisable(({ method }) => {
+          expect(method).toBe(ARC0027MethodEnum.Disable);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.disable({
-        providerId,
-      });
-    });
+          return {
+            genesisHash,
+            genesisId,
+            providerId,
+          };
+        });
 
-    it('should receive the client request, if no provider id is provided', (done) => {
-      // arrange
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+        // act
+        client.disable({
+          providerId,
+        });
+      }));
 
-      // assert
-      provider.onDisable(({ method }) => {
-        expect(method).toBe(ARC0027MethodEnum.Disable);
+    it('should receive the client request, if no provider id is provided', () =>
+      new Promise<void>((done) => {
+        // arrange
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-        return done();
-      });
+        // assert
+        provider.onDisable(({ method }) => {
+          expect(method).toBe(ARC0027MethodEnum.Disable);
 
-      // act
-      client.disable();
-    });
+          done();
+
+          return {
+            genesisHash,
+            genesisId,
+            providerId,
+          };
+        });
+
+        // act
+        client.disable();
+      }));
   });
 
   describe(`${AVMWebProvider.name}#onDiscover`, () => {
-    it('should receive the client request', (done) => {
-      // arrange
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onDiscover(({ method }) => {
-        expect(method).toBe(ARC0027MethodEnum.Discover);
+        // assert
+        provider.onDiscover(({ method }) => {
+          expect(method).toBe(ARC0027MethodEnum.Discover);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.discover();
-    });
+          return {
+            name,
+            networks: [],
+            providerId,
+          };
+        });
+
+        // act
+        client.discover();
+      }));
   });
 
   describe(`${AVMWebProvider.name}#onEnable`, () => {
     it('should not receive the client request, if a different provider id is provided', () => {
       // arrange
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
@@ -147,46 +170,62 @@ describe(AVMWebProvider.name, () => {
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request, if the matching provider id is provided', (done) => {
-      // arrange
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+    it('should receive the client request, if the matching provider id is provided', () =>
+      new Promise<void>((done) => {
+        // arrange
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onEnable(({ method }) => {
-        expect(method).toBe(ARC0027MethodEnum.Enable);
+        // assert
+        provider.onEnable(({ method }) => {
+          expect(method).toBe(ARC0027MethodEnum.Enable);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.enable({
-        providerId,
-      });
-    });
+          return {
+            accounts: [],
+            genesisHash,
+            genesisId,
+            providerId,
+          };
+        });
 
-    it('should receive the client request', (done) => {
-      // arrange
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+        // act
+        client.enable({
+          providerId,
+        });
+      }));
 
-      // assert
-      provider.onEnable(({ method }) => {
-        expect(method).toBe(ARC0027MethodEnum.Enable);
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-        return done();
-      });
+        // assert
+        provider.onEnable(({ method }) => {
+          expect(method).toBe(ARC0027MethodEnum.Enable);
 
-      // act
-      client.enable();
-    });
+          done();
+
+          return {
+            accounts: [],
+            genesisHash,
+            genesisId,
+            providerId,
+          };
+        });
+
+        // act
+        client.enable();
+      }));
   });
 
   describe(`${AVMWebProvider.name}#onPostTransactions`, () => {
     it('should not receive the client request, if a different provider id is provided', () => {
       // arrange
-      const callback = jest.fn();
-      const stxns: string[] = ['gqNzaWfEQ...'];
+      const callback = vi.fn();
+      const stxns = ['gqNzaWfEQ...'];
 
       provider = AVMWebProvider.init(providerId);
       client = AVMWebClient.init();
@@ -203,35 +242,41 @@ describe(AVMWebProvider.name, () => {
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request', (done) => {
-      // arrange
-      const stxns: string[] = ['gqNzaWfEQ...'];
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const stxns = ['gqNzaWfEQ...'];
 
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onPostTransactions(({ method, params }) => {
-        expect(method).toBe(ARC0027MethodEnum.PostTransactions);
-        expect(params).toBeDefined();
-        expect(params?.providerId).toBe(providerId);
-        expect(params?.stxns).toEqual(stxns);
+        // assert
+        provider.onPostTransactions(({ method, params }) => {
+          expect(method).toBe(ARC0027MethodEnum.PostTransactions);
+          expect(params).toBeDefined();
+          expect(params?.providerId).toBe(providerId);
+          expect(params?.stxns).toEqual(stxns);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.postTransactions({
-        providerId,
-        stxns,
-      });
-    });
+          return {
+            providerId,
+            txnIDs: [],
+          };
+        });
+
+        // act
+        client.postTransactions({
+          providerId,
+          stxns,
+        });
+      }));
   });
 
   describe(`${AVMWebProvider.name}#onSignAndPostTransactions`, () => {
     it('should not receive the client request, if a different provider id is provided', () => {
       // arrange
-      const callback = jest.fn();
+      const callback = vi.fn();
       const txns: IARC0001Transaction[] = [
         {
           txn: randomBytes(32).toString('base64'),
@@ -257,47 +302,53 @@ describe(AVMWebProvider.name, () => {
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request', (done) => {
-      // arrange
-      const txns: IARC0001Transaction[] = [
-        {
-          txn: randomBytes(32).toString('base64'),
-        },
-        {
-          txn: randomBytes(32).toString('base64'),
-          signers: [],
-        },
-      ];
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const txns: IARC0001Transaction[] = [
+          {
+            txn: randomBytes(32).toString('base64'),
+          },
+          {
+            txn: randomBytes(32).toString('base64'),
+            signers: [],
+          },
+        ];
 
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onSignAndPostTransactions(({ method, params }) => {
-        expect(method).toBe(ARC0027MethodEnum.SignAndPostTransactions);
-        expect(params).toBeDefined();
-        expect(params?.providerId).toBe(providerId);
-        expect(params?.txns).toEqual(txns);
+        // assert
+        provider.onSignAndPostTransactions(({ method, params }) => {
+          expect(method).toBe(ARC0027MethodEnum.SignAndPostTransactions);
+          expect(params).toBeDefined();
+          expect(params?.providerId).toBe(providerId);
+          expect(params?.txns).toEqual(txns);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.signAndPostTransactions({
-        providerId,
-        txns,
-      });
-    });
+          return {
+            providerId,
+            txnIDs: [],
+          };
+        });
+
+        // act
+        client.signAndPostTransactions({
+          providerId,
+          txns,
+        });
+      }));
   });
 
   describe(`${AVMWebProvider.name}#onSignMessage`, () => {
     it('should receive the client request', () => {
       // arrange
-      const callback = jest.fn();
+      const callback = vi.fn();
       const params: ISignMessageParams = {
         message: 'Hello humie!',
         providerId: uuid(), // call random provider
-        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+        signer,
       };
 
       provider = AVMWebProvider.init(providerId);
@@ -312,35 +363,42 @@ describe(AVMWebProvider.name, () => {
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request', (done) => {
-      // arrange
-      const params: ISignMessageParams = {
-        message: 'Hello humie!',
-        providerId,
-        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-      };
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const params: ISignMessageParams = {
+          message: 'Hello humie!',
+          providerId,
+          signer,
+        };
 
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onSignMessage(({ method, params }) => {
-        expect(method).toBe(ARC0027MethodEnum.SignMessage);
-        expect(params).toBeDefined();
-        expect(params).toEqual(params);
+        // assert
+        provider.onSignMessage(({ method, params }) => {
+          expect(method).toBe(ARC0027MethodEnum.SignMessage);
+          expect(params).toBeDefined();
+          expect(params).toEqual(params);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.signMessage(params);
-    });
+          return {
+            providerId,
+            signature: 'gqNzaWfEQ...',
+            signer,
+          };
+        });
+
+        // act
+        client.signMessage(params);
+      }));
   });
 
   describe(`${AVMWebProvider.name}#onSignTransactions`, () => {
     it('should not receive the client request, if a different provider id is provided', () => {
       // arrange
-      const callback = jest.fn();
+      const callback = vi.fn();
       const txns: IARC0001Transaction[] = [
         {
           txn: randomBytes(32).toString('base64'),
@@ -366,36 +424,42 @@ describe(AVMWebProvider.name, () => {
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request', (done) => {
-      // arrange
-      const txns: IARC0001Transaction[] = [
-        {
-          txn: randomBytes(32).toString('base64'),
-        },
-        {
-          txn: randomBytes(32).toString('base64'),
-          signers: [],
-        },
-      ];
+    it('should receive the client request', () =>
+      new Promise<void>((done) => {
+        // arrange
+        const txns: IARC0001Transaction[] = [
+          {
+            txn: randomBytes(32).toString('base64'),
+          },
+          {
+            txn: randomBytes(32).toString('base64'),
+            signers: [],
+          },
+        ];
 
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+        provider = AVMWebProvider.init(providerId);
+        client = AVMWebClient.init();
 
-      // assert
-      provider.onSignTransactions(({ method, params }) => {
-        expect(method).toBe(ARC0027MethodEnum.SignTransactions);
-        expect(params).toBeDefined();
-        expect(params?.providerId).toBe(providerId);
-        expect(params?.txns).toEqual(txns);
+        // assert
+        provider.onSignTransactions(({ method, params }) => {
+          expect(method).toBe(ARC0027MethodEnum.SignTransactions);
+          expect(params).toBeDefined();
+          expect(params?.providerId).toBe(providerId);
+          expect(params?.txns).toEqual(txns);
 
-        return done();
-      });
+          done();
 
-      // act
-      client.signTransactions({
-        providerId,
-        txns,
-      });
-    });
+          return {
+            providerId,
+            stxns: ['gqNzaWfEQ...', null],
+          };
+        });
+
+        // act
+        client.signTransactions({
+          providerId,
+          txns,
+        });
+      }));
   });
 });

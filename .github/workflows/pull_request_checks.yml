@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
 
   ##
   # validation
@@ -28,10 +28,10 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
       - name: "✅ Validate"
-        run: echo ${{ github.event.pull_request.title }} | yarn commitlint
+        run: echo ${{ github.event.pull_request.title }} | pnpm exec commitlint
 
   ##
   # lint, build documentation, build package and test
@@ -44,10 +44,10 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
       - name: "👕 Lint"
-        run: yarn lint
+        run: pnpm lint
 
   type_check:
     name: "Type Check"
@@ -56,34 +56,10 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
       - name: "🔍 Type Check"
-        run: yarn types:check
-
-  build_documentation:
-    name: "Build Documentation"
-    needs: [install, validate_pr_title]
-    runs-on: ubuntu-latest
-    steps:
-      - name: "🛎 Checkout"
-        uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
-      - name: "🏗️ Build"
-        run: yarn docs:build
-
-  build_package:
-    name: "Build Package"
-    needs: [install, validate_pr_title]
-    runs-on: ubuntu-latest
-    steps:
-      - name: "🛎 Checkout"
-        uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
-      - name: "🏗️ Build"
-        run: yarn build
+        run: pnpm check:types
 
   test:
     name: "Test"
@@ -92,7 +68,7 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
       - name: "🧪 Test"
-        run: yarn test
+        run: pnpm test

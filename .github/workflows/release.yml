@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
 
   ##
   # release
@@ -42,12 +42,13 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.PUBLISH_PUBLIC_PACKAGES_TOKEN }}" >> .npmrc
           echo "@agoralabs-sh:registry=https://registry.npmjs.org" >> .npmrc
           echo "access=public" >> .npmrc
-      - name: "🧶 Setup Yarn Dependencies"
-        uses: ./.github/actions/use-yarn-dependencies
+      - name: "📦 Setup pnpm Dependencies"
+        uses: ./.github/actions/use-pnpm-dependencies
       - name: "🏗️ Build"
-        run: yarn build
+        run: pnpm build
       - name: "🔖 Release"
         env:
+          HUSKY: 0 # disable husky
           # appears on the release commits
           GIT_AUTHOR_NAME: agoralabs-bot
           GIT_AUTHOR_EMAIL: tech@agoralabs.sh
@@ -55,4 +56,4 @@ jobs:
           GIT_COMMITTER_EMAIL: tech@agoralabs.sh
           # used to push the release commit and create the tags
           GITHUB_TOKEN: ${{ secrets.WRITE_REPOS_TOKEN }}
-        run: yarn semantic-release
+        run: pnpm exec semantic-release
