@@ -12,10 +12,9 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
-    "lib": ["DOM", "ESNext"],
-    "module": "CommonJS",
+    "isolatedModules": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "moduleResolution": "Node",
-    "noFallthroughCasesInSwitch": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -36,6 +35,6 @@
     "strictBindCallApply": false,
     "strictNullChecks": true,
     "strictPropertyInitialization": false,
-    "target": "ES5"
+    "target": "ES2020"
   }
 }
