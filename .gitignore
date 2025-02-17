@@ -277,10 +277,5 @@ fabric.properties
 # documentation
 .docs
 
-# dependencies
-.npmrc
-/.pnp
-.pnp.js
-
 # testing
 /coverage

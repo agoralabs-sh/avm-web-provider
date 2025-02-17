@@ -1,8 +1,8 @@
 // @ts-check
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const path = require('path');
 const { themes } = require('prism-react-renderer');
-/* eslint-enable @typescript-eslint/no-var-requires */
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 // directories
 const docsDir = path.resolve(__dirname, 'docs');
@@ -17,8 +17,7 @@ const npmLink = 'https://npmjs.com/package/@agoralabs-sh/avm-web-provider';
 const url = 'https://avm-web-provider.agoralabs.sh';
 
 // header
-const tagline =
-  'A TypeScript implementation that allows clients to connect and interact with web-based providers.';
+const tagline = 'A TypeScript implementation that allows clients to connect and interact with web-based providers.';
 const title = 'AVM Web Provider';
 
 /** @type {import('@docusaurus/types').Config} */
