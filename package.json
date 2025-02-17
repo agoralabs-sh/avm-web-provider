@@ -29,9 +29,11 @@
   ],
   "private": false,
   "engines": {
-    "node": ">=18.20.3"
+    "node": "^22.x"
   },
+  "packageManager": "pnpm@10.3.0",
   "scripts": {
+    "build": "rm -rf dist && yarn build:module && yarn build:bundle",
     "build": "rm -rf dist && yarn build:module && yarn build:bundle",
     "build:bundle": "TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
     "build:module": "tspc --build tsconfig.build.json --force",
