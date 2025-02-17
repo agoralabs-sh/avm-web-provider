@@ -14,18 +14,14 @@ export default class Logger {
    * private methods
    */
 
-  private canLog(allowedLevel: TLogLevel): boolean {
+  private _canLog(allowedLevel: TLogLevel): boolean {
     switch (this._level) {
       case 'error':
         return allowedLevel === 'error';
       case 'warn':
         return allowedLevel === 'error' || allowedLevel === 'warn';
       case 'info':
-        return (
-          allowedLevel === 'error' ||
-          allowedLevel === 'warn' ||
-          allowedLevel === 'info'
-        );
+        return allowedLevel === 'error' || allowedLevel === 'warn' || allowedLevel === 'info';
       case 'debug':
         return true;
       default:
@@ -38,18 +34,18 @@ export default class Logger {
    */
 
   public debug(message?: any, ...optionalParams: any[]): void {
-    this.canLog('debug') && console.log(message, ...optionalParams);
+    this._canLog('debug') && console.log(message, ...optionalParams);
   }
 
   public error(message?: any, ...optionalParams: any[]): void {
-    this.canLog('error') && console.error(message, ...optionalParams);
+    this._canLog('error') && console.error(message, ...optionalParams);
   }
 
   public info(message?: any, ...optionalParams: any[]): void {
-    this.canLog('info') && console.info(message, ...optionalParams);
+    this._canLog('info') && console.info(message, ...optionalParams);
   }
 
   public warn(message?: any, ...optionalParams: any[]): void {
-    this.canLog('warn') && console.warn(message, ...optionalParams);
+    this._canLog('warn') && console.warn(message, ...optionalParams);
   }
 }

@@ -61,30 +61,6 @@ jobs:
       - name: "🔍 Type Check"
         run: pnpm check:types
 
-  build_documentation:
-    name: "Build Documentation"
-    needs: [install, validate_pr_title]
-    runs-on: ubuntu-latest
-    steps:
-      - name: "🛎 Checkout"
-        uses: actions/checkout@v4
-      - name: "📦 Setup pnpm Dependencies"
-        uses: ./.github/actions/use-pnpm-dependencies
-      - name: "🏗️ Build"
-        run: pnpm build:docs
-
-  build_package:
-    name: "Build Package"
-    needs: [install, validate_pr_title]
-    runs-on: ubuntu-latest
-    steps:
-      - name: "🛎 Checkout"
-        uses: actions/checkout@v4
-      - name: "📦 Setup pnpm Dependencies"
-        uses: ./.github/actions/use-pnpm-dependencies
-      - name: "🏗️ Build"
-        run: pnpm build
-
   test:
     name: "Test"
     needs: [install, validate_pr_title]
