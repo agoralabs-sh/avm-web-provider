@@ -1,80 +1,75 @@
-// @ts-check
-/* eslint-disable @typescript-eslint/no-require-imports */
-const path = require('path');
-const { themes } = require('prism-react-renderer');
-/* eslint-enable @typescript-eslint/no-require-imports */
+import type * as Preset from '@docusaurus/preset-classic';
+import remarkPlugin from '@docusaurus/remark-plugin-npm2yarn';
+import type { Config } from '@docusaurus/types';
+import { resolve } from 'node:path';
+import { themes } from 'prism-react-renderer';
 
-// directories
-const docsDir = path.resolve(__dirname, 'docs');
-const staticDir = path.resolve(docsDir, 'static');
-const scriptsDir = path.resolve(docsDir, 'scripts');
-const stylesDir = path.resolve(docsDir, 'styles');
+const config: () => Config = () => {
+  // directories
+  const docsDir = resolve(__dirname, 'docs');
+  const staticDir = resolve(docsDir, 'static');
+  const scriptsDir = resolve(docsDir, 'scripts');
+  const stylesDir = resolve(docsDir, 'styles');
+  // links
+  const agoraLabsLink = 'https://agoralabs.sh';
+  const githubLink = 'https://github.com/agoralabs-sh/avm-web-provider';
+  const npmLink = 'https://npmjs.com/package/@agoralabs-sh/avm-web-provider';
+  const url = 'https://avm-web-provider.agoralabs.sh';
+  // header
+  const tagline = 'A TypeScript implementation that allows clients to connect and interact with web-based providers.';
+  const title = 'AVM Web Provider';
 
-// links
-const agoraLabsLink = 'https://agoralabs.sh';
-const githubLink = 'https://github.com/agoralabs-sh/avm-web-provider';
-const npmLink = 'https://npmjs.com/package/@agoralabs-sh/avm-web-provider';
-const url = 'https://avm-web-provider.agoralabs.sh';
-
-// header
-const tagline = 'A TypeScript implementation that allows clients to connect and interact with web-based providers.';
-const title = 'AVM Web Provider';
-
-/** @type {import('@docusaurus/types').Config} */
-const config = {
-  baseUrl: '/',
-  deploymentBranch: 'gh-pages',
-  favicon: 'images/favicon.png',
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
-  },
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'throw',
-  onDuplicateRoutes: 'throw',
-  organizationName: 'agoralabs-sh',
-  projectName: 'avm-web-provider',
-  plugins: ['docusaurus-plugin-sass'],
-  presets: [
-    [
-      'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      {
-        blog: false,
-        docs: {
-          remarkPlugins: [
-            [
-              require('@docusaurus/remark-plugin-npm2yarn'),
-              {
-                sync: true,
-              },
+  return {
+    baseUrl: '/',
+    deploymentBranch: 'gh-pages',
+    favicon: 'images/favicon.png',
+    i18n: {
+      defaultLocale: 'en',
+      locales: ['en'],
+    },
+    onBrokenLinks: 'warn',
+    onBrokenMarkdownLinks: 'throw',
+    onDuplicateRoutes: 'throw',
+    organizationName: 'agoralabs-sh',
+    projectName: 'avm-web-provider',
+    plugins: ['docusaurus-plugin-sass'],
+    presets: [
+      [
+        'classic',
+        {
+          blog: false,
+          docs: {
+            remarkPlugins: [
+              [
+                remarkPlugin,
+                {
+                  sync: true,
+                },
+              ],
             ],
-          ],
-          routeBasePath: '/',
-          sidebarPath: require.resolve(path.resolve(scriptsDir, 'sidebars.js')),
-        },
-        sitemap: {
-          changefreq: 'weekly',
-          priority: 0.5,
-          ignorePatterns: ['/tags/**'],
-          filename: 'sitemap.xml',
-        },
-        theme: {
-          customCss: [
-            require.resolve(path.resolve(stylesDir, 'footer.scss')),
-            require.resolve(path.resolve(stylesDir, 'functions.scss')),
-            require.resolve(path.resolve(stylesDir, 'global.scss')),
-            require.resolve(path.resolve(stylesDir, 'navbar.scss')),
-          ],
-        },
-      },
+            routeBasePath: '/',
+            sidebarPath: resolve(scriptsDir, 'sidebars.js'),
+          },
+          sitemap: {
+            changefreq: 'weekly',
+            priority: 0.5,
+            ignorePatterns: ['/tags/**'],
+            filename: 'sitemap.xml',
+          },
+          theme: {
+            customCss: [
+              resolve(stylesDir, 'footer.scss'),
+              resolve(stylesDir, 'functions.scss'),
+              resolve(stylesDir, 'global.scss'),
+              resolve(stylesDir, 'navbar.scss'),
+            ],
+          },
+        } satisfies Preset.Options,
+      ],
     ],
-  ],
-  staticDirectories: [staticDir],
-  tagline,
-  themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    {
+    staticDirectories: [staticDir],
+    tagline,
+    themeConfig: {
       // TODO: create a social card
       // image: 'img/docusaurus-social-card.jpg',
       metadata: [
@@ -182,10 +177,11 @@ const config = {
         darkTheme: themes.dracula,
         theme: themes.github,
       },
-    },
-  title,
-  trailingSlash: false,
-  url,
+    } satisfies Preset.ThemeConfig,
+    title,
+    trailingSlash: false,
+    url,
+  };
 };
 
-module.exports = config;
+export default config();
