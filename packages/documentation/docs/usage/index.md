@@ -1,4 +1,4 @@
 # Usage
 
-* [`Clients`](./clients)
-* [`Providers`](./providers)
+* [`Clients`](clients)
+* [`Providers`](providers)
