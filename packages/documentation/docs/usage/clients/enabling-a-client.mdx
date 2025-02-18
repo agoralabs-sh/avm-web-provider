@@ -118,7 +118,7 @@ client.enable();
 
 :::caution
 
-If any providers do not support the `enable`  method, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) will be returned.
+If any providers do not support the `enable`  method, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) will be returned.
 
 :::
 
@@ -308,6 +308,6 @@ client.enable({ genesisHash });
 
 :::caution
 
-If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
+If the network and the provider ID is specified, and the provider does not support the network, then a [`ARC0027NetworkNotSupportedError`](../../api-reference/errors#arc0027networknotsupportederror) should be thrown.
 
 :::
