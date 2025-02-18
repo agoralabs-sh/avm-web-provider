@@ -22,9 +22,18 @@ importers:
 
   .:
     dependencies:
+      '@stablelib/bytes':
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@stablelib/sha256':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@stablelib/uuid':
         specifier: ^2.0.1
         version: 2.0.1
+      tweetnacl:
+        specifier: ^1.0.3
+        version: 1.0.3
     devDependencies:
       '@anolilab/semantic-release-pnpm':
         specifier: 1.1.8
@@ -2066,6 +2075,12 @@ packages:
   '@stablelib/binary@2.0.1':
     resolution: {integrity: sha512-U9iAO8lXgEDONsA0zPPSgcf3HUBNAqHiJmSHgZz62OvC3Hi2Bhc5kTnQ3S1/L+sthDTHtCMhcEiklmIly6uQ3w==}
 
+  '@stablelib/bytes@2.0.1':
+    resolution: {integrity: sha512-QIzI6V7nkJA5CjOZ7GoceBd4CIKrJoC471VaI6jh1xPQ2cMhkhQK4HddyzCXOR2y+fBF3/5B2HO3FXXI9C+Xzg==}
+
+  '@stablelib/hash@2.0.0':
+    resolution: {integrity: sha512-u3WPSqGido8lwJuMcrBgM5K54LrPGhkWAdtsyccf7dGsLixAZUds77zOAbu7bvKPwQlmoByH0txBi5rTmEKuHg==}
+
   '@stablelib/hex@2.0.1':
     resolution: {integrity: sha512-nsAgs3109myeijRQg3HASq3vlxe/8uDKHEUuIwn9ZLxfWtXavgojAGLBjI7Sda6seOhy7rKrpmeehYo0Z5VGQA==}
 
@@ -2074,6 +2089,9 @@ packages:
 
   '@stablelib/random@2.0.1':
     resolution: {integrity: sha512-W6GAtXEEs7r+dSbuBsvoFmlyL3gLxle41tQkjKu17dDWtDdjhVUbtRfRCQcCUeczwkgjQxMPopgwYEvxXtHXGw==}
+
+  '@stablelib/sha256@2.0.1':
+    resolution: {integrity: sha512-LA1PaLDc6Lv72ppA4PEZ7abDE741KfG7k7QhBiUyIfViMqrwWv8HqQQFPeuPfS4k2OxFv++IAgc8HlvdBatD+w==}
 
   '@stablelib/utf8@2.0.1':
     resolution: {integrity: sha512-7+C2Iap42fbLyoKMaEIIDSb1TrcQVo+lGDItYAwb2JoAJr7QffyuDnbtvV/qzTyokOIMBrJgT+Rpsp1bPR8SjA==}
@@ -10277,6 +10295,10 @@ snapshots:
     dependencies:
       '@stablelib/int': 2.0.1
 
+  '@stablelib/bytes@2.0.1': {}
+
+  '@stablelib/hash@2.0.0': {}
+
   '@stablelib/hex@2.0.1': {}
 
   '@stablelib/int@2.0.1': {}
@@ -10284,6 +10306,12 @@ snapshots:
   '@stablelib/random@2.0.1':
     dependencies:
       '@stablelib/binary': 2.0.1
+      '@stablelib/wipe': 2.0.1
+
+  '@stablelib/sha256@2.0.1':
+    dependencies:
+      '@stablelib/binary': 2.0.1
+      '@stablelib/hash': 2.0.0
       '@stablelib/wipe': 2.0.1
 
   '@stablelib/utf8@2.0.1': {}
