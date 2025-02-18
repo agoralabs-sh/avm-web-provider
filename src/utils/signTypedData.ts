@@ -10,17 +10,19 @@ import { ARC0060ScopeEnum } from '@app/enums';
 import { ARC0060FailedDomainAuthError, ARC0060InvalidScopeError } from '@app/errors';
 
 // types
-import type { ISignAuthenticationDataOptions } from '@app/types';
+import type { ISignTypedDataOptions } from '@app/types';
 
 // utils
 import isUint8ArrayEqual from './isUint8ArrayEqual';
 
 /**
  * Signs some typed data using the ARC-0060 standard.
- * @param {ISignAuthenticationDataOptions} options - The authentication data, the data, the domain, the private key
- * of the signer and the scope.
+ * @param {ISignTypedDataOptions} options - The authentication data, the data,
+ * the domain, the private key of the signer and the scope.
  * @returns {Uint8Array} The signature of the signed data based on the scope.
- * @throws {ARC0060FailedDomainAuthError} If the domain hash is not the first 32 bytes of the authenticationData.
+ * @throws {ARC0060InvalidScopeError} If the supplied scope is not supported.
+ * @throws {ARC0060FailedDomainAuthError} If the domain hash is not the first 32
+ * bytes of the authenticationData.
  * @see {@link https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0060.md}.
  */
 export default function signTypedData({
@@ -29,7 +31,7 @@ export default function signTypedData({
   domain,
   privateKey,
   scope,
-}: ISignAuthenticationDataOptions): Uint8Array {
+}: ISignTypedDataOptions): Uint8Array {
   const domainHash = sha256(encodeUTF8(domain));
   const keyPair = sign.keyPair.fromSeed(privateKey);
   let toSign: Uint8Array;

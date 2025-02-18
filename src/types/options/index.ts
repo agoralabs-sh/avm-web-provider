@@ -7,4 +7,5 @@ export type { default as IBaseErrorOptions } from './IBaseErrorOptions';
 export type { default as IBaseInitOptions } from './IBaseInitOptions';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
-export type { default as ISignAuthenticationDataOptions } from './ISignAuthenticationDataOptions';
+export type { default as ISignTypedDataOptions } from './ISignTypedDataOptions';
+export type { default as IVerifyTypedDataOptions } from './IVerifyTypedDataOptions';
