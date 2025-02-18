@@ -137,11 +137,11 @@ const config: () => Promise<Config> = async () => {
               },
               {
                 label: 'Usage',
-                to: 'usage/index',
+                to: 'usage',
               },
               {
                 label: 'API Reference',
-                to: 'api-reference/index',
+                to: 'api-reference',
               },
               {
                 label: 'Supported Wallets',

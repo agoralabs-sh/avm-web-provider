@@ -2,7 +2,8 @@ import { concat } from '@stablelib/bytes';
 import { hash as sha256 } from '@stablelib/sha256';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { sign } from 'tweetnacl';
-
+import { generateAccount, secretKeyToMnemonic, seedFromMnemonic } from 'algosdk';
+seedFromMnemonic(secretKeyToMnemonic(generateAccount().sk));
 // enums
 import { ARC0060ScopeEnum } from '@app/enums';
 

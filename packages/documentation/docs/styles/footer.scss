@@ -1,4 +1,4 @@
-@import "./functions";
+@use "functions";
 
 $social-image-size: 24px;
 
@@ -26,7 +26,7 @@ $social-image-size: 24px;
     &:hover {
       svg {
         path {
-          fill: primary-color("dark");
+          fill: functions.primary-color("dark");
         }
       }
     }
@@ -36,21 +36,21 @@ $social-image-size: 24px;
       width: $social-image-size;
 
       path {
-        fill: text-color("dark");
+        fill: functions.text-color("dark");
         transition: fill var(--ifm-transition-fast) ease-in-out;
       }
     }
   }
 
   &__text {
-    color: text-color("dark");
+    color: functions.text-color("dark");
     margin: 0;
 
     &--link {
-      color: primary-color("dark");
+      color: functions.primary-color("dark");
 
       &:hover {
-        color: primary-color("dark");
+        color: functions.primary-color("dark");
       }
     }
   }

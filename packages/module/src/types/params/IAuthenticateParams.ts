@@ -1,4 +1,6 @@
 /**
+ * @property {string} authenticationData - A base64 encoded string of the
+ * authentication data.
  * @property {string} data - A base64 encoded string of some arbitrary data to
  * be used to authenticate.
  * @property {string} providerId - [optional] A unique identifier for the
@@ -7,6 +9,7 @@
  * authenticate.
  */
 interface IAuthenticateParams {
+  authenticationData: string;
   data: string;
   providerId?: string;
   signer?: string;

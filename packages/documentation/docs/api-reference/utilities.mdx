@@ -1,0 +1,42 @@
+import TOCInline from '@theme/TOCInline';
+
+# Utilities
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## ARC-0060
+
+### `signTypedData(options)`
+
+> Signs some typed data using the [ARC-0060](https://arc.algorand.foundation/ARCs/arc-0060) standard.
+
+#### Parameters
+
+| Name    | Type                                                   | Required | Default | Description                                                                                 |
+|---------|--------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------|
+| options | [`ISignTypedDataOptions`](types#isigntypeddataoptions) | yes      | -       | The authentication data, the data, the domain, the private key of the signer and the scope. |
+
+#### Returns
+
+| Type         | Description                                          |
+|--------------|------------------------------------------------------|
+| `Uint8Array` | The signature of the hashed data based on the scope. |
+
+### `verifyTypedData(options)`
+
+> Verifies some signed typed data.
+
+#### Parameters
+
+| Name    | Type                                                       | Required | Default | Description                                                                    |
+|---------|------------------------------------------------------------|----------|---------|--------------------------------------------------------------------------------|
+| options | [`IVerifyTypedDataOptions`](types#iverifytypeddataoptions) | yes      | -       | The authentication data, the data, the public key of the signer and the scope. |
+
+#### Returns
+
+| Type      | Description                                                                  |
+|-----------|------------------------------------------------------------------------------|
+| `boolean` | True if the signature is signed by the supplied public key, false otherwise. |
