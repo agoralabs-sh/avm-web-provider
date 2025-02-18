@@ -1,3 +1,25 @@
+# [2.0.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.7.0...v2.0.0-beta.1) (2025-02-18)
+
+
+### Features
+
+* implement authenticate function ([#40](https://github.com/agoralabs-sh/avm-web-provider/issues/40)) ([0c5b434](https://github.com/agoralabs-sh/avm-web-provider/commit/0c5b43411dc23f3941a60d9d932e189471a9b097))
+
+
+### BREAKING CHANGES
+
+* move to esm modules
+
+* docs: add docs for utilities and authenticate methods
+
+* docs: add arc-0060 errors and refactor arc-0027
+
+* chore: fix some broken links
+
+* build: fix typescript configuration and linting errors
+
+* build: fix typing errors
+
 # [1.7.0](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.6.2...v1.7.0) (2024-09-11)
 
 
