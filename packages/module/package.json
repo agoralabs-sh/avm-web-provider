@@ -1,0 +1,54 @@
+{
+  "name": "@agoralabs-sh/avm-web-provider",
+  "version": "1.7.0",
+  "description": "A TypeScript implementation that allows clients to connect and interact with web-based providers.",
+  "keywords": [
+    "algorand",
+    "algosdk",
+    "arc0027",
+    "avm",
+    "blockchain",
+    "voi"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agoralabs-sh/avm-web-provider"
+  },
+  "author": {
+    "name": "Kieran O'Neill",
+    "email": "hello@kieranoneill.com",
+    "url": "https://github.com/kieranroneill"
+  },
+  "license": "CC0-1.0",
+  "private": false,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm clean && vite build",
+    "check:types": "tsc --noEmit",
+    "clean": "shx rm -rf dist && shx rm -rf tsconfig.*.tsbuildinfo",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "devDependencies": {
+    "@stablelib/base64": "^2.0.1",
+    "@types/node": "^22.x",
+    "algosdk": "^2.7.0",
+    "shx": "catalog:",
+    "typescript": "catalog:",
+    "vite": "^6.1.0",
+    "vite-plugin-dts": "^4.5.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "@stablelib/bytes": "^2.0.1",
+    "@stablelib/sha256": "^2.0.1",
+    "@stablelib/utf8": "^2.0.1",
+    "@stablelib/uuid": "^2.0.1",
+    "tweetnacl": "^1.0.3"
+  }
+}

@@ -12,9 +12,6 @@ import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
  * `response`.
  * @returns {string} the message reference as defined in the ARC-0027 spec.
  */
-export default function createMessageReference(
-  method: ARC0027MethodEnum,
-  type: ARC0027MessageTypeEnum
-): string {
+export default function createMessageReference(method: ARC0027MethodEnum, type: ARC0027MessageTypeEnum): string {
   return `${ARC0027_PREFIX}:${method}:${type}`;
 }

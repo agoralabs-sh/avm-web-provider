@@ -7,9 +7,7 @@ interface IOptions<Params = TRequestParams> {
   reference: string;
 }
 
-export default class RequestMessage<Params = TRequestParams>
-  implements IRequestMessage<Params>
-{
+export default class RequestMessage<Params = TRequestParams> implements IRequestMessage<Params> {
   public readonly id: string;
   public readonly params: Params | undefined;
   public readonly reference: string;

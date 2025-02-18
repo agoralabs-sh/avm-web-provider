@@ -14,10 +14,7 @@ interface IOptions {
   requestId: string;
 }
 
-export default class ResponseMessageWithError
-  extends BaseResponseMessage
-  implements IResponseMessageWithError
-{
+export default class ResponseMessageWithError extends BaseResponseMessage implements IResponseMessageWithError {
   public readonly error: BaseARC0027Error;
 
   constructor({ error, id, reference, requestId }: IOptions) {

@@ -32,9 +32,7 @@ export default abstract class BaseController<Config extends IBaseConfig> {
    */
   public removeAllListeners(): void {
     // remove all the listeners
-    this._listeners.forEach(({ listener, reference }) =>
-      window.removeEventListener(reference, listener)
-    );
+    this._listeners.forEach(({ listener, reference }) => window.removeEventListener(reference, listener));
 
     // clear the map
     this._listeners.clear();

@@ -14,10 +14,11 @@
     "incremental": true,
     "isolatedModules": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    "outDir": "dist",
     "paths": {
       "@app/constants": ["src/constants"],
       "@app/controllers": ["src/controllers"],
@@ -29,6 +30,7 @@
     },
     "removeComments": false,
     "resolveJsonModule": true,
+    "rootDir": "src",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": false,
@@ -36,5 +38,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": false,
     "target": "ES2020"
-  }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "src/**/*.test.ts"]
 }

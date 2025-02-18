@@ -32,8 +32,8 @@ export default {
       {
         assets: [
           {
-            label: 'avm-web-provider.min.js',
-            path: 'dist/avm-web-provider.min.js',
+            label: 'avm-web-provider.js',
+            path: 'packages/module/dist/index.js',
           },
         ],
         releasedLabels: ['🚀 released'],

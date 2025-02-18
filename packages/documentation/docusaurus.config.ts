@@ -1,10 +1,9 @@
 import type * as Preset from '@docusaurus/preset-classic';
-import remarkPlugin from '@docusaurus/remark-plugin-npm2yarn';
 import type { Config } from '@docusaurus/types';
 import { resolve } from 'node:path';
 import { themes } from 'prism-react-renderer';
 
-const config: () => Config = () => {
+const config: () => Promise<Config> = async () => {
   // directories
   const docsDir = resolve(__dirname, 'docs');
   const staticDir = resolve(docsDir, 'static');
@@ -41,7 +40,7 @@ const config: () => Config = () => {
           docs: {
             remarkPlugins: [
               [
-                remarkPlugin,
+                await import('@docusaurus/remark-plugin-npm2yarn'),
                 {
                   sync: true,
                 },
@@ -184,4 +183,4 @@ const config: () => Config = () => {
   };
 };
 
-export default config();
+export default config;

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://avm-web-provider.agoralabs.sh">
-    <img alt="AVM Logo" src="assets/logo@128x128.png" style="padding-top: 15px" height="128" />
+    <img alt="AVM Logo" src="images/logo@128x128.png" height="64" />
   </a>
 </p>
 
@@ -10,7 +10,7 @@
 
 <div align="center">
 
-[![License: CC0-1.0](https://img.shields.io/github/license/agoralabs-sh/avm-web-provider)](./LICENSE)
+[![License: CC0-1.0](https://img.shields.io/github/license/agoralabs-sh/avm-web-provider)](LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/%40agoralabs-sh%2Favm-web-provider)](https://www.npmjs.com/package/%40agoralabs-sh/avm-web-provider)
 
 </div>
@@ -38,40 +38,31 @@
 ### Table of Contents
 
 * [1. Overview](#-1-overview)
-* [2. Documentation](#-2-documentation)
-* [3. Development](#-3-development)
-  * [3.1. Requirements](#31-requirements)
-  * [3.2. Setup](#32-setup)
-  * [3.3. Build](#33-build)
-* [4. Appendix](#-4-appendix)
-  * [4.1. Useful Commands](#41-useful-commands)
-* [5. How To Contribute](#-5-how-to-contribute)
-* [6. License](#-6-license)
+* [2. Development](#-2-development)
+  * [2.1. Requirements](#21-requirements)
+  * [2.2. Setup](#22-setup)
+  * [2.3. Build](#23-build)
+* [3. Appendix](#-3-appendix)
+  * [3.1. Useful Commands](#31-useful-commands)
+* [4. How To Contribute](#-4-how-to-contribute)
+* [5. License](#-5-license)
 
 ## 🔭 1. Overview
 
-The AVM Web Provider is an interface that bridges the gap between clients (e.g. dApps) and providers (e.g. wallets), allowing clients to connect and interact with providers in a standardized way.
-
-Both clients and providers use the [`window.dispatchEvent`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent) function to emit events, and use the [`window.addEventListener`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) function to observe events.
-
-The message schema is based on the [ARC-0027](https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0027.md) standard.
-
-## 📚 2. Documentation
-
-For full documentation, please see [here](https://avm-web-provider.agoralabs.sh).
+This project is the monorepo that contains the source code for the `avm-web-provider` package as well as the documentation.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 🛠 3. Development
+## 🛠 2. Development
 
-### 3.1. Requirements
+### 2.1. Requirements
 
 * Install [Node v22+](https://nodejs.org/en/)
 * Install [pnpm v10+](https://pnpm.io/installation)
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-### 3.2. Setup
+### 2.2. Setup
 
 1. Install the dependencies:
 ```bash
@@ -80,7 +71,7 @@ $ pnpm install
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-### 3.3. Build
+### 2.3. Build
 
 * To build simply run:
 ```bash
@@ -91,9 +82,9 @@ This will compile the Typescript source code into a `dist/` directory.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 📑 4. Appendix
+## 📑 3. Appendix
 
-### 4.1. Useful Commands
+### 3.1. Useful Commands
 
 | Command            | Description                                                                        |
 |--------------------|------------------------------------------------------------------------------------|
@@ -108,15 +99,15 @@ This will compile the Typescript source code into a `dist/` directory.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 👏 5. How To Contribute
+## 👏 4. How To Contribute
 
-Please read the [**Contributing Guide**](./CONTRIBUTING.md) to learn about the development process.
+Please read the [**Contributing Guide**](CONTRIBUTING.md) to learn about the development process.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
-## 📄 6. License
+## 📄 5. License
 
-Please refer to the [LICENSE](./LICENSE) file.
+Please refer to the [LICENSE](LICENSE) file.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 
