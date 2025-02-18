@@ -33,6 +33,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const params: IAuthenticateParams = {
+        authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
         data: encodeBase64(encodeUTF8('authenticate message')),
         providerId: uuid(), // call random provider
         signer,
@@ -54,6 +55,7 @@ describe(AVMWebProvider.name, () => {
       new Promise<void>((done) => {
         // arrange
         const params: IAuthenticateParams = {
+          authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
           data: encodeBase64(encodeUTF8('authenticate message')),
           providerId,
           signer,

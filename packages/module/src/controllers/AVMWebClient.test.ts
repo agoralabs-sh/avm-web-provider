@@ -63,6 +63,7 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.authenticate({
+          authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
           data: encodeBase64(encodeUTF8('authenticate message')),
           providerId,
         });
@@ -99,6 +100,7 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.authenticate({
+          authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
           data: encodeBase64(encodeUTF8('authenticate message')),
           providerId,
         });

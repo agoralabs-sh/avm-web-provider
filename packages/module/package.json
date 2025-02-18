@@ -29,7 +29,7 @@
   ],
   "scripts": {
     "build": "pnpm clean && vite build",
-    "check:types": "tsc --noEmit",
+    "check:types": "pnpm clean && tsc --noEmit --project tsconfig.build.json",
     "clean": "shx rm -rf dist && shx rm -rf tsconfig.*.tsbuildinfo",
     "test": "vitest run --config vitest.config.ts"
   },
