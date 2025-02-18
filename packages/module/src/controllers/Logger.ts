@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 // types
 import type { TLogLevel } from '@app/types';
 
@@ -33,6 +31,7 @@ export default class Logger {
    * public methods
    */
 
+  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-expressions */
   public debug(message?: any, ...optionalParams: any[]): void {
     this._canLog('debug') && console.log(message, ...optionalParams);
   }
@@ -48,4 +47,5 @@ export default class Logger {
   public warn(message?: any, ...optionalParams: any[]): void {
     this._canLog('warn') && console.warn(message, ...optionalParams);
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-expressions */
 }

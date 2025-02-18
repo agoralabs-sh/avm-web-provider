@@ -15,6 +15,10 @@ export default mergeConfig(
       },
       outDir: 'dist',
     },
-    plugins: [dts()],
+    plugins: [
+      dts({
+        tsconfigPath: 'tsconfig.build.json',
+      }),
+    ],
   })
 );

@@ -24,7 +24,7 @@ export default [
     },
   },
   {
-    ignores: ['dist/', '.docs/', '.docusaurus/', 'node_modules/'],
+    ignores: ['**/dist/', '**/.docusaurus/', '**/node_modules/'],
   },
   {
     rules: {
