@@ -1,5 +1,0 @@
-{
-  "extends": "@docusaurus/tsconfig/tsconfig.json",
-  "include": ["docs"],
-  "exclude": ["node_modules", "src"]
-}

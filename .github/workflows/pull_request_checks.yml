@@ -23,18 +23,32 @@ jobs:
 
   validate_pr_title:
     name: "Validate PR Title"
-    needs: install
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: "🛎 Checkout"
         uses: actions/checkout@v4
       - name: "📦 Setup pnpm Dependencies"
         uses: ./.github/actions/use-pnpm-dependencies
+      - name: "📥 Get PR Title"
+        id: get_pr_title
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const { data } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            return data.title;
       - name: "✅ Validate"
-        run: echo ${{ github.event.pull_request.title }} | pnpm exec commitlint
+        run: echo "${{ steps.get_pr_title.outputs.result }}" | pnpm exec commitlint
 
   ##
-  # lint, build documentation, build package and test
+  # lint, check types and test
   ##
 
   lint:

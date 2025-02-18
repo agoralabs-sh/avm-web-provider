@@ -1,0 +1,208 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Responding To Authentication Requests
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+If your provider supports it, a provider can accept authentication a requests from the client using the [ARC-0060](https://arc.algorand.foundation/ARCs/arc-0060) specification.
+
+:::info
+
+When signing the data, it **MUST** be signed using the [ARC-0060](https://arc.algorand.foundation/ARCs/arc-0060) specification. The utility method [`signTypedData`](../../api-reference/utilities#signtypeddataoptions) can be used to sign the data.
+
+:::
+
+## Responding to an authentication request
+
+Once the provider object has been initialized, we can simply listen to events and respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+import { generateAccount, secretKeyToMnemonic, seedFromMnemonic } from 'algosdk';
+
+const account = generateAccount();
+
+// initialized provider
+provider.onAuthenticate(({
+  authenticationData,
+  data,
+}) => {
+  const privateKey = seedFromMnemonic(
+    secretKeyToMnemonic(account.sk)
+  );
+  const signature = signTypedData({
+    authenticationData: Buffer.from(authenticationData, 'base64'),
+    data: Buffer.from(data, 'base64'),
+    domain: 'avm-web-provider.agoralabs.sh', // client domain
+    privateKey,
+    scope: 1, // AUTH
+  });
+
+  return {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    signature: Buffer.from(signature).toString('base64'),
+    signer: account.addr,
+  };
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import { generateAccount, secretKeyToMnemonic, seedFromMnemonic } from 'algosdk';
+
+const account = generateAccount();
+
+// initialized provider
+provider.onAuthenticate(({
+  authenticationData,
+  data,
+}) => {
+  const privateKey = seedFromMnemonic(
+    secretKeyToMnemonic(account.sk)
+  );
+  const signature = signTypedData({
+    authenticationData: Buffer.from(authenticationData, 'base64'),
+    data: Buffer.from(data, 'base64'),
+    domain: 'avm-web-provider.agoralabs.sh', // client domain
+    privateKey,
+    scope: 1, // AUTH
+  });
+
+  return {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    signature: Buffer.from(signature).toString('base64'),
+    signer: account.addr,
+  };
+});
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If this method is not supported, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) **SHOULD** be thrown.
+
+:::
+
+## Responding to an authentication request with a specific signer
+
+The `authenticate` request allows a signer to be specified. This is denoted in the supplied `params.signer` parameter.
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+import { ARC0060InvalidSignerError } from '@agoralabs-sh/avm-web-provider';
+import { generateAccount, secretKeyToMnemonic, seedFromMnemonic } from 'algosdk';
+
+const account = generateAccount();
+
+provider.onAuthenticate(({
+  authenticationData,
+  data,
+  signer,
+}) => {
+  let privateKey;
+  let signature;
+
+  // if the signer has been defined, and it is not allowed, it is recommended that you throw and error
+  if (signer && account.addr !== signer) {
+    throw new ARC0060InvalidSignerError({
+      message: 'invalid signer',
+      signer,
+    });
+  }
+
+  privateKey = seedFromMnemonic(
+    secretKeyToMnemonic(account.sk)
+  );
+  signature = signTypedData({
+    authenticationData: Buffer.from(authenticationData, 'base64'),
+    data: Buffer.from(data, 'base64'),
+    domain: 'avm-web-provider.agoralabs.sh', // client domain
+    privateKey,
+    scope: 1, // AUTH
+  });
+
+  return {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    signature: Buffer.from(signature).toString('base64'),
+    signer: account.addr,
+  };
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import { ARC0060InvalidSignerError } from '@agoralabs-sh/avm-web-provider';
+import { generateAccount, secretKeyToMnemonic, seedFromMnemonic } from 'algosdk';
+
+const account = generateAccount();
+
+provider.onAuthenticate(({
+  authenticationData,
+  data,
+  signer,
+}) => {
+  let privateKey: Uint8Array;
+  let signature: Uint8Array;
+
+  // if the signer has been defined, and it is not allowed, it is recommended that you throw and error
+  if (signer && account.addr !== signer) {
+    throw new ARC0060InvalidSignerError({
+      message: 'invalid signer',
+      signer,
+    });
+  }
+
+  privateKey = seedFromMnemonic(
+    secretKeyToMnemonic(account.sk)
+  );
+  signature = signTypedData({
+    authenticationData: Buffer.from(authenticationData, 'base64'),
+    data: Buffer.from(data, 'base64'),
+    domain: 'avm-web-provider.agoralabs.sh', // client domain
+    privateKey,
+    scope: 1, // AUTH
+  });
+
+  return {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    signature: Buffer.from(signature).toString('base64'),
+    signer: account.addr,
+  };
+});
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If the signer is specified, and the provider does not allow the signer, then a [`ARC0060InvalidSignerError`](../../api-reference/errors#arc0060invalidsignererror) **SHOULD** be thrown.
+
+:::

@@ -1,108 +1,43 @@
 {
-  "name": "@agoralabs-sh/avm-web-provider",
-  "version": "1.7.0",
+  "name": "avm-web-provider",
+  "private": true,
   "description": "A TypeScript implementation that allows clients to connect and interact with web-based providers.",
-  "keywords": [
-    "algorand",
-    "algosdk",
-    "arc0027",
-    "avm",
-    "blockchain",
-    "voi"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/agoralabs-sh/avm-web-provider"
-  },
-  "author": {
-    "name": "Kieran O'Neill",
-    "email": "hello@kieranoneill.com",
-    "url": "https://github.com/kieranroneill"
-  },
-  "license": "CC0-1.0",
-  "private": false,
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "engines": {
     "node": "^22.x"
   },
   "packageManager": "pnpm@10.3.0",
   "scripts": {
-    "build": "pnpm clean && vite build",
-    "build:docs": "docusaurus build --out-dir .docs",
-    "check:types": "tsc --noEmit --project tsconfig.build.json",
-    "clean": "shx rm -rf dist && shx rm -rf tsconfig.*.tsbuildinfo",
-    "clean:docs": "docusaurus clear",
+    "build": "pnpm -F @agoralabs-sh/avm-web-provider build",
+    "build:docs": "pnpm -F documentation build",
+    "check:types": "pnpm -F @agoralabs-sh/avm-web-provider check:types",
+    "clean": "pnpm -F @agoralabs-sh/avm-web-provider clean",
+    "clean:docs": "pnpm -F documentation clean",
     "lint": "eslint .",
     "prepare": "husky",
     "prettier": "prettier --write \"**/*.{cjs,js,json,mjs,ts}\"",
-    "serve:docs": "docusaurus serve --dir .docs --no-open",
-    "start:docs": "docusaurus start --no-open --port 8080",
-    "test": "vitest run --config vitest.config.ts"
+    "serve:docs": "pnpm -F documentation serve",
+    "start:docs": "pnpm -F documentation start",
+    "test": "pnpm -F @agoralabs-sh/avm-web-provider test"
   },
   "devDependencies": {
     "@anolilab/semantic-release-pnpm": "1.1.8",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@commitlint/types": "^19.5.0",
-    "@docusaurus/core": "^3.5.2",
-    "@docusaurus/module-type-aliases": "^3.5.2",
-    "@docusaurus/preset-classic": "^3.5.2",
-    "@docusaurus/remark-plugin-npm2yarn": "^3.5.2",
-    "@docusaurus/tsconfig": "^3.5.2",
-    "@docusaurus/types": "^3.7.0",
     "@eslint/js": "^9.20.0",
-    "@mdx-js/react": "^3.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^9.2.6",
     "@semantic-release/release-notes-generator": "^14.0.1",
-    "@types/node": "^20.11.16",
-    "@types/uuid": "^9.0.8",
-    "algosdk": "^2.7.0",
-    "clsx": "^2.1.0",
-    "docusaurus-plugin-sass": "^0.2.5",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
     "globals": "^15.15.0",
     "husky": "^9.1.5",
     "lint-staged": "^15.2.10",
     "prettier": "^3.2.5",
-    "prism-react-renderer": "^2.3.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.70.0",
     "semantic-release": "^24.1.1",
-    "shx": "^0.3.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "typescript-eslint": "^8.24.1",
-    "vite": "^6.1.0",
-    "vite-plugin-dts": "^4.5.0",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.5"
-  },
-  "dependencies": {
-    "uuid": "^9.0.1"
-  },
-  "resolutions": {
-    "body-parser": "^1.20.3",
-    "braces": "^3.0.3",
-    "express": "^4.19.2",
-    "follow-redirects": "^1.15.6",
-    "ip": "^2.0.1",
-    "micromatch": "^4.0.8",
-    "send": "^0.19.0",
-    "serve-static": "^1.16.0",
-    "tar": "^6.2.1",
-    "webpack": "^5.94.0",
-    "webpack-dev-middleware": "^5.3.4",
-    "ws": "^7.5.10"
+    "typescript-eslint": "^8.24.1"
   }
 }

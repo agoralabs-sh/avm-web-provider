@@ -25,11 +25,11 @@ jobs:
       - name: "📦 Setup pnpm Dependencies"
         uses: ./.github/actions/use-pnpm-dependencies
       - name: "🏗️ Build"
-        run: pnpm docs:build
+        run: pnpm build:docs
       - name: "🚀 Deploy"
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.WRITE_REPOS_TOKEN }}
-          publish_dir: ./.docs
+          publish_dir: ./packages/documentation/dist
           user_name: agoralabs-bot
           user_email: tech@agoralabs.sh

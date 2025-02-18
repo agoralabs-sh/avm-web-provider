@@ -1,0 +1,315 @@
+import TOCInline from '@theme/TOCInline';
+
+# AVMWebClient
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Static Methods
+
+### `init([options])`
+
+> Initializes the AVM web client object. If no options are supplied, a default configuration is used.
+
+#### Parameters
+
+| Name    | Type                                                         | Required | Default | Description                                    |
+|---------|--------------------------------------------------------------|----------|---------|------------------------------------------------|
+| options | [`IAVMWebClientInitOptions`](types#iavmwebclientinitoptions) | no       | -       | An object to change the initial configuration. |
+
+#### Returns
+
+| Type                                 | Description                           |
+|--------------------------------------|---------------------------------------|
+| [`AVMWebClient`](types#avmwebclient) | An initialized AVM web client object. |
+
+## Methods
+
+### `authenticate(params)`
+
+> Sends a request to authenticate the client with providers.
+
+#### Parameters
+
+| Name   | Type                                                   | Required | Default | Description                                                              |
+|--------|--------------------------------------------------------|----------|---------|--------------------------------------------------------------------------|
+| params | [`IAuthenticationParams`](types#iauthenticationparams) | yes      | -       | Params that specify which provider, signer and the data to authenticate. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `disable([params])`
+
+> Sends a request to remove the client from providers.
+
+#### Parameters
+
+| Name   | Type                                     | Required | Default | Description                                                             |
+|--------|------------------------------------------|----------|---------|-------------------------------------------------------------------------|
+| params | [`IDisableParams`](types#idisableparams) | yes      | -       | Params that specify which provider,network and/or specific session IDs. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `discover([params])`
+
+> Sends a request to get information relating to available providers. This should be called before interacting with any providers to ensure networks and methods are supported.
+
+#### Parameters
+
+| Name   | Type                                       | Required | Default | Description                                   |
+|--------|--------------------------------------------|----------|---------|-----------------------------------------------|
+| params | [`IDiscoverParams`](types#idiscoverparams) | no       | -       | Params that specify which provider to target. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `enable([params])`
+
+> Enables to a client with providers. If the ID of the provider and/or network is specified, that provider/network is used, otherwise the all providers available providers are used.
+
+#### Parameters
+
+| Name   | Type                                   | Required | Default | Description                                          |
+|--------|----------------------------------------|----------|---------|------------------------------------------------------|
+| params | [`IEnableParams`](types#ienableparams) | no       | -       | Params that specify the provider and/or the network. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `getConfig()`
+
+> Returns the configuration.
+
+#### Returns
+
+| Type                                               | Description                 |
+|----------------------------------------------------|-----------------------------|
+| [`IAVMWebClientConfig`](types#iavmwebclientconfig) | The client's configuration. |
+
+
+### `onAuthenticate(callback)`
+
+> Listens to `authenticate` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onDisable(callback)`
+
+> Listens to `disable` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onDiscover(callback)`
+
+> Listens to `discover` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onEnable(callback)`
+
+> Listens to `enable` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onPostTransactions(callback)`
+
+> Listens to `post_transactions` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onSignAndPostTransactions(callback)`
+
+> Listens to `sign_and_post_transactions` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `onSignMessage(callback)`
+
+> Listens to `sign_message` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+### `onSignTransactions(callback)`
+
+> Listens to `sign_transactions` messages sent from providers.
+
+#### Parameters
+
+| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+
+#### Returns
+
+| Type     | Description             |
+|----------|-------------------------|
+| `string` | the ID of the listener. |
+
+### `postTransactions([params])`
+
+> Request providers to post a list of signed transactions to the network.
+
+#### Parameters
+
+| Name   | Type                                                       | Required | Default | Description                                                   |
+|--------|------------------------------------------------------------|----------|---------|---------------------------------------------------------------|
+| params | [`IPostTransactionsParams`](types#iposttransactionsparams) | yes      | -       | Params that specify the provider and the signed transactions. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `removeAllListeners()`
+
+> Removes all listeners.
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
+### `removeListener(id)`
+
+> Removes the listener, by the ID.
+
+#### Parameters
+
+| Name | Type     | Required | Default | Description                |
+|------|----------|----------|---------|----------------------------|
+| id   | `string` | yes      | -       | The listener ID to remove. |
+
+#### Returns
+
+| Type   | Description |
+|--------|-------------|
+| `void` | -           |
+
+### `signAndpostTransactions([params])`
+
+> Request providers to sign and post a list of unsigned transactions to the network.
+
+#### Parameters
+
+| Name   | Type                                                       | Required | Default | Description                                                     |
+|--------|------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
+| params | [`ISignTransactionsParams`](types#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `signMessage([params])`
+
+> Request providers sign a UTF-8 encoded message.
+
+#### Parameters
+
+| Name   | Type                                             | Required | Default | Description                                                           |
+|--------|--------------------------------------------------|----------|---------|-----------------------------------------------------------------------|
+| params | [`ISignMessageParams`](types#isignmessageparams) | yes      | -       | Params that specify the message to sign, the signer and the provider. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |
+
+### `signTransactions([params])`
+
+> Request providers to sign a list of unsigned transactions.
+
+#### Parameters
+
+| Name   | Type                                                       | Required | Default | Description                                                     |
+|--------|------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
+| params | [`ISignTransactionsParams`](types#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
+
+#### Returns
+
+| Type     | Description                    |
+|----------|--------------------------------|
+| `string` | the ID of the request message. |

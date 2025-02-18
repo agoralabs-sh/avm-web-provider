@@ -270,10 +270,4 @@ fabric.properties
 
 ### Docusaurus
 .docusaurus/
-.cache/
 .cache-loader/
-
-### Miscellaneous
-
-# documentation
-.docs/

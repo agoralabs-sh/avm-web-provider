@@ -1,0 +1,159 @@
+import TOCInline from '@theme/TOCInline';
+
+# Errors
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## ARC-0027 Errors
+
+| Code | Name                                                                                    | Summary                                                                                   |
+|------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| 4000 | [`ARC0027UnknownError`](#arc0027unknownerror)                                           | The default error response, usually indicates something is not quite right.               |
+| 4001 | [`ARC0027MethodCanceledError`](#arc0027methodcancelederror)                             | When a user has rejected the method.                                                      |
+| 4003 | [`ARC0027MethodNotSupportedError`](#arc0027methodnotsupportederror)                     | The specified provider does not exist.                                                    |
+| 4004 | [`ARC0027NetworkNotSupportedError`](#arc0027networknotsupportederror)                   | Networks not supported.                                                                   |
+| 4100 | [`ARC0027UnauthorizedSignerError`](#arc0027unauthorizedsignererror)                     | The provider has not given permission to use a specified signer.                          |
+| 4200 | [`ARC0027InvalidInputError`](#arc0027invalidinputerror)                                 | The input for signing transactions is malformed.                                          |
+| 4201 | [`ARC0027InvalidGroupIdError`](#arc0027invalidgroupiderror)                             | The computed group ID of the atomic transactions is different from the assigned group ID. |
+| 4300 | [`ARC0027FailedToPostSomeTransactionsError`](#arc0027failedtopostsometransactionserror) | When some transactions were not sent properly.                                            |
+
+### `ARC0027UnknownError`
+
+This error is the default error and serves as the "catch all" error. This usually occurs when something has happened that is outside the bounds of graceful handling. You can check the `UnknownError.message` string for more information.
+
+#### Properties
+
+| Name    | Type     | Value | Description                      |
+|---------|----------|-------|----------------------------------|
+| code    | `number` | 4000  | A canonical code for this error. |
+| message | `string` | -     | A human readable message.        |
+
+### `ARC0027MethodCanceledError`
+
+This error is thrown when a user has rejected or canceled the requested action on the wallet. For example, the user decides to cancel the signing of a transaction.
+
+#### Properties
+
+| Name    | Type     | Value | Description                                   |
+|---------|----------|-------|-----------------------------------------------|
+| code    | `number` | 4001  | A canonical code for this error.              |
+| message | `string` | -     | A human readable message.                     |
+| method  | `string` | -     | The name of the method that is not supported. |
+
+### `ARC0027MethodNotSupportedError`
+
+This can be thrown by most [`AVMWebClient`](avm-web-client.mdx#methods) methods and indicates that the provider does not support the requested method.
+
+#### Properties
+
+| Name    | Type     | Value | Description                                   |
+|---------|----------|-------|-----------------------------------------------|
+| code    | `number` | 4003  | A canonical code for this error.              |
+| id      | `string` | -     | The ID of the provider.                       |
+| message | `string` | -     | A human readable message.                     |
+| method  | `string` | -     | The name of the method that is not supported. |
+
+### `ARC0027NetworkNotSupportedError`
+
+This error is thrown when a provided genesis hash is not supported by the wallet.
+
+#### Properties
+
+| Name          | Type       | Value | Description                                                |
+|---------------|------------|-------|------------------------------------------------------------|
+| code          | `number`   | 4004  | A canonical code for this error.                           |
+| genesisHashes | `string[]` | -     | The genesis hashes of the networks that are not supported. |
+| message       | `string`   | -     | A human readable message.                                  |
+
+### `ARC0027UnauthorizedSignerError`
+
+This error is thrown when a provided account has been specified, but the provider has not given permission to use that account as a signer.
+
+#### Properties
+
+| Name    | Type     | Value | Description                                                    |
+|---------|----------|-------|----------------------------------------------------------------|
+| code    | `number` | 4100  | A canonical code for this error.                               |
+| message | `string` | -     | A human readable message.                                      |
+| signer  | `string` | -     | The address (public key) of the signer that is not authorized. |
+
+### `ARC0027InvalidInputError`
+
+This error is thrown when the provider attempts to sign transaction(s) but the input is malformed.
+
+#### Properties
+
+| Name            | Type     | Value | Description                                          |
+|-----------------|----------|-------|------------------------------------------------------|
+| code            | `number` | 4200  | A canonical code for this error.                     |
+| message         | `string` | -     | A human readable message.                            |
+
+### `ARC0027InvalidGroupIdError`
+
+This error is thrown when the wallet attempts to sign atomic transactions in which the computed group ID is different from the assigned group ID.
+
+#### Properties
+
+| Name            | Type     | Value | Description                                          |
+|-----------------|----------|-------|------------------------------------------------------|
+| code            | `number` | 4201  | A canonical code for this error.                     |
+| computedGroupId | `string` | -     | The computed ID of the supplied atomic transactions. |
+| message         | `string` | -     | A human readable message.                            |
+
+### `ARC0027FailedToPostSomeTransactionsError`
+
+This error is thrown when some transactions failed to be posted to the network.
+
+#### Properties
+
+| Name          | Type                                 | Value | Description                                                                                                                                                                           |
+|---------------|--------------------------------------|-------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| code          | `number`                             | 4300  | A canonical code for this error.                                                                                                                                                      |
+| message       | `string`                             | -     | A human readable message.                                                                                                                                                             |
+| successTxnIDs | <code>(string  &#124; null)[]</code> | -     | This will correspond to the `stxns` list sent in `postTxns` and will contain the ID of those transactions that were successfully committed to the blockchain, or null if they failed. |
+
+## ARC-0060 Errors
+
+| Type                       | Name                                                            | Summary                                                                                                              |
+|----------------------------|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `ERROR_FAILED_DOMAIN_AUTH` | [`ARC0060FailedDomainAuthError`](#arc0060faileddomainautherror) | When authenticating data if the `authenticationData` field does not match the SHA-256 hash of the client's `domain`. |
+| `ERROR_INVALID_SCOPE`      | [`ARC0060InvalidScopeError`](#arc0060invalidscopeerror)         | When signing typed data, if the `scope` is not supported.                                                            |
+| `ERROR_INVALID_SIGNER`     | [`ARC0060InvalidSignerError`](#arc0060invalidsignererror)       | When signing typed data and the supplied `signer` has not been given permission.                                     |
+
+### `ARC0060FailedDomainAuthError`
+
+This error is thrown when authenticating data and the `authenticationData` field does not contain the SHA-256 hash of the client's `domain`.
+
+#### Properties
+
+| Name    | Type     | Value                      | Description                     |
+|---------|----------|----------------------------|---------------------------------|
+| message | `string` | -                          | A human readable message.       |
+| type    | `string` | `ERROR_FAILED_DOMAIN_AUTH` | A canonical type for the error. |
+
+### `ARC0060InvalidScopeError`
+
+This error is thrown when signing typed data and the supplied `scope` is not supported.
+
+#### Properties
+
+| Name    | Type                    | Value                 | Description                     |
+|---------|-------------------------|-----------------------|---------------------------------|
+| message | `string`                | -                     | A human readable message.       |
+| scope   | `string` \| `undefined` | -                     | The requested scope.            |
+| type    | `string`                | `ERROR_INVALID_SCOPE` | A canonical type for the error. |
+
+### `ARC0060InvalidSignerError`
+
+This error is thrown when signing typed data and the supplied `signer` has not been given permission.
+
+#### Properties
+
+| Name    | Type                    | Value                  | Description                     |
+|---------|-------------------------|------------------------|---------------------------------|
+| message | `string`                | -                      | A human readable message.       |
+| signer  | `string` \| `undefined` | -                      | The requested signer.           |
+| type    | `string`                | `ERROR_INVALID_SIGNER` | A canonical type for the error. |

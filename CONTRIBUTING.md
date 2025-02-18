@@ -64,7 +64,7 @@ The subject contains a succinct description of the change:
 
 1. Create a branch from the `main` branch and use the convention: `<feat|fix|build>/name-of-issue`.
 2. Once the code is ready to be merged into `main`, open a pull request.
-> ⚠️**NOTE:** The title must conform to the conventional commit message format outlined above. This is to ensure the merge commit to the main branch is picked up by the CI and creates an entry in the [CHANGELOG.md](./CHANGELOG.md).
+> ⚠️**NOTE:** The title must conform to the conventional commit message format outlined above. This is to ensure the merge commit to the main branch is picked up by the CI and creates an entry in the [CHANGELOG.md](CHANGELOG.md).
 3. To merge the PR, use the "Squash and merge" option. This is to keep the commit history clean and keep the commits on `main` with a 1:1 ratio with previous PRs.
 
 <sup>[Back to top ^](#table-of-contents)</sup>
