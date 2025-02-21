@@ -1,11 +1,12 @@
 export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOptions';
-export type { default as IAVMWebClientCallbackOptions } from './IAVMWebClientCallbackOptions';
 export type { default as IAVMWebProviderInitOptions } from './IAVMWebProviderInitOptions';
-export type { default as IAVMWebProviderCallbackOptions } from './IAVMWebProviderCallbackOptions';
+export type { default as ICallbackOptions } from './IProviderCallbackOptions';
 export type { default as IBaseARC0027ErrorOptions } from './IBaseARC0027ErrorOptions';
 export type { default as IBaseErrorOptions } from './IBaseErrorOptions';
 export type { default as IBaseInitOptions } from './IBaseInitOptions';
+export type { default as IRequestOptions } from './IRequestOptions';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
 export type { default as ISignTypedDataOptions } from './ISignTypedDataOptions';
 export type { default as IVerifyTypedDataOptions } from './IVerifyTypedDataOptions';
+export type { default as TClientCallbackOptions } from './TClientCallbackOptions';

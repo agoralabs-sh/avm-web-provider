@@ -1,9 +1,10 @@
 // types
-import type { TRequestParams } from '@app/types';
+import type { TParams } from '@/types';
 
-interface IRequestMessage<Params = TRequestParams> {
+interface IRequestMessage<Params = TParams> {
+  challenge: string;
   id: string;
-  params?: Params;
+  params: Params;
   reference: string;
 }
 

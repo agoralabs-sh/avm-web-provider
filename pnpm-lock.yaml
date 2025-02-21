@@ -132,7 +132,13 @@ importers:
 
   packages/module:
     dependencies:
+      '@stablelib/base64':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@stablelib/bytes':
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@stablelib/random':
         specifier: ^2.0.1
         version: 2.0.1
       '@stablelib/sha256':
@@ -148,9 +154,6 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
     devDependencies:
-      '@stablelib/base64':
-        specifier: ^2.0.1
-        version: 2.0.1
       '@types/node':
         specifier: ^22.x
         version: 22.13.4

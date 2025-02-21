@@ -1,18 +1,14 @@
 // types
-import type { IRequestMessage, TRequestParams } from '@app/types';
+import type { IRequestMessage, TParams } from '@/types';
 
-interface IOptions<Params = TRequestParams> {
-  id: string;
-  params: Params | undefined;
-  reference: string;
-}
-
-export default class RequestMessage<Params = TRequestParams> implements IRequestMessage<Params> {
+export default class RequestMessage<Params = TParams> implements IRequestMessage<Params> {
+  public readonly challenge: string;
   public readonly id: string;
-  public readonly params: Params | undefined;
+  public readonly params: Params;
   public readonly reference: string;
 
-  constructor({ id, params, reference }: IOptions<Params>) {
+  constructor({ challenge, id, params, reference }: IRequestMessage<Params>) {
+    this.challenge = challenge;
     this.id = id;
     this.params = params;
     this.reference = reference;

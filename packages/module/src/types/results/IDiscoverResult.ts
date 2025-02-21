@@ -1,5 +1,5 @@
 // types
-import type { INetworkConfiguration } from '@app/types';
+import type { INetworkConfiguration } from '@/types';
 
 /**
  * @property {string} host - [optional] the domain name of the provider.

@@ -4,11 +4,11 @@ import { ARC0027MethodEnum } from '@/enums';
 // types
 import type { TParams } from '@/types';
 
-interface ISendRequestMessageOptions<Params = TParams> {
-  challenge?: string;
+interface IProviderCallbackOptions<Params = TParams> {
+  challenge: string;
+  id: string;
   method: ARC0027MethodEnum;
   params: Params;
-  timeout?: number;
 }
 
-export default ISendRequestMessageOptions;
+export default IProviderCallbackOptions;

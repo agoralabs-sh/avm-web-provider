@@ -1,10 +1,10 @@
 // errors
-import { BaseARC0027Error } from '@app/errors';
+import { BaseARC0027Error } from '@/errors';
 
 // types
-import type IBaseResponseMessage from './IBaseResponseMessage';
+import type IResponseMessage from './IResponseMessage';
 
-interface IResponseMessageWithError extends IBaseResponseMessage {
+interface IResponseMessageWithError extends IResponseMessage {
   error: BaseARC0027Error;
 }
 

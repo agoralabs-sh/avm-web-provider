@@ -1,25 +1,22 @@
 // messages
-import BaseResponseMessage from './BaseResponseMessage';
+import ResponseMessage from './ResponseMessage';
 
 // types
-import type { IResponseMessageWithResult, TResponseResults } from '@app/types';
+import type { ICredential, IResponseMessageWithResult, TResults } from '@/types';
 
-interface IOptions<Result = TResponseResults> {
-  id: string;
-  reference: string;
-  requestId: string;
-  result: Result;
-}
-
-export default class ResponseMessageWithResult<Result = TResponseResults>
-  extends BaseResponseMessage
+export default class ResponseMessageWithResult<Result = TResults>
+  extends ResponseMessage
   implements IResponseMessageWithResult<Result>
 {
+  public readonly challenge: string;
+  public readonly credential: ICredential;
   public readonly result: Result;
 
-  constructor({ id, reference, requestId, result }: IOptions<Result>) {
-    super({ id, reference, requestId });
+  constructor({ challenge, credential, result, ...baseOptions }: IResponseMessageWithResult<Result>) {
+    super(baseOptions);
 
+    this.challenge = challenge;
+    this.credential = credential;
     this.result = result;
   }
 }

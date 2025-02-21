@@ -7,7 +7,7 @@ import type IPostTransactionsResult from './IPostTransactionsResult';
 import type ISignMessageResult from './ISignMessageResult';
 import type ISignTransactionsResult from './ISignTransactionsResult';
 
-type TResponseResults =
+type TResults =
   | IAuthenticateResult
   | IDisableResult
   | IDiscoverResult
@@ -16,4 +16,4 @@ type TResponseResults =
   | ISignMessageResult
   | ISignTransactionsResult;
 
-export default TResponseResults;
+export default TResults;

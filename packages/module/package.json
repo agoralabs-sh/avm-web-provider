@@ -34,7 +34,6 @@
     "test": "vitest run --config vitest.config.ts"
   },
   "devDependencies": {
-    "@stablelib/base64": "^2.0.1",
     "@types/node": "^22.x",
     "algosdk": "^2.7.0",
     "shx": "catalog:",
@@ -45,7 +44,9 @@
     "vitest": "^3.0.5"
   },
   "dependencies": {
+    "@stablelib/base64": "^2.0.1",
     "@stablelib/bytes": "^2.0.1",
+    "@stablelib/random": "^2.0.1",
     "@stablelib/sha256": "^2.0.1",
     "@stablelib/utf8": "^2.0.1",
     "@stablelib/uuid": "^2.0.1",

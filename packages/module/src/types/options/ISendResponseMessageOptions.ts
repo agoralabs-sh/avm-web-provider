@@ -1,16 +1,16 @@
 // enums
-import { ARC0027MethodEnum } from '@app/enums';
+import { ARC0027MethodEnum } from '@/enums';
 
 // messages
-import { RequestMessage } from '@app/messages';
+import { RequestMessage } from '@/messages';
 
 // types
-import type { TAVMWebProviderCallback, TRequestParams, TResponseResults } from '@app/types';
+import type { TProviderCallback, TParams, TResults } from '@/types';
 
-interface ISendResponseMessageOptions<Params = TRequestParams, Result = TResponseResults> {
-  callback: TAVMWebProviderCallback<Params, Result>;
+interface ISendResponseMessageOptions<Params = TParams, Result = TResults> {
+  callback: TProviderCallback<Params, Result>;
   method: ARC0027MethodEnum;
-  requestMessage: RequestMessage<Params>;
+  request: RequestMessage<Params>;
 }
 
 export default ISendResponseMessageOptions;
