@@ -3,13 +3,13 @@ import { hash as sha256 } from '@stablelib/sha256';
 import { sign } from 'tweetnacl';
 
 // enums
-import { ARC0060ScopeEnum } from '@app/enums';
+import { ARC0060ScopeEnum } from '@/enums';
 
 // errors
-import { ARC0060InvalidScopeError } from '@app/errors';
+import { ARC0060InvalidScopeError } from '@/errors';
 
 // types
-import type { IVerifyTypedDataOptions } from '@app/types';
+import type { IVerifyTypedDataOptions } from '@/types';
 
 /**
  * Verifies some signed typed data.

@@ -1,6 +1,11 @@
+// types
+import type TSupportedECDSACurves from './TSupportedECDSACurves';
+import type TSupportedHashes from './TSupportedHashes';
+
 interface IECDSAAlgorithm {
-  name: 'ecdsa';
-  digest: 'sha256' | 'sha384' | 'sha512';
+  curve: TSupportedECDSACurves;
+  hash: TSupportedHashes;
+  name: 'ECDSA';
 }
 
 export default IECDSAAlgorithm;

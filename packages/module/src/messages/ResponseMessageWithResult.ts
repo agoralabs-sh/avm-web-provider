@@ -11,12 +11,14 @@ export default class ResponseMessageWithResult<Result = TResults>
   public readonly challenge: string;
   public readonly credential: ICredential;
   public readonly result: Result;
+  public readonly signature: string;
 
-  constructor({ challenge, credential, result, ...baseOptions }: IResponseMessageWithResult<Result>) {
+  constructor({ challenge, credential, result, signature, ...baseOptions }: IResponseMessageWithResult<Result>) {
     super(baseOptions);
 
     this.challenge = challenge;
     this.credential = credential;
     this.result = result;
+    this.signature = signature;
   }
 }

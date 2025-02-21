@@ -44,6 +44,8 @@
     "vitest": "^3.0.5"
   },
   "dependencies": {
+    "@noble/curves": "^1.8.1",
+    "@noble/hashes": "^1.7.1",
     "@stablelib/base64": "^2.0.1",
     "@stablelib/bytes": "^2.0.1",
     "@stablelib/random": "^2.0.1",

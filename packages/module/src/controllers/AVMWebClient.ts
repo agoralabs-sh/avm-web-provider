@@ -41,7 +41,7 @@ import type {
 } from '@/types';
 
 // utilities
-import { createChallenge, createMessageReference } from '@/utilities';
+import { createChallenge, createMessageReference, verifyChallenge } from '@/utilities';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   private _requests: RequestMessage<TParams>[];
@@ -70,6 +70,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     const __function = '_addListener';
     const listener: TClientCustomEventListener = (event) => {
       let detail: ResponseMessageWithError | ResponseMessageWithResult<Result>;
+      let request: RequestMessage | null;
 
       try {
         detail = JSON.parse(event.detail); // the event.detail should be a stringified object
@@ -79,12 +80,31 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         return;
       }
 
+      request = this._requests.find(({ id }) => id === detail.requestID) || null;
+
       // if the request event is not known, ignore
-      if (this._requests.findIndex(({ id }) => id === detail.requestID) < 0) {
+      if (!request) {
         return;
       }
 
       this._logger.debug(`${AVMWebClient.name}#${__function}: received response event:`, detail);
+
+      // if the request signature does not match the request challenge,
+      if (
+        'result' in detail &&
+        !verifyChallenge({
+          challenge: request.challenge,
+          credential: detail.credential,
+          signature: detail.signature,
+        })
+      ) {
+        this._logger.debug(
+          `${AVMWebClient.name}#${__function}: provider with key "${detail.credential}" failed to to verify with request:`,
+          request
+        );
+
+        return;
+      }
 
       callback({
         ...detail,
@@ -104,7 +124,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     return listenerID;
   }
 
-  private _sendRequestMessage<Params = TParams>({
+  private _sendRequestMessage<Params extends TParams>({
     challenge,
     method,
     params,

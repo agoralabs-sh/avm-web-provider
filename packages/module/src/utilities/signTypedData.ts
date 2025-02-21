@@ -2,16 +2,15 @@ import { concat } from '@stablelib/bytes';
 import { hash as sha256 } from '@stablelib/sha256';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { sign } from 'tweetnacl';
-import { generateAccount, secretKeyToMnemonic, seedFromMnemonic } from 'algosdk';
-seedFromMnemonic(secretKeyToMnemonic(generateAccount().sk));
+
 // enums
-import { ARC0060ScopeEnum } from '@app/enums';
+import { ARC0060ScopeEnum } from '@/enums';
 
 // errors
-import { ARC0060FailedDomainAuthError, ARC0060InvalidScopeError } from '@app/errors';
+import { ARC0060FailedDomainAuthError, ARC0060InvalidScopeError } from '@/errors';
 
 // types
-import type { ISignTypedDataOptions } from '@app/types';
+import type { ISignTypedDataOptions } from '@/types';
 
 // utils
 import isUint8ArrayEqual from './isUint8ArrayEqual';

@@ -8,13 +8,11 @@ import IEd25519Algorithm from './IEd25519Algorithm';
  * @property {string} name - [optional] A canonical name for the provider. This is not unique and should not be used to
  * identify the provider.
  * @property {string} publicKey - A base64 encoded public key from the provider that is used in the signing.
- * @property {string} signature - A base64 encoded signature of the request's challenge.
  */
 interface ICredential {
-  algorithm: IECDSAAlgorithm | IEd25519Algorithm;
-  name?: string;
-  publicKey: string;
-  signature: string;
+  readonly algorithm: IECDSAAlgorithm | IEd25519Algorithm;
+  readonly name?: string;
+  readonly publicKey: string;
 }
 
 export default ICredential;

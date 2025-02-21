@@ -10,7 +10,7 @@ import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@/enums';
 import { ARC0027UnknownError, BaseARC0027Error } from '@/errors';
 
 // messages
-import { RequestMessage, ResponseMessageWithError, ResponseMessageWithResult } from '@/messages';
+import { ResponseMessageWithError, ResponseMessageWithResult } from '@/messages';
 
 // types
 import type {
@@ -62,7 +62,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       return this._sendResponseMessage({
         callback,
         method,
-        requestMessage: event.detail as RequestMessage<Params>,
+        request: event.detail,
       });
     };
     const listenerID = uuid();
@@ -96,7 +96,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     const responseReference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
 
     try {
-      const { credential, result } = await callback({
+      const { credential, result, signature } = await callback({
         challenge: request.challenge,
         id: request.id,
         method,
@@ -114,6 +114,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
               reference: responseReference,
               requestID: request.id,
               result,
+              signature,
             })
           ),
         })
