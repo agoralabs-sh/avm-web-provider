@@ -1,5 +1,5 @@
 // enums
-import { ARC0027MethodEnum } from '@app/enums';
+import { ARC0027MethodEnum } from '@/enums';
 
 /**
  * @property {string} genesisHash - the unique identifier for the network that is the hash of the genesis block.

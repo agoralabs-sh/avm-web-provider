@@ -1,8 +1,8 @@
 // constants
-import { ARC0027_PREFIX } from '@app/constants';
+import { ARC0027_PREFIX } from '@/constants';
 
 // enums
-import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
+import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@/enums';
 
 /**
  * Convenience function that constructs a message reference as outlined in

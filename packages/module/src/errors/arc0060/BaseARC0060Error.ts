@@ -1,8 +1,8 @@
 // enums
-import { ARC0060ErrorTypeEnum } from '@app/enums';
+import { ARC0060ErrorTypeEnum } from '@/enums';
 
 // types
-import type { IBaseErrorOptions } from '@app/types';
+import type { IBaseErrorOptions } from '@/types';
 
 export default abstract class BaseARC0060Error {
   public readonly type: ARC0060ErrorTypeEnum;

@@ -1,5 +1,5 @@
-import { concat } from '@stablelib/bytes';
-import { hash as sha256 } from '@stablelib/sha256';
+import { concat, isEqual } from '@agoralabs-sh/bytes';
+import { sha256 } from '@noble/hashes/sha2';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { sign } from 'tweetnacl';
 
@@ -11,9 +11,6 @@ import { ARC0060FailedDomainAuthError, ARC0060InvalidScopeError } from '@/errors
 
 // types
 import type { ISignTypedDataOptions } from '@/types';
-
-// utils
-import isUint8ArrayEqual from './isUint8ArrayEqual';
 
 /**
  * Signs some typed data using the ARC-0060 standard.
@@ -39,7 +36,7 @@ export default function signTypedData({
   switch (scope) {
     case ARC0060ScopeEnum.AUTH:
       // check that the first 32 bytes of authenticatorData are the same as the sha256 hash of the domain
-      if (!isUint8ArrayEqual(authenticationData.slice(0, 32), domainHash)) {
+      if (!isEqual(authenticationData.slice(0, 32), domainHash)) {
         throw new ARC0060FailedDomainAuthError({
           message: 'supplied domain is not part of the authenticationData',
         });

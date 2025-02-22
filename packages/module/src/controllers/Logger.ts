@@ -1,5 +1,5 @@
 // types
-import type { TLogLevel } from '@app/types';
+import type { TLogLevel } from '@/types';
 
 export default class Logger {
   private readonly _level: TLogLevel;

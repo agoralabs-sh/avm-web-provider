@@ -4,7 +4,6 @@ export * from './callbacks';
 export * from './configs';
 export * from './listeners';
 export * from './messages';
-export * from './methods';
 export * from './networks';
 export * from './options';
 export * from './params';

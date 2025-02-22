@@ -1,15 +1,15 @@
-import { concat } from '@stablelib/bytes';
-import { hash as sha256 } from '@stablelib/sha256';
+import { concat } from '@agoralabs-sh/bytes';
+import { sha256 } from '@noble/hashes/sha2';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { randomBytes } from 'node:crypto';
 import { sign } from 'tweetnacl';
 import { describe, expect, test } from 'vitest';
 
 // enums
-import { ARC0060ErrorTypeEnum, ARC0060ScopeEnum } from '@app/enums';
+import { ARC0060ErrorTypeEnum, ARC0060ScopeEnum } from '@/enums';
 
 // errors
-import { BaseARC0060Error } from '@app/errors';
+import { BaseARC0060Error } from '@/errors';
 
 // utils
 import signTypedData from './signTypedData';

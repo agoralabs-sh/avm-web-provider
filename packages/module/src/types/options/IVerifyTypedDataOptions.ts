@@ -1,5 +1,5 @@
 // enums
-import { ARC0060ScopeEnum } from '@app/enums';
+import { ARC0060ScopeEnum } from '@/enums';
 
 /**
  * @property {Uint8Array} authenticationData - The authentication data used in
