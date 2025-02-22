@@ -1,8 +1,11 @@
+// enums
+import { ARC0027MethodEnum } from '@/enums';
+
 // messages
 import RequestMessage from './RequestMessage';
 
 // types
-import type { IRequestMessageWithCredential, TMethodsWithCredentialRequired, TParams } from '@/types';
+import type { IRequestMessageWithCredential, TParams } from '@/types';
 
 export default class RequestMessageWithCredential<Params = TParams>
   extends RequestMessage<Params>
@@ -10,7 +13,7 @@ export default class RequestMessageWithCredential<Params = TParams>
 {
   public readonly challenge: string;
   public readonly credential: string;
-  public readonly method: TMethodsWithCredentialRequired;
+  public readonly method: ARC0027MethodEnum;
 
   public constructor({ challenge, credential, method, ...baseOptions }: IRequestMessageWithCredential<Params>) {
     super(baseOptions);

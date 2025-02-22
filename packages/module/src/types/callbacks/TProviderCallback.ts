@@ -1,9 +1,9 @@
 // types
-import type { IProviderCallbackOptions, TParams, TResults } from '@/types';
-import type IProviderCallbackResult from './IProviderCallbackResult';
+import type { IProviderCallbackWithCredentialOptions, TParams, TResults } from '@/types';
+import type IProviderCallbackWithSignatureResult from './IProviderCallbackWithSignatureResult';
 
 type TProviderCallback<Params = TParams, Result = TResults | void> = (
-  options: IProviderCallbackOptions<Params>
-) => IProviderCallbackResult<Result> | Promise<IProviderCallbackResult<Result>>;
+  options: IProviderCallbackWithCredentialOptions<Params>
+) => IProviderCallbackWithSignatureResult<Result> | Promise<IProviderCallbackWithSignatureResult<Result>>;
 
 export default TProviderCallback;

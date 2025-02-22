@@ -3,10 +3,14 @@ export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOpt
 export type { default as IAVMWebProviderInitOptions } from './IAVMWebProviderInitOptions';
 export type { default as IBaseErrorOptions } from './IBaseErrorOptions';
 export type { default as IBaseInitOptions } from './IBaseInitOptions';
+export type { default as IClientCallbackOptions } from './IClientCallbackOptions';
+export type { default as IClientCallbackWithErrorOptions } from './IClientCallbackWithErrorOptions';
+export type { default as IClientCallbackWithResultAndSignatureOptions } from './IClientCallbackWithResultAndSignatureOptions';
+export type { default as IClientCallbackWithResultOptions } from './IClientCallbackWithResultOptions';
 export type { default as IProviderCallbackOptions } from './IProviderCallbackOptions';
+export type { default as IProviderCallbackWithCredentialOptions } from './IProviderCallbackWithCredentialOptions';
 export type { default as IRequestOptions } from './IRequestOptions';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
 export type { default as ISignTypedDataOptions } from './ISignTypedDataOptions';
 export type { default as IVerifyTypedDataOptions } from './IVerifyTypedDataOptions';
-export type { default as TClientCallbackOptions } from './TClientCallbackOptions';

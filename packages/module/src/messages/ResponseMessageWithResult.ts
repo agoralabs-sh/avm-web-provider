@@ -2,23 +2,17 @@
 import ResponseMessage from './ResponseMessage';
 
 // types
-import type { ICredential, IResponseMessageWithResult, TResults } from '@/types';
+import type { IResponseMessageWithResult, TResults } from '@/types';
 
 export default class ResponseMessageWithResult<Result = TResults>
   extends ResponseMessage
   implements IResponseMessageWithResult<Result>
 {
-  public readonly challenge: string;
-  public readonly credential: ICredential;
   public readonly result: Result;
-  public readonly signature: string;
 
-  constructor({ challenge, credential, result, signature, ...baseOptions }: IResponseMessageWithResult<Result>) {
+  constructor({ result, ...baseOptions }: IResponseMessageWithResult<Result>) {
     super(baseOptions);
 
-    this.challenge = challenge;
-    this.credential = credential;
     this.result = result;
-    this.signature = signature;
   }
 }

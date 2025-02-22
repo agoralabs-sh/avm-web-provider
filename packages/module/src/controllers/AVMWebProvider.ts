@@ -12,14 +12,19 @@ import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@/enums';
 import { ARC0027UnknownError, BaseARC0027Error } from '@/errors';
 
 // messages
-import { ResponseMessageWithError, ResponseMessageWithResult } from '@/messages';
+import {
+  DiscoverRequestMessage,
+  ResponseMessageWithError,
+  ResponseMessageWithResult,
+  ResponseMessageWithResultAndSignature,
+} from '@/messages';
 
 // types
 import type {
   IAuthenticateParams,
   IAuthenticateResult,
-  IAVMWebProviderInitOptions,
   IAVMWebProviderConfig,
+  IAVMWebProviderInitOptions,
   IDisableParams,
   IDisableResult,
   IDiscoverResult,
@@ -27,6 +32,8 @@ import type {
   IEnableResult,
   IPostTransactionsParams,
   IPostTransactionsResult,
+  IProviderCallbackOptions,
+  IProviderCallbackResult,
   ISendResponseMessageOptions,
   ISignMessageParams,
   ISignMessageResult,
@@ -50,14 +57,14 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * private methods
    */
 
-  private _addListener<Params = TParams, Result = TResults>(
+  private _addListener<Params extends TParams, Result = TResults>(
     method: ARC0027MethodEnum,
     callback: TProviderCallback<Params, Result>
   ): string {
     const __function = '_addListener';
     const listener: TProviderCustomEventListener<Params> = (event) => {
       this._logger.debug(
-        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request event:`,
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request:`,
         event.detail
       );
 
@@ -96,7 +103,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     const responseReference = createMessageReference(request.method, ARC0027MessageTypeEnum.Response);
 
     // if this is not a discover request and if the credential from the request does not match the initialized credential, ignore
-    if (request.method !== ARC0027MethodEnum.Discover && request.credential !== this._config.credential.toString()) {
+    if (request.credential !== this._config.credential.toString()) {
       this._logger.debug(
         `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: message credential "${request.credential}" does not match initialized credentials "${this._config.credential.toString()}", ignoring request`
       );
@@ -105,27 +112,19 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     }
 
     try {
-      const { result, signature } = await callback(
-        request.method !== ARC0027MethodEnum.Discover
-          ? {
-              challenge: request.challenge,
-              credential: request.credential,
-              id: request.id,
-              method: request.method,
-              params: request.params,
-            }
-          : {
-              id: request.id,
-              method: request.method,
-              params: request.params,
-            }
-      );
+      const { result, signature } = await callback({
+        challenge: request.challenge,
+        credential: request.credential,
+        id: request.id,
+        method: request.method,
+        params: request.params,
+      });
 
       // dispatch a response event with the result
       window.dispatchEvent(
         new CustomEvent(responseReference, {
           detail: JSON.stringify(
-            new ResponseMessageWithResult<Result>({
+            new ResponseMessageWithResultAndSignature<Result>({
               id: responseID,
               reference: responseReference,
               requestID: request.id,
@@ -233,13 +232,105 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   /**
    * Listens to `discover` messages sent from clients.
-   * @param {TProviderCallback<undefined, IDiscoverResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptions<undefined>) => IProviderCallbackResult<IDiscoverResult> | Promise<IProviderCallbackResult<IDiscoverResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onDiscover(callback: TProviderCallback<undefined, IDiscoverResult>): string {
-    return this._addListener<undefined, IDiscoverResult>(ARC0027MethodEnum.Discover, callback);
+  public onDiscover(
+    callback: (
+      options: IProviderCallbackOptions<undefined>
+    ) => IProviderCallbackResult<IDiscoverResult> | Promise<IProviderCallbackResult<IDiscoverResult>>
+  ): string {
+    const __function = '_addListener';
+    const method = ARC0027MethodEnum.Discover;
+    const listener = async (event: CustomEvent<DiscoverRequestMessage>) => {
+      const request = event.detail;
+      const responseID = generateUUID();
+      const responseReference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
+
+      this._logger.debug(
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request event:`,
+        request
+      );
+
+      try {
+        const { result } = await callback({
+          id: request.id,
+          method,
+          params: request.params,
+        });
+
+        // dispatch a response event with the result
+        window.dispatchEvent(
+          new CustomEvent(responseReference, {
+            detail: JSON.stringify(
+              new ResponseMessageWithResult<IDiscoverResult>({
+                id: responseID,
+                reference: responseReference,
+                requestID: request.id,
+                result,
+              })
+            ),
+          })
+        );
+
+        this._logger.debug(
+          `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: dispatched response message "${responseReference}" with id "${responseID}"`
+        );
+
+        return;
+      } catch (error) {
+        this._logger.error(error);
+
+        // if we have an arc-0027 error, send it in the response
+        if ((error as BaseARC0027Error).code) {
+          window.dispatchEvent(
+            new CustomEvent(responseReference, {
+              detail: JSON.stringify(
+                new ResponseMessageWithError({
+                  error,
+                  id: responseID,
+                  reference: responseReference,
+                  requestID: request.id,
+                })
+              ),
+            })
+          );
+
+          return;
+        }
+
+        // otherwise, wrap the message in an unknown error
+        window.dispatchEvent(
+          new CustomEvent(responseReference, {
+            detail: JSON.stringify(
+              new ResponseMessageWithError({
+                error: new ARC0027UnknownError({
+                  message: error.message,
+                }),
+                id: responseID,
+                reference: responseReference,
+                requestID: request.id,
+              })
+            ),
+          })
+        );
+
+        return;
+      }
+    };
+    const listenerID = generateUUID();
+    const reference = createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Request);
+
+    // start listening to request events and add the listener to the map
+    window.addEventListener(reference, listener);
+    this._listeners.set(listenerID, {
+      listener,
+      reference,
+    });
+
+    return listenerID;
   }
 
   /**

@@ -3,7 +3,7 @@ import { generate as generateUUID } from '@agoralabs-sh/uuid';
 import { VIP030026PublicKeyCredential } from '@agoralabs-sh/vip030026';
 
 // constants
-import { DEFAULT_REQUEST_TIMEOUT } from '@/constants';
+import { DEFAULT_REQUEST_TIMEOUT, LOWER_REQUEST_TIMEOUT } from '@/constants';
 
 // controllers
 import BaseController from './BaseController';
@@ -16,10 +16,11 @@ import { ARC0027UnauthorizedProviderCredentialError, ARC0027UnknownError } from 
 
 // messages
 import {
+  DiscoverRequestMessage,
   RequestMessageWithCredential,
-  RequestMessageWithoutCredential,
   ResponseMessageWithError,
   ResponseMessageWithResult,
+  ResponseMessageWithResultAndSignature,
 } from '@/messages';
 
 // types
@@ -28,6 +29,8 @@ import type {
   IAuthenticateResult,
   IAVMWebClientConfig,
   IAVMWebClientInitOptions,
+  IClientCallbackWithErrorOptions,
+  IClientCallbackWithResultOptions,
   IDisableParams,
   IDisableResult,
   IDiscoverResult,
@@ -51,7 +54,7 @@ import type {
 import { createChallenge, createMessageReference } from '@/utilities';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
-  private _requests: (RequestMessageWithCredential | RequestMessageWithoutCredential)[];
+  private _requests: (DiscoverRequestMessage | RequestMessageWithCredential)[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
@@ -77,28 +80,28 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     const __function = '_addListener';
     const listener: TClientCustomEventListener = (event) => {
       let credential: VIP030026PublicKeyCredential;
-      let detail: ResponseMessageWithError | ResponseMessageWithResult<Result>;
-      let request: RequestMessageWithCredential | RequestMessageWithoutCredential | null;
+      let response: ResponseMessageWithError | ResponseMessageWithResultAndSignature<Result>;
+      let request: DiscoverRequestMessage | RequestMessageWithCredential | null;
 
       try {
-        detail = JSON.parse(event.detail); // the event.detail should be a stringified object
+        response = JSON.parse(event.detail); // the event.detail should be a stringified object
       } catch (error) {
         this._logger.error(`${AVMWebClient.name}#${__function}:`, error);
 
         return;
       }
 
-      request = this._requests.find(({ id }) => id === detail.requestID) || null;
+      request = this._requests.find(({ id }) => id === response.requestID) || null;
 
-      // if the request event is not known, ignore
-      if (!request) {
+      // if the request event is not known or is a discover request, ignore
+      if (!request || request.method === ARC0027MethodEnum.Discover) {
         return;
       }
 
-      this._logger.debug(`${AVMWebClient.name}#${__function}: received response event:`, detail);
+      this._logger.debug(`${AVMWebClient.name}#${__function}: received response:`, response);
 
-      // if this is not a discover request, and we have a result we need to check the correct provider responded
-      if ('result' in detail && request.method !== ARC0027MethodEnum.Discover) {
+      // if we have a result we need to check the correct provider responded
+      if ('result' in response) {
         try {
           credential = VIP030026PublicKeyCredential.fromBytes(decodeBase64(request.credential));
         } catch (error) {
@@ -106,17 +109,17 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
           return callback({
             error: new ARC0027UnauthorizedProviderCredentialError(),
-            id: detail.id,
+            id: response.id,
             requestID: request.id,
             method,
           });
         }
 
-        // verify the challenge was successfully signed
+        // verify the challenge was successfully signed by the credential in the request
         if (
           credential.verify({
             bytes: decodeBase64(request.challenge),
-            signature: decodeBase64(detail.signature),
+            signature: decodeBase64(response.signature),
           })
         ) {
           this._logger.debug(
@@ -126,7 +129,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
           return callback({
             error: new ARC0027UnauthorizedProviderCredentialError(),
-            id: detail.id,
+            id: response.id,
             requestID: request.id,
             method,
           });
@@ -134,7 +137,9 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       }
 
       callback({
-        ...detail,
+        ...response,
+        challenge: request.challenge,
+        credential: request.credential,
         method,
       });
     };
@@ -155,27 +160,19 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     const __function = '_sendRequestMessage';
     const reference = createMessageReference(options.method, ARC0027MessageTypeEnum.Request);
     const id = generateUUID();
-    const request =
-      options.method !== ARC0027MethodEnum.Discover
-        ? new RequestMessageWithCredential<Params>({
-            challenge: options.challenge ?? createChallenge(),
-            credential: options.credential,
-            id,
-            params: options.params,
-            method: options.method,
-            reference,
-          })
-        : new RequestMessageWithoutCredential<Params>({
-            id,
-            method: options.method,
-            params: options.params,
-            reference,
-          });
+    const request = new RequestMessageWithCredential<Params>({
+      challenge: options.challenge ?? createChallenge(),
+      credential: options.credential,
+      id,
+      params: options.params,
+      method: options.method,
+      reference,
+    });
 
     try {
       // dispatch the request message
       window.dispatchEvent(
-        new CustomEvent<RequestMessageWithCredential<Params> | RequestMessageWithoutCredential<Params>>(reference, {
+        new CustomEvent<RequestMessageWithCredential<Params>>(reference, {
           detail: request,
         })
       );
@@ -238,10 +235,43 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public discover(): string {
-    return this._sendRequestMessage<undefined>({
-      method: ARC0027MethodEnum.Discover,
+    const __function = 'discover';
+    const id = generateUUID();
+    const method = ARC0027MethodEnum.Discover;
+    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
+    const request = new DiscoverRequestMessage({
+      id,
+      method,
       params: undefined,
+      reference,
     });
+
+    try {
+      // dispatch the request message
+      window.dispatchEvent(
+        new CustomEvent<DiscoverRequestMessage>(reference, {
+          detail: request,
+        })
+      );
+
+      // add a timeout to remove the request and stop handling response messages
+      window.setTimeout(() => {
+        this._requests = this._requests.filter((value) => value.id !== request.id);
+      }, LOWER_REQUEST_TIMEOUT);
+
+      this._logger.debug(
+        `${AVMWebClient.name}#${__function}: dispatched request message "${reference}" with id "${request.id}"`
+      );
+
+      // add the request to the internal state
+      this._requests.push(request);
+
+      return request.id;
+    } catch (error) {
+      this._logger.error(error);
+
+      throw new ARC0027UnknownError(error.message);
+    }
   }
 
   /**
@@ -288,8 +318,50 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onDiscover(callback: TClientCallback<IDiscoverResult>): string {
-    return this._addListener<IDiscoverResult>(ARC0027MethodEnum.Discover, callback);
+  public onDiscover(
+    callback: (
+      options: IClientCallbackWithErrorOptions | IClientCallbackWithResultOptions<IDiscoverResult>
+    ) => void | Promise<void>
+  ): string {
+    const __function = 'onDiscover';
+    const method = ARC0027MethodEnum.Discover;
+    const listener: TClientCustomEventListener = (event) => {
+      let response: ResponseMessageWithError | ResponseMessageWithResult<IDiscoverResult>;
+      let request: DiscoverRequestMessage | RequestMessageWithCredential | null;
+
+      try {
+        response = JSON.parse(event.detail); // the event.detail should be a stringified object
+      } catch (error) {
+        this._logger.error(`${AVMWebClient.name}#${__function}:`, error);
+
+        return;
+      }
+
+      request = this._requests.find(({ id }) => id === response.requestID) || null;
+
+      // if the request event is not known or it is not a discover request, ignore
+      if (!request || request.method !== ARC0027MethodEnum.Discover) {
+        return;
+      }
+
+      this._logger.debug(`${AVMWebClient.name}#${__function}: received response:`, response);
+
+      callback({
+        ...response,
+        method,
+      });
+    };
+    const listenerID = generateUUID();
+    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
+
+    // start listening to response events and add the listener to the map
+    window.addEventListener(reference, listener);
+    this._listeners.set(listenerID, {
+      listener,
+      reference,
+    });
+
+    return listenerID;
   }
 
   /**

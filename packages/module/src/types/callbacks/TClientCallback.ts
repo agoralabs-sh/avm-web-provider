@@ -1,6 +1,8 @@
 // types
-import type { TClientCallbackOptions, TResults } from '@/types';
+import type { IClientCallbackWithErrorOptions, IClientCallbackWithResultAndSignatureOptions, TResults } from '@/types';
 
-type TClientCallback<Result = TResults> = (options: TClientCallbackOptions<Result>) => void | Promise<void>;
+type TClientCallback<Result = TResults> = (
+  options: IClientCallbackWithErrorOptions | IClientCallbackWithResultAndSignatureOptions<Result>
+) => void | Promise<void>;
 
 export default TClientCallback;
