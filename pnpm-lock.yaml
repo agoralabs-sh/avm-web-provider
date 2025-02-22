@@ -132,6 +132,15 @@ importers:
 
   packages/module:
     dependencies:
+      '@agoralabs-sh/bytes':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@agoralabs-sh/uuid':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@agoralabs-sh/vip030026':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@noble/curves':
         specifier: ^1.8.1
         version: 1.8.1
@@ -144,7 +153,7 @@ importers:
       '@stablelib/bytes':
         specifier: ^2.0.1
         version: 2.0.1
-      '@stablelib/random':
+      '@stablelib/hex':
         specifier: ^2.0.1
         version: 2.0.1
       '@stablelib/sha256':
@@ -160,6 +169,9 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
     devDependencies:
+      '@stablelib/random':
+        specifier: ^2.0.1
+        version: 2.0.1
       '@types/node':
         specifier: ^22.x
         version: 22.13.4
@@ -186,6 +198,15 @@ importers:
         version: 3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(jiti@2.4.2)(jsdom@20.0.3)(sass@1.85.0)(terser@5.39.0)(yaml@2.7.0)
 
 packages:
+
+  '@agoralabs-sh/bytes@1.0.0':
+    resolution: {integrity: sha512-NifTB5dPWOQSjCdxRThs3OpIz18rzHYVm2QIv1qT81atfdDMN9IVySJ2YBaa26ZaAFJV20zDt5l/K7UqP8uGHw==}
+
+  '@agoralabs-sh/uuid@1.1.0':
+    resolution: {integrity: sha512-Or/N9YG/zAnrSzZrG4Dlu9/vxMzU8tjpKjUBoGrSC3C/vAGlPRuxNMt0GGiJjuEqe/JtLb+IOYC8LISaHrT3rw==}
+
+  '@agoralabs-sh/vip030026@1.0.0':
+    resolution: {integrity: sha512-G5Qp+a0J6L8HGbINMmtMnKxsSqbtvMIwWItC+jD91vaLhXd0OHFT6k2ca0B3UoWRdksJxY4HDg1gM8VKeCGTyw==}
 
   '@algolia/autocomplete-core@1.17.9':
     resolution: {integrity: sha512-O7BxrpLDPJWWHv/DLA9DRFWs+iY1uOJZkqUwjS5HSZAGcl0hIVCQ97LTLewiZmZ402JYUrun+8NqFP+hCknlbQ==}
@@ -7496,6 +7517,23 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@agoralabs-sh/bytes@1.0.0':
+    dependencies:
+      '@stablelib/bytes': 2.0.1
+
+  '@agoralabs-sh/uuid@1.1.0':
+    dependencies:
+      '@stablelib/hex': 2.0.1
+      '@stablelib/uuid': 2.0.1
+
+  '@agoralabs-sh/vip030026@1.0.0':
+    dependencies:
+      '@agoralabs-sh/bytes': 1.0.0
+      '@agoralabs-sh/uuid': 1.1.0
+      '@noble/curves': 1.8.1
+      '@noble/hashes': 1.7.1
+      '@stablelib/base64': 2.0.1
 
   '@algolia/autocomplete-core@1.17.9(@algolia/client-search@5.20.3)(algoliasearch@5.20.3)(search-insights@2.17.3)':
     dependencies:

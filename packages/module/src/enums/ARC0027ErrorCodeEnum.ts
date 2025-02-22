@@ -8,6 +8,7 @@ enum ARC0027ErrorCodeEnum {
   InvalidInputError = 4200,
   InvalidGroupIdError = 4201,
   FailedToPostSomeTransactionsError = 4300,
+  UnauthorizedProviderCredentialError = 4401,
 }
 
 export default ARC0027ErrorCodeEnum;

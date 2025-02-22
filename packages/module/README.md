@@ -39,6 +39,7 @@
 
 * [1. Overview](#-1-overview)
 * [2. Documentation](#-2-documentation)
+* [3. License](#-3-license)
 
 ## 🔭 1. Overview
 
@@ -51,6 +52,12 @@ The message schema is based on the [ARC-0027](https://github.com/algorandfoundat
 ## 📚 2. Documentation
 
 For full documentation, please see [here](https://avm-web-provider.agoralabs.sh).
+
+<sup>[Back to top ^][table-of-contents]</sup>
+
+## 📄 3. License
+
+Please refer to the [LICENSE](LICENSE) file.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 

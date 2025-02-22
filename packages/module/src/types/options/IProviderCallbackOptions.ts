@@ -1,14 +1,18 @@
-// enums
-import { ARC0027MethodEnum } from '@/enums';
-
 // types
-import type { TParams } from '@/types';
+import type { TMethodsWithCredentialRequired, TMethodsWithoutCredentialRequired, TParams } from '@/types';
 
-interface IProviderCallbackOptions<Params = TParams> {
-  challenge: string;
-  id: string;
-  method: ARC0027MethodEnum;
-  params: Params;
-}
+type IProviderCallbackOptions<Params = TParams> =
+  | {
+      challenge: string;
+      credential: string;
+      id: string;
+      method: TMethodsWithCredentialRequired;
+      params: Params;
+    }
+  | {
+      id: string;
+      method: TMethodsWithoutCredentialRequired;
+      params: Params;
+    };
 
 export default IProviderCallbackOptions;

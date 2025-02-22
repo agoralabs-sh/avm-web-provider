@@ -1,4 +1,6 @@
-import { uuid } from '@stablelib/uuid';
+import { decode as decodeBase64 } from '@stablelib/base64';
+import { generate as generateUUID } from '@agoralabs-sh/uuid';
+import { VIP030026PublicKeyCredential } from '@agoralabs-sh/vip030026';
 
 // constants
 import { DEFAULT_REQUEST_TIMEOUT } from '@/constants';
@@ -10,10 +12,15 @@ import BaseController from './BaseController';
 import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@/enums';
 
 // errors
-import { ARC0027UnknownError } from '@/errors';
+import { ARC0027UnauthorizedProviderCredentialError, ARC0027UnknownError } from '@/errors';
 
 // messages
-import { RequestMessage, ResponseMessageWithError, ResponseMessageWithResult } from '@/messages';
+import {
+  RequestMessageWithCredential,
+  RequestMessageWithoutCredential,
+  ResponseMessageWithError,
+  ResponseMessageWithResult,
+} from '@/messages';
 
 // types
 import type {
@@ -41,10 +48,10 @@ import type {
 } from '@/types';
 
 // utilities
-import { createChallenge, createMessageReference, verifyChallenge } from '@/utilities';
+import { createChallenge, createMessageReference } from '@/utilities';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
-  private _requests: RequestMessage<TParams>[];
+  private _requests: (RequestMessageWithCredential | RequestMessageWithoutCredential)[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
@@ -69,8 +76,9 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   private _addListener<Result = TResults>(method: ARC0027MethodEnum, callback: TClientCallback<Result>): string {
     const __function = '_addListener';
     const listener: TClientCustomEventListener = (event) => {
+      let credential: VIP030026PublicKeyCredential;
       let detail: ResponseMessageWithError | ResponseMessageWithResult<Result>;
-      let request: RequestMessage | null;
+      let request: RequestMessageWithCredential | RequestMessageWithoutCredential | null;
 
       try {
         detail = JSON.parse(event.detail); // the event.detail should be a stringified object
@@ -89,21 +97,40 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
       this._logger.debug(`${AVMWebClient.name}#${__function}: received response event:`, detail);
 
-      // if the request signature does not match the request challenge,
-      if (
-        'result' in detail &&
-        !verifyChallenge({
-          challenge: request.challenge,
-          credential: detail.credential,
-          signature: detail.signature,
-        })
-      ) {
-        this._logger.debug(
-          `${AVMWebClient.name}#${__function}: provider with key "${detail.credential}" failed to to verify with request:`,
-          request
-        );
+      // if this is not a discover request, and we have a result we need to check the correct provider responded
+      if ('result' in detail && request.method !== ARC0027MethodEnum.Discover) {
+        try {
+          credential = VIP030026PublicKeyCredential.fromBytes(decodeBase64(request.credential));
+        } catch (error) {
+          this._logger.error(`${AVMWebClient.name}#${__function}:`, error);
 
-        return;
+          return callback({
+            error: new ARC0027UnauthorizedProviderCredentialError(),
+            id: detail.id,
+            requestID: request.id,
+            method,
+          });
+        }
+
+        // verify the challenge was successfully signed
+        if (
+          credential.verify({
+            bytes: decodeBase64(request.challenge),
+            signature: decodeBase64(detail.signature),
+          })
+        ) {
+          this._logger.debug(
+            `${AVMWebClient.name}#${__function}: provider "${credential.id()}" failed to verify with request:`,
+            request
+          );
+
+          return callback({
+            error: new ARC0027UnauthorizedProviderCredentialError(),
+            id: detail.id,
+            requestID: request.id,
+            method,
+          });
+        }
       }
 
       callback({
@@ -111,7 +138,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
         method,
       });
     };
-    const listenerID = uuid();
+    const listenerID = generateUUID();
     const reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
 
     // start listening to response events and add the listener to the map
@@ -124,24 +151,31 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     return listenerID;
   }
 
-  private _sendRequestMessage<Params extends TParams>({
-    challenge,
-    method,
-    params,
-  }: ISendRequestMessageOptions<Params>): string {
+  private _sendRequestMessage<Params extends TParams>(options: ISendRequestMessageOptions<Params>): string {
     const __function = '_sendRequestMessage';
-    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
-    const request = new RequestMessage<Params>({
-      challenge: challenge ?? createChallenge(),
-      id: uuid(),
-      params,
-      reference,
-    });
+    const reference = createMessageReference(options.method, ARC0027MessageTypeEnum.Request);
+    const id = generateUUID();
+    const request =
+      options.method !== ARC0027MethodEnum.Discover
+        ? new RequestMessageWithCredential<Params>({
+            challenge: options.challenge ?? createChallenge(),
+            credential: options.credential,
+            id,
+            params: options.params,
+            method: options.method,
+            reference,
+          })
+        : new RequestMessageWithoutCredential<Params>({
+            id,
+            method: options.method,
+            params: options.params,
+            reference,
+          });
 
     try {
       // dispatch the request message
       window.dispatchEvent(
-        new CustomEvent<RequestMessage<Params>>(reference, {
+        new CustomEvent<RequestMessageWithCredential<Params> | RequestMessageWithoutCredential<Params>>(reference, {
           detail: request,
         })
       );
@@ -149,7 +183,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       // add a timeout to remove the request and stop handling response messages
       window.setTimeout(() => {
         this._requests = this._requests.filter((value) => value.id !== request.id);
-      }, DEFAULT_REQUEST_TIMEOUT);
+      }, options.timeout ?? DEFAULT_REQUEST_TIMEOUT);
 
       this._logger.debug(
         `${AVMWebClient.name}#${__function}: dispatched request message "${reference}" with id "${request.id}"`
@@ -172,43 +206,39 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
   /**
    * Sends a request to authenticate the client with providers.
-   * @param {IAuthenticateParams} params - [optional] params that specify which provider and signer to authenticate.
+   * @param {IRequestOptions<IAuthenticateParams>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    */
-  public authenticate(params: IAuthenticateParams): string {
+  public authenticate(options: IRequestOptions<IAuthenticateParams>): string {
     return this._sendRequestMessage<IAuthenticateParams>({
+      ...options,
       method: ARC0027MethodEnum.Authenticate,
-      params,
     });
   }
 
   /**
    * Sends a request to remove the client from providers.
-   * @param {IDisableParams} params - [optional] params that specify which provider, network and/or specific session IDs.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
+   * @param {IRequestOptions<IDisableParams | undefined>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public disable(params?: IDisableParams, options?: IRequestOptions): string {
+  public disable(options: IRequestOptions<IDisableParams | undefined>): string {
     return this._sendRequestMessage<IDisableParams | undefined>({
-      challenge: options?.challenge,
+      ...options,
       method: ARC0027MethodEnum.Disable,
-      params,
     });
   }
 
   /**
-   * Sends a request to get information relating to available providers. This should be called before interacting with
+   * Sends a request to get the available providers. This should be called before interacting with
    * any providers to ensure networks & methods are supported.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public discover(options?: IRequestOptions): string {
+  public discover(): string {
     return this._sendRequestMessage<undefined>({
-      challenge: options?.challenge,
       method: ARC0027MethodEnum.Discover,
       params: undefined,
     });
@@ -217,17 +247,15 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   /**
    * Enables to a client with providers. If the ID of the provider and/or network is specified, that provider/network is
    * used, otherwise the all providers available providers are used.
-   * @param {IEnableParams} params - [optional] params that specify the provider and/or the network.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
+   * @param {IRequestOptions<IEnableParams | undefined>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public enable(params?: IEnableParams, options?: IRequestOptions): string {
+  public enable(options: IRequestOptions<IEnableParams | undefined>): string {
     return this._sendRequestMessage<IEnableParams | undefined>({
-      challenge: options?.challenge,
+      ...options,
       method: ARC0027MethodEnum.Enable,
-      params,
     });
   }
 
@@ -320,65 +348,57 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
   /**
    * Request providers to post a list of signed transactions to the network.
-   * @param {IPostTransactionsParams} params - params that specify the provider and the signed transactions.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
+   * @param {IRequestOptions<IPostTransactionsParams>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public postTransactions(params: IPostTransactionsParams, options?: IRequestOptions): string {
+  public postTransactions(options: IRequestOptions<IPostTransactionsParams>): string {
     return this._sendRequestMessage<IPostTransactionsParams>({
-      challenge: options?.challenge,
+      ...options,
       method: ARC0027MethodEnum.PostTransactions,
-      params,
     });
   }
 
   /**
    * Sends a list of unsigned transactions to be signed and posted to the network by the provider.
-   * @param {ISignTransactionsParams} params - params that specify the unsigned transactions and the provider.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
+   * @param {IRequestOptions<ISignTransactionsParams>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public signAndPostTransactions(params: ISignTransactionsParams, options?: IRequestOptions): string {
+  public signAndPostTransactions(options: IRequestOptions<ISignTransactionsParams>): string {
     return this._sendRequestMessage<ISignTransactionsParams>({
-      challenge: options?.challenge,
+      ...options,
       method: ARC0027MethodEnum.SignAndPostTransactions,
-      params,
     });
   }
 
   /**
    * Sends a UTF-8 encoded message to be signed by the provider.
-   * @param {ISignMessageParams} params - params that specify the message to sign, the signer and the provider.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
+   * @param {IRequestOptions<ISignMessageParams>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public signMessage(params: ISignMessageParams, options?: IRequestOptions): string {
+  public signMessage(options: IRequestOptions<ISignMessageParams>): string {
     return this._sendRequestMessage<ISignMessageParams>({
-      challenge: options?.challenge,
+      ...options,
       method: ARC0027MethodEnum.SignMessage,
-      params,
     });
   }
 
   /**
    * Sends a list of unsigned transactions to be signed by the provider.
-   * @param {ISignTransactionsParams} params - params that specify the unsigned transactions and the provider.
-   * @param {IRequestOptions} options - [optional] Options that allow further customization of the request like
-   * specifying your own challenge.
+   * @param {IRequestOptions<ISignTransactionsParams>} options - The request params, the provider credential and an
+   * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public signTransactions(params: ISignTransactionsParams, options?: IRequestOptions): string {
+  public signTransactions(options: IRequestOptions<ISignTransactionsParams>): string {
     return this._sendRequestMessage<ISignTransactionsParams>({
-      challenge: options?.challenge,
+      ...options,
       method: ARC0027MethodEnum.SignTransactions,
-      params,
     });
   }
 }

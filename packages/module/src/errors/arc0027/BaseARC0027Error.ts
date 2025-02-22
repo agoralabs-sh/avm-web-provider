@@ -1,17 +1,15 @@
 // enums
-import { ARC0027ErrorCodeEnum } from '@app/enums';
+import { ARC0027ErrorCodeEnum } from '@/enums';
 
 // types
-import type { IBaseARC0027ErrorOptions } from '@app/types';
+import type { IBaseErrorOptions } from '@/types';
 
 export default abstract class BaseARC0027Error {
   public readonly code: ARC0027ErrorCodeEnum;
   public message: string;
   public readonly name: string;
-  public readonly providerId: string | undefined;
 
-  public constructor({ message, providerId }: IBaseARC0027ErrorOptions) {
+  public constructor({ message }: IBaseErrorOptions) {
     this.message = message.toLowerCase();
-    this.providerId = providerId;
   }
 }

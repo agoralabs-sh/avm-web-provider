@@ -5,10 +5,10 @@ import { sign } from 'tweetnacl';
 import { describe, expect, test } from 'vitest';
 
 // enums
-import { ARC0060ErrorTypeEnum, ARC0060ScopeEnum } from '@app/enums';
+import { ARC0060ErrorTypeEnum, ARC0060ScopeEnum } from '@/enums';
 
 // errors
-import { BaseARC0060Error } from '@app/errors';
+import { BaseARC0060Error } from '@/errors';
 
 // utils
 import signTypedData from './signTypedData';

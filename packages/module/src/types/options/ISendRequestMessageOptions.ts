@@ -1,14 +1,18 @@
-// enums
-import { ARC0027MethodEnum } from '@/enums';
-
 // types
-import type { TParams } from '@/types';
+import type { TMethodsWithCredentialRequired, TMethodsWithoutCredentialRequired, TParams } from '@/types';
 
-interface ISendRequestMessageOptions<Params = TParams> {
-  challenge?: string;
-  method: ARC0027MethodEnum;
-  params: Params;
-  timeout?: number;
-}
+type ISendRequestMessageOptions<Params = TParams> =
+  | {
+      challenge?: string;
+      credential: string;
+      method: TMethodsWithCredentialRequired;
+      params: Params;
+      timeout?: number;
+    }
+  | {
+      method: TMethodsWithoutCredentialRequired;
+      params: Params;
+      timeout?: number;
+    };
 
 export default ISendRequestMessageOptions;

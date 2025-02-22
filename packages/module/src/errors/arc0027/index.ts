@@ -6,5 +6,6 @@ export { default as ARC0027MethodNotSupportedError } from './ARC0027MethodNotSup
 export { default as ARC0027MethodTimedOutError } from './ARC0027MethodTimedOutError';
 export { default as ARC0027NetworkNotSupportedError } from './ARC0027NetworkNotSupportedError';
 export { default as ARC0027UnauthorizedSignerError } from './ARC0027UnauthorizedSignerError';
+export { default as ARC0027UnauthorizedProviderCredentialError } from './ARC0027UnauthorizedProviderCredentialError';
 export { default as ARC0027UnknownError } from './ARC0027UnknownError';
 export { default as BaseARC0027Error } from './BaseARC0027Error';

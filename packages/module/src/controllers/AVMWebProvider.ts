@@ -1,4 +1,6 @@
-import { uuid } from '@stablelib/uuid';
+import { generate as generateUUID } from '@agoralabs-sh/uuid';
+import { VIP030026PublicKeyCredential } from '@agoralabs-sh/vip030026';
+import { decode as decodeBase64 } from '@stablelib/base64';
 
 // controllers
 import BaseController from './BaseController';
@@ -16,8 +18,8 @@ import { ResponseMessageWithError, ResponseMessageWithResult } from '@/messages'
 import type {
   IAuthenticateParams,
   IAuthenticateResult,
-  IAVMWebProviderConfig,
   IAVMWebProviderInitOptions,
+  IAVMWebProviderConfig,
   IDisableParams,
   IDisableResult,
   IDiscoverResult,
@@ -30,9 +32,9 @@ import type {
   ISignMessageResult,
   ISignTransactionsParams,
   ISignTransactionsResult,
+  TParams,
   TProviderCallback,
   TProviderCustomEventListener,
-  TParams,
   TResults,
 } from '@/types';
 
@@ -52,20 +54,19 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     method: ARC0027MethodEnum,
     callback: TProviderCallback<Params, Result>
   ): string {
-    const _functionName = '_addListener';
+    const __function = '_addListener';
     const listener: TProviderCustomEventListener<Params> = (event) => {
       this._logger.debug(
-        `[${this._config.providerId}]${AVMWebProvider.name}#${_functionName}: received request event:`,
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request event:`,
         event.detail
       );
 
       return this._sendResponseMessage({
         callback,
-        method,
         request: event.detail,
       });
     };
-    const listenerID = uuid();
+    const listenerID = generateUUID();
     const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
 
     // start listening to request events and add the listener to the map
@@ -88,28 +89,43 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
   private async _sendResponseMessage<Params = TParams, Result = TResults>({
     callback,
-    method,
     request,
   }: ISendResponseMessageOptions<Params, Result>): Promise<void> {
-    const _functionName = '_sendResponseMessage';
-    const responseID = uuid();
-    const responseReference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
+    const __function = '_sendResponseMessage';
+    const responseID = generateUUID();
+    const responseReference = createMessageReference(request.method, ARC0027MessageTypeEnum.Response);
+
+    // if this is not a discover request and if the credential from the request does not match the initialized credential, ignore
+    if (request.method !== ARC0027MethodEnum.Discover && request.credential !== this._config.credential.toString()) {
+      this._logger.debug(
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: message credential "${request.credential}" does not match initialized credentials "${this._config.credential.toString()}", ignoring request`
+      );
+
+      return;
+    }
 
     try {
-      const { credential, result, signature } = await callback({
-        challenge: request.challenge,
-        id: request.id,
-        method,
-        params: request.params,
-      });
+      const { result, signature } = await callback(
+        request.method !== ARC0027MethodEnum.Discover
+          ? {
+              challenge: request.challenge,
+              credential: request.credential,
+              id: request.id,
+              method: request.method,
+              params: request.params,
+            }
+          : {
+              id: request.id,
+              method: request.method,
+              params: request.params,
+            }
+      );
 
       // dispatch a response event with the result
       window.dispatchEvent(
         new CustomEvent(responseReference, {
           detail: JSON.stringify(
             new ResponseMessageWithResult<Result>({
-              challenge: request.challenge,
-              credential,
               id: responseID,
               reference: responseReference,
               requestID: request.id,
@@ -121,7 +137,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       );
 
       this._logger.debug(
-        `[${this._config.providerId}]${AVMWebProvider.name}#${_functionName}: dispatched response message "${responseReference}" with id "${responseID}"`
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: dispatched response message "${responseReference}" with id "${responseID}"`
       );
 
       return;
@@ -153,7 +169,6 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
             new ResponseMessageWithError({
               error: new ARC0027UnknownError({
                 message: error.message,
-                providerId: this._config.providerId,
               }),
               id: responseID,
               reference: responseReference,
@@ -171,10 +186,22 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * public static methods
    */
 
-  public static init(providerId: string, { debug }: IAVMWebProviderInitOptions = { debug: false }): AVMWebProvider {
+  /**
+   * Initializes the provider. The provider **MUST** be initialized with a base64 encoded public key credential that
+   * conforms to the VIP-03-0026 standard. This credential acts as an identifier to clients and will be used to filter
+   * requests intended for other providers.
+   * @param {IAVMWebProviderInitOptions} options - The base64 encoded public key credential that conforms to the
+   * VIP-03-0026 standard.
+   * @returns {AVMWebProvider} An initialized AVMWebProvider.
+   * @throws {VIP030026InvalidCredentialLengthError} If the public key credential is invalid.
+   * @see {@link https://vips.voi.community/03/0026/}
+   * @static
+   * @public
+   */
+  public static init({ credential, debug = false }: IAVMWebProviderInitOptions): AVMWebProvider {
     return new AVMWebProvider({
+      credential: VIP030026PublicKeyCredential.fromBytes(decodeBase64(credential)),
       debug: debug || false,
-      providerId,
     });
   }
 
@@ -187,6 +214,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<IAuthenticateParams, IAuthenticateResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onAuthenticate(callback: TProviderCallback<IAuthenticateParams, IAuthenticateResult>): string {
     return this._addListener<IAuthenticateParams, IAuthenticateResult>(ARC0027MethodEnum.Authenticate, callback);
@@ -197,6 +225,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<IDisableParams, IDisableResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onDisable(callback: TProviderCallback<IDisableParams | undefined, IDisableResult>): string {
     return this._addListener<IDisableParams, IDisableResult>(ARC0027MethodEnum.Disable, callback);
@@ -207,6 +236,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<undefined, IDiscoverResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onDiscover(callback: TProviderCallback<undefined, IDiscoverResult>): string {
     return this._addListener<undefined, IDiscoverResult>(ARC0027MethodEnum.Discover, callback);
@@ -217,6 +247,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<IEnableParams, IEnableResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onEnable(callback: TProviderCallback<IEnableParams | undefined, IEnableResult>): string {
     return this._addListener<IEnableParams | undefined, IEnableResult>(ARC0027MethodEnum.Enable, callback);
@@ -227,6 +258,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<IPostTransactionsParams, IPostTransactionsResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onPostTransactions(callback: TProviderCallback<IPostTransactionsParams, IPostTransactionsResult>): string {
     return this._addListener<IPostTransactionsParams, IPostTransactionsResult>(
@@ -240,6 +272,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<ISignTransactionsParams, IPostTransactionsResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onSignAndPostTransactions(
     callback: TProviderCallback<ISignTransactionsParams, IPostTransactionsResult>
@@ -255,6 +288,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<ISignMessageParams, ISignMessageResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onSignMessage(callback: TProviderCallback<ISignMessageParams, ISignMessageResult>): string {
     return this._addListener<ISignMessageParams, ISignMessageResult>(ARC0027MethodEnum.SignMessage, callback);
@@ -265,6 +299,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @param {TProviderCallback<ISignTransactionsParams, ISignTransactionsResult>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onSignTransactions(callback: TProviderCallback<ISignTransactionsParams, ISignTransactionsResult>): string {
     return this._addListener<ISignTransactionsParams, ISignTransactionsResult>(

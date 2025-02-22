@@ -5,7 +5,7 @@ import { ARC0027MethodEnum } from '@/enums';
 import { BaseARC0027Error } from '@/errors';
 
 // types
-import type { ICredential, TResults } from '@/types';
+import type { TResults } from '@/types';
 
 type TClientCallbackOptions<Result = TResults> =
   | {
@@ -16,7 +16,7 @@ type TClientCallbackOptions<Result = TResults> =
     }
   | {
       challenge: string;
-      credential: ICredential;
+      credential: string;
       id: string;
       method: ARC0027MethodEnum;
       result: Result;
