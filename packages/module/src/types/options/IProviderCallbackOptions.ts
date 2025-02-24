@@ -1,5 +1,5 @@
 // enums
-import { ARC0027MethodEnum } from '@/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 // types
 import type { TParams } from '@/types';
@@ -7,7 +7,7 @@ import type { TParams } from '@/types';
 interface IProviderCallbackOptions<Params = TParams> {
   id: string;
   params: Params;
-  method: ARC0027MethodEnum;
+  method: VIP030027MethodEnum;
 }
 
 export default IProviderCallbackOptions;

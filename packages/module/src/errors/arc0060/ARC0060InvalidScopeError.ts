@@ -1,11 +1,11 @@
 // enums
-import { ARC0060ErrorTypeEnum } from '@app/enums';
+import { ARC0060ErrorTypeEnum } from '@/enums';
 
 // errors
 import BaseARC0060Error from './BaseARC0060Error';
 
 // errors
-import type { IBaseErrorOptions } from '@app/types';
+import type { IBaseErrorOptions } from '@/types';
 
 export default class ARC0060InvalidScopeError extends BaseARC0060Error {
   public readonly type: ARC0060ErrorTypeEnum = ARC0060ErrorTypeEnum.InvalidScopeError;

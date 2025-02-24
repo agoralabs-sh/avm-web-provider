@@ -1,5 +1,5 @@
 // enums
-import { ARC0027MethodEnum } from '@/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 // messages
 import RequestMessage from './RequestMessage';
@@ -13,7 +13,7 @@ export default class RequestMessageWithCredential<Params = TParams>
 {
   public readonly challenge: string;
   public readonly credential: string;
-  public readonly method: ARC0027MethodEnum;
+  public readonly method: VIP030027MethodEnum;
 
   public constructor({ challenge, credential, method, ...baseOptions }: IRequestMessageWithCredential<Params>) {
     super(baseOptions);

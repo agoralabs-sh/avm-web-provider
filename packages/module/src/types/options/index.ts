@@ -1,4 +1,3 @@
-export type { default as IARC0027UnauthorizedProviderCredentialErrorOptions } from './IARC0027UnauthorizedProviderCredentialErrorOptions';
 export type { default as IAVMWebClientInitOptions } from './IAVMWebClientInitOptions';
 export type { default as IAVMWebProviderInitOptions } from './IAVMWebProviderInitOptions';
 export type { default as IBaseErrorOptions } from './IBaseErrorOptions';
@@ -10,7 +9,13 @@ export type { default as IClientCallbackWithResultOptions } from './IClientCallb
 export type { default as IProviderCallbackOptions } from './IProviderCallbackOptions';
 export type { default as IProviderCallbackWithCredentialOptions } from './IProviderCallbackWithCredentialOptions';
 export type { default as IRequestOptions } from './IRequestOptions';
+export type { default as IRequestOptionsWithParams } from './IRequestOptionsWithParams';
 export type { default as ISendRequestMessageOptions } from './ISendRequestMessageOptions';
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
 export type { default as ISignTypedDataOptions } from './ISignTypedDataOptions';
 export type { default as IVerifyTypedDataOptions } from './IVerifyTypedDataOptions';
+export type { default as IVIP030027FailedToSignTransactionsErrorOptions } from './IVIP030027FailedToSignTransactionsErrorOptions';
+export type { default as IVIP030027MethodErrorOptions } from './IVIP030027MethodErrorOptions';
+export type { default as IVIP030027NetworkNotSupportedErrorOptions } from './IVIP030027NetworkNotSupportedErrorOptions';
+export type { default as IVIP030027UnauthorizedProviderCredentialErrorOptions } from './IVIP030027UnauthorizedProviderCredentialErrorOptions';
+export type { default as IVIP030027UnauthorizedSignerErrorOptions } from './IVIP030027UnauthorizedSignerErrorOptions';

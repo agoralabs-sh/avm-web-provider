@@ -6,10 +6,10 @@ import { decode as decodeBase64 } from '@stablelib/base64';
 import BaseController from './BaseController';
 
 // enums
-import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@/enums';
+import { VIP030027MessageTypeEnum, VIP030027MethodEnum } from '@/enums';
 
 // errors
-import { ARC0027UnknownError, BaseARC0027Error } from '@/errors';
+import { BaseVIP030027Error, VIP030027UnknownError } from '@/errors';
 
 // messages
 import {
@@ -57,8 +57,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * private methods
    */
 
-  private _addListener<Params extends TParams, Result = TResults>(
-    method: ARC0027MethodEnum,
+  private _addListener<Params extends TParams | undefined, Result = TResults>(
+    method: VIP030027MethodEnum,
     callback: TProviderCallback<Params, Result>
   ): string {
     const __function = '_addListener';
@@ -74,7 +74,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       });
     };
     const listenerID = generateUUID();
-    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
+    const reference = createMessageReference(method, VIP030027MessageTypeEnum.Request);
 
     // start listening to request events and add the listener to the map
     window.addEventListener(reference, listener);
@@ -94,13 +94,13 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts}
    * @private
    */
-  private async _sendResponseMessage<Params = TParams, Result = TResults>({
+  private async _sendResponseMessage<Params = TParams | undefined, Result = TResults>({
     callback,
     request,
   }: ISendResponseMessageOptions<Params, Result>): Promise<void> {
     const __function = '_sendResponseMessage';
     const responseID = generateUUID();
-    const responseReference = createMessageReference(request.method, ARC0027MessageTypeEnum.Response);
+    const responseReference = createMessageReference(request.method, VIP030027MessageTypeEnum.Response);
 
     // if this is not a discover request and if the credential from the request does not match the initialized credential, ignore
     if (request.credential !== this._config.credential.toString()) {
@@ -143,8 +143,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     } catch (error) {
       this._logger.error(error);
 
-      // if we have an arc-0027 error, send it in the response
-      if ((error as BaseARC0027Error).code) {
+      // if we have a vip-03-0027 error, send it in the response
+      if ((error as BaseVIP030027Error).isVIP030027Error) {
         window.dispatchEvent(
           new CustomEvent(responseReference, {
             detail: JSON.stringify(
@@ -166,7 +166,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
         new CustomEvent(responseReference, {
           detail: JSON.stringify(
             new ResponseMessageWithError({
-              error: new ARC0027UnknownError({
+              error: new VIP030027UnknownError({
                 message: error.message,
               }),
               id: responseID,
@@ -216,7 +216,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @public
    */
   public onAuthenticate(callback: TProviderCallback<IAuthenticateParams, IAuthenticateResult>): string {
-    return this._addListener<IAuthenticateParams, IAuthenticateResult>(ARC0027MethodEnum.Authenticate, callback);
+    return this._addListener<IAuthenticateParams, IAuthenticateResult>(VIP030027MethodEnum.Authenticate, callback);
   }
 
   /**
@@ -227,7 +227,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @public
    */
   public onDisable(callback: TProviderCallback<IDisableParams | undefined, IDisableResult>): string {
-    return this._addListener<IDisableParams, IDisableResult>(ARC0027MethodEnum.Disable, callback);
+    return this._addListener<IDisableParams | undefined, IDisableResult>(VIP030027MethodEnum.Disable, callback);
   }
 
   /**
@@ -243,11 +243,11 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     ) => IProviderCallbackResult<IDiscoverResult> | Promise<IProviderCallbackResult<IDiscoverResult>>
   ): string {
     const __function = '_addListener';
-    const method = ARC0027MethodEnum.Discover;
+    const method = VIP030027MethodEnum.Discover;
     const listener = async (event: CustomEvent<DiscoverRequestMessage>) => {
       const request = event.detail;
       const responseID = generateUUID();
-      const responseReference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
+      const responseReference = createMessageReference(method, VIP030027MessageTypeEnum.Response);
 
       this._logger.debug(
         `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request event:`,
@@ -283,8 +283,8 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       } catch (error) {
         this._logger.error(error);
 
-        // if we have an arc-0027 error, send it in the response
-        if ((error as BaseARC0027Error).code) {
+        // if we have a vip-03-0027 error, send it in the response
+        if ((error as BaseVIP030027Error).isVIP030027Error) {
           window.dispatchEvent(
             new CustomEvent(responseReference, {
               detail: JSON.stringify(
@@ -306,7 +306,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
           new CustomEvent(responseReference, {
             detail: JSON.stringify(
               new ResponseMessageWithError({
-                error: new ARC0027UnknownError({
+                error: new VIP030027UnknownError({
                   message: error.message,
                 }),
                 id: responseID,
@@ -321,7 +321,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
       }
     };
     const listenerID = generateUUID();
-    const reference = createMessageReference(ARC0027MethodEnum.Discover, ARC0027MessageTypeEnum.Request);
+    const reference = createMessageReference(VIP030027MethodEnum.Discover, VIP030027MessageTypeEnum.Request);
 
     // start listening to request events and add the listener to the map
     window.addEventListener(reference, listener);
@@ -341,7 +341,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @public
    */
   public onEnable(callback: TProviderCallback<IEnableParams | undefined, IEnableResult>): string {
-    return this._addListener<IEnableParams | undefined, IEnableResult>(ARC0027MethodEnum.Enable, callback);
+    return this._addListener<IEnableParams | undefined, IEnableResult>(VIP030027MethodEnum.Enable, callback);
   }
 
   /**
@@ -353,7 +353,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
   public onPostTransactions(callback: TProviderCallback<IPostTransactionsParams, IPostTransactionsResult>): string {
     return this._addListener<IPostTransactionsParams, IPostTransactionsResult>(
-      ARC0027MethodEnum.PostTransactions,
+      VIP030027MethodEnum.PostTransactions,
       callback
     );
   }
@@ -369,7 +369,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     callback: TProviderCallback<ISignTransactionsParams, IPostTransactionsResult>
   ): string {
     return this._addListener<ISignTransactionsParams, IPostTransactionsResult>(
-      ARC0027MethodEnum.SignAndPostTransactions,
+      VIP030027MethodEnum.SignAndPostTransactions,
       callback
     );
   }
@@ -382,7 +382,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @public
    */
   public onSignMessage(callback: TProviderCallback<ISignMessageParams, ISignMessageResult>): string {
-    return this._addListener<ISignMessageParams, ISignMessageResult>(ARC0027MethodEnum.SignMessage, callback);
+    return this._addListener<ISignMessageParams, ISignMessageResult>(VIP030027MethodEnum.SignMessage, callback);
   }
 
   /**
@@ -394,7 +394,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    */
   public onSignTransactions(callback: TProviderCallback<ISignTransactionsParams, ISignTransactionsResult>): string {
     return this._addListener<ISignTransactionsParams, ISignTransactionsResult>(
-      ARC0027MethodEnum.SignTransactions,
+      VIP030027MethodEnum.SignTransactions,
       callback
     );
   }

@@ -9,10 +9,10 @@ import { DEFAULT_REQUEST_TIMEOUT, LOWER_REQUEST_TIMEOUT } from '@/constants';
 import BaseController from './BaseController';
 
 // enums
-import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@/enums';
+import { VIP030027MessageTypeEnum, VIP030027MethodEnum } from '@/enums';
 
 // errors
-import { ARC0027UnauthorizedProviderCredentialError, ARC0027UnknownError } from '@/errors';
+import { VIP030027UnauthorizedProviderCredentialError, VIP030027UnknownError } from '@/errors';
 
 // messages
 import {
@@ -39,6 +39,7 @@ import type {
   IPostTransactionsParams,
   IPostTransactionsResult,
   IRequestOptions,
+  IRequestOptionsWithParams,
   ISendRequestMessageOptions,
   ISignMessageParams,
   ISignMessageResult,
@@ -54,7 +55,7 @@ import type {
 import { createChallenge, createMessageReference } from '@/utilities';
 
 export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
-  private _requests: (DiscoverRequestMessage | RequestMessageWithCredential)[];
+  private _requests: (DiscoverRequestMessage | RequestMessageWithCredential<TParams | undefined>)[];
 
   private constructor(config: IAVMWebClientConfig) {
     super(config);
@@ -76,12 +77,12 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * private methods
    */
 
-  private _addListener<Result = TResults>(method: ARC0027MethodEnum, callback: TClientCallback<Result>): string {
+  private _addListener<Result = TResults>(method: VIP030027MethodEnum, callback: TClientCallback<Result>): string {
     const __function = '_addListener';
     const listener: TClientCustomEventListener = (event) => {
       let credential: VIP030026PublicKeyCredential;
       let response: ResponseMessageWithError | ResponseMessageWithResultAndSignature<Result>;
-      let request: DiscoverRequestMessage | RequestMessageWithCredential | null;
+      let request: DiscoverRequestMessage | RequestMessageWithCredential<TParams | undefined> | null;
 
       try {
         response = JSON.parse(event.detail); // the event.detail should be a stringified object
@@ -94,7 +95,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       request = this._requests.find(({ id }) => id === response.requestID) || null;
 
       // if the request event is not known or is a discover request, ignore
-      if (!request || request.method === ARC0027MethodEnum.Discover) {
+      if (!request || request.method === VIP030027MethodEnum.Discover) {
         return;
       }
 
@@ -108,7 +109,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
           this._logger.error(`${AVMWebClient.name}#${__function}:`, error);
 
           return callback({
-            error: new ARC0027UnauthorizedProviderCredentialError(),
+            error: new VIP030027UnauthorizedProviderCredentialError(),
             id: response.id,
             requestID: request.id,
             method,
@@ -128,7 +129,9 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
           );
 
           return callback({
-            error: new ARC0027UnauthorizedProviderCredentialError(),
+            error: new VIP030027UnauthorizedProviderCredentialError({
+              providerID: credential.id(),
+            }),
             id: response.id,
             requestID: request.id,
             method,
@@ -144,7 +147,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       });
     };
     const listenerID = generateUUID();
-    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
+    const reference = createMessageReference(method, VIP030027MessageTypeEnum.Response);
 
     // start listening to response events and add the listener to the map
     window.addEventListener(reference, listener);
@@ -156,9 +159,9 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     return listenerID;
   }
 
-  private _sendRequestMessage<Params extends TParams>(options: ISendRequestMessageOptions<Params>): string {
+  private _sendRequestMessage<Params extends TParams | undefined>(options: ISendRequestMessageOptions<Params>): string {
     const __function = '_sendRequestMessage';
-    const reference = createMessageReference(options.method, ARC0027MessageTypeEnum.Request);
+    const reference = createMessageReference(options.method, VIP030027MessageTypeEnum.Request);
     const id = generateUUID();
     const request = new RequestMessageWithCredential<Params>({
       challenge: options.challenge ?? createChallenge(),
@@ -193,7 +196,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     } catch (error) {
       this._logger.error(error);
 
-      throw new ARC0027UnknownError(error.message);
+      throw new VIP030027UnknownError(error.message);
     }
   }
 
@@ -203,28 +206,29 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
   /**
    * Sends a request to authenticate the client with providers.
-   * @param {IRequestOptions<IAuthenticateParams>} options - The request params, the provider credential and an
+   * @param {IRequestOptionsWithParams<IAuthenticateParams>} options - The request params, the provider credential and an
    * optional challenge.
    * @returns {string} the ID of the request message.
    */
-  public authenticate(options: IRequestOptions<IAuthenticateParams>): string {
-    return this._sendRequestMessage<IAuthenticateParams>({
+  public authenticate(options: IRequestOptionsWithParams<IAuthenticateParams>): string {
+    return this._sendRequestMessage({
       ...options,
-      method: ARC0027MethodEnum.Authenticate,
+      method: VIP030027MethodEnum.Authenticate,
     });
   }
 
   /**
    * Sends a request to remove the client from providers.
-   * @param {IRequestOptions<IDisableParams | undefined>} options - The request params, the provider credential and an
-   * optional challenge.
+   * @param {IRequestOptions | IRequestOptionsWithParams<IDisableParams>} options - The request params, the provider
+   * credential and an optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public disable(options: IRequestOptions<IDisableParams | undefined>): string {
+  public disable(options: IRequestOptions | IRequestOptionsWithParams<IDisableParams>): string {
     return this._sendRequestMessage<IDisableParams | undefined>({
       ...options,
-      method: ARC0027MethodEnum.Disable,
+      method: VIP030027MethodEnum.Disable,
+      params: (options as IRequestOptionsWithParams<IDisableParams>).params,
     });
   }
 
@@ -237,8 +241,8 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
   public discover(): string {
     const __function = 'discover';
     const id = generateUUID();
-    const method = ARC0027MethodEnum.Discover;
-    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
+    const method = VIP030027MethodEnum.Discover;
+    const reference = createMessageReference(method, VIP030027MessageTypeEnum.Request);
     const request = new DiscoverRequestMessage({
       id,
       method,
@@ -270,22 +274,23 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     } catch (error) {
       this._logger.error(error);
 
-      throw new ARC0027UnknownError(error.message);
+      throw new VIP030027UnknownError(error.message);
     }
   }
 
   /**
    * Enables to a client with providers. If the ID of the provider and/or network is specified, that provider/network is
    * used, otherwise the all providers available providers are used.
-   * @param {IRequestOptions<IEnableParams | undefined>} options - The request params, the provider credential and an
+   * @param {IRequestOptions | IRequestOptionsWithParams<IEnableParams>} options - The request params, the provider credential and an
    * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public enable(options: IRequestOptions<IEnableParams | undefined>): string {
+  public enable(options: IRequestOptions | IRequestOptionsWithParams<IEnableParams>): string {
     return this._sendRequestMessage<IEnableParams | undefined>({
       ...options,
-      method: ARC0027MethodEnum.Enable,
+      method: VIP030027MethodEnum.Enable,
+      params: (options as IRequestOptionsWithParams<IDisableParams>).params,
     });
   }
 
@@ -297,7 +302,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onAuthenticate(callback: TClientCallback<IAuthenticateResult>): string {
-    return this._addListener<IAuthenticateResult>(ARC0027MethodEnum.Authenticate, callback);
+    return this._addListener<IAuthenticateResult>(VIP030027MethodEnum.Authenticate, callback);
   }
 
   /**
@@ -308,7 +313,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onDisable(callback: TClientCallback<IDisableResult>): string {
-    return this._addListener<IDisableResult>(ARC0027MethodEnum.Disable, callback);
+    return this._addListener<IDisableResult>(VIP030027MethodEnum.Disable, callback);
   }
 
   /**
@@ -324,10 +329,10 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     ) => void | Promise<void>
   ): string {
     const __function = 'onDiscover';
-    const method = ARC0027MethodEnum.Discover;
+    const method = VIP030027MethodEnum.Discover;
     const listener: TClientCustomEventListener = (event) => {
       let response: ResponseMessageWithError | ResponseMessageWithResult<IDiscoverResult>;
-      let request: DiscoverRequestMessage | RequestMessageWithCredential | null;
+      let request: DiscoverRequestMessage | RequestMessageWithCredential<TParams | undefined> | null;
 
       try {
         response = JSON.parse(event.detail); // the event.detail should be a stringified object
@@ -340,7 +345,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       request = this._requests.find(({ id }) => id === response.requestID) || null;
 
       // if the request event is not known or it is not a discover request, ignore
-      if (!request || request.method !== ARC0027MethodEnum.Discover) {
+      if (!request || request.method !== VIP030027MethodEnum.Discover) {
         return;
       }
 
@@ -352,7 +357,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       });
     };
     const listenerID = generateUUID();
-    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
+    const reference = createMessageReference(method, VIP030027MessageTypeEnum.Response);
 
     // start listening to response events and add the listener to the map
     window.addEventListener(reference, listener);
@@ -372,7 +377,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onEnable(callback: TClientCallback<IEnableResult>): string {
-    return this._addListener<IEnableResult>(ARC0027MethodEnum.Enable, callback);
+    return this._addListener<IEnableResult>(VIP030027MethodEnum.Enable, callback);
   }
 
   /**
@@ -383,7 +388,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onPostTransactions(callback: TClientCallback<IPostTransactionsResult>): string {
-    return this._addListener<IPostTransactionsResult>(ARC0027MethodEnum.PostTransactions, callback);
+    return this._addListener<IPostTransactionsResult>(VIP030027MethodEnum.PostTransactions, callback);
   }
 
   /**
@@ -393,7 +398,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onSignAndPostTransactions(callback: TClientCallback<IPostTransactionsResult>): string {
-    return this._addListener<IPostTransactionsResult>(ARC0027MethodEnum.SignAndPostTransactions, callback);
+    return this._addListener<IPostTransactionsResult>(VIP030027MethodEnum.SignAndPostTransactions, callback);
   }
 
   /**
@@ -404,7 +409,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onSignMessage(callback: TClientCallback<ISignMessageResult>): string {
-    return this._addListener<ISignMessageResult>(ARC0027MethodEnum.SignMessage, callback);
+    return this._addListener<ISignMessageResult>(VIP030027MethodEnum.SignMessage, callback);
   }
 
   /**
@@ -415,62 +420,62 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * @public
    */
   public onSignTransactions(callback: TClientCallback<ISignTransactionsResult>): string {
-    return this._addListener<ISignTransactionsResult>(ARC0027MethodEnum.SignTransactions, callback);
+    return this._addListener<ISignTransactionsResult>(VIP030027MethodEnum.SignTransactions, callback);
   }
 
   /**
    * Request providers to post a list of signed transactions to the network.
-   * @param {IRequestOptions<IPostTransactionsParams>} options - The request params, the provider credential and an
+   * @param {IRequestOptionsWithParams<IPostTransactionsParams>} options - The request params, the provider credential and an
    * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public postTransactions(options: IRequestOptions<IPostTransactionsParams>): string {
-    return this._sendRequestMessage<IPostTransactionsParams>({
+  public postTransactions(options: IRequestOptionsWithParams<IPostTransactionsParams>): string {
+    return this._sendRequestMessage({
       ...options,
-      method: ARC0027MethodEnum.PostTransactions,
+      method: VIP030027MethodEnum.PostTransactions,
     });
   }
 
   /**
    * Sends a list of unsigned transactions to be signed and posted to the network by the provider.
-   * @param {IRequestOptions<ISignTransactionsParams>} options - The request params, the provider credential and an
+   * @param {IRequestOptionsWithParams<ISignTransactionsParams>} options - The request params, the provider credential and an
    * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public signAndPostTransactions(options: IRequestOptions<ISignTransactionsParams>): string {
-    return this._sendRequestMessage<ISignTransactionsParams>({
+  public signAndPostTransactions(options: IRequestOptionsWithParams<ISignTransactionsParams>): string {
+    return this._sendRequestMessage({
       ...options,
-      method: ARC0027MethodEnum.SignAndPostTransactions,
+      method: VIP030027MethodEnum.SignAndPostTransactions,
     });
   }
 
   /**
    * Sends a UTF-8 encoded message to be signed by the provider.
-   * @param {IRequestOptions<ISignMessageParams>} options - The request params, the provider credential and an
+   * @param {IRequestOptionsWithParams<ISignMessageParams>} options - The request params, the provider credential and an
    * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public signMessage(options: IRequestOptions<ISignMessageParams>): string {
-    return this._sendRequestMessage<ISignMessageParams>({
+  public signMessage(options: IRequestOptionsWithParams<ISignMessageParams>): string {
+    return this._sendRequestMessage({
       ...options,
-      method: ARC0027MethodEnum.SignMessage,
+      method: VIP030027MethodEnum.SignMessage,
     });
   }
 
   /**
    * Sends a list of unsigned transactions to be signed by the provider.
-   * @param {IRequestOptions<ISignTransactionsParams>} options - The request params, the provider credential and an
+   * @param {IRequestOptionsWithParams<ISignTransactionsParams>} options - The request params, the provider credential and an
    * optional challenge.
    * @returns {string} the ID of the request message.
    * @public
    */
-  public signTransactions(options: IRequestOptions<ISignTransactionsParams>): string {
-    return this._sendRequestMessage<ISignTransactionsParams>({
+  public signTransactions(options: IRequestOptionsWithParams<ISignTransactionsParams>): string {
+    return this._sendRequestMessage({
       ...options,
-      method: ARC0027MethodEnum.SignTransactions,
+      method: VIP030027MethodEnum.SignTransactions,
     });
   }
 }

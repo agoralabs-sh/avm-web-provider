@@ -1,4 +1,4 @@
-enum ARC0027MethodEnum {
+enum VIP030027MethodEnum {
   Authenticate = 'authenticate',
   Disable = 'disable',
   Discover = 'discover',
@@ -9,4 +9,4 @@ enum ARC0027MethodEnum {
   SignTransactions = 'sign_transactions',
 }
 
-export default ARC0027MethodEnum;
+export default VIP030027MethodEnum;

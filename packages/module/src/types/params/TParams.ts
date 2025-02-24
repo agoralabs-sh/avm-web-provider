@@ -12,7 +12,6 @@ type TParams =
   | IEnableParams
   | IPostTransactionsParams
   | ISignMessageParams
-  | ISignTransactionsParams
-  | undefined;
+  | ISignTransactionsParams;
 
 export default TParams;

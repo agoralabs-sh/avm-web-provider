@@ -1,5 +1,5 @@
 // enums
-import { ARC0027MethodEnum } from '@/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 // messages
 import RequestMessage from './RequestMessage';
@@ -8,7 +8,7 @@ import RequestMessage from './RequestMessage';
 import type { IDiscoverRequestMessage } from '@/types';
 
 export default class DiscoverRequestMessage extends RequestMessage<undefined> implements IDiscoverRequestMessage {
-  public readonly method: ARC0027MethodEnum.Discover;
+  public readonly method: VIP030027MethodEnum.Discover;
 
   public constructor({ method, ...baseOptions }: IDiscoverRequestMessage) {
     super(baseOptions);

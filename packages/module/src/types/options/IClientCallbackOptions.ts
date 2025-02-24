@@ -1,9 +1,9 @@
 // enums
-import { ARC0027MethodEnum } from '@/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 interface IClientCallbackOptions {
   id: string;
-  method: ARC0027MethodEnum;
+  method: VIP030027MethodEnum;
   requestID: string;
 }
 

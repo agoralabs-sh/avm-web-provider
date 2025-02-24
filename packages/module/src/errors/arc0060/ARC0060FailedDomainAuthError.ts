@@ -1,5 +1,5 @@
 // enums
-import { ARC0060ErrorTypeEnum } from '@app/enums';
+import { ARC0060ErrorTypeEnum } from '@/enums';
 
 // errors
 import BaseARC0060Error from './BaseARC0060Error';
