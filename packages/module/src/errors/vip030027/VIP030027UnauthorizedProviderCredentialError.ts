@@ -14,10 +14,9 @@ export default class VIP030027UnauthorizedProviderCredentialError extends BaseVI
 
   public constructor(options?: IVIP030027UnauthorizedProviderCredentialErrorOptions) {
     super({
-      message:
-        options?.message || `provider${options?.providerID ? ` "${options.providerID}"` : ''} failed verification`,
+      message: options?.message || `provider${options?.vcic ? ` "${options.vcic}"` : ''} failed verification`,
     });
 
-    this.providerID = options?.providerID;
+    this.providerID = options?.vcic;
   }
 }

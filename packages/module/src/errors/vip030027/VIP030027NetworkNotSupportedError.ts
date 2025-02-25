@@ -14,7 +14,7 @@ export default class VIP030027NetworkNotSupportedError extends BaseVIP030027Erro
   public readonly name: string = 'VIP030027NetworkNotSupportedError';
   public readonly providerID: string;
 
-  public constructor({ genesisHashes, message, providerID }: IVIP030027NetworkNotSupportedErrorOptions) {
+  public constructor({ genesisHashes, message, vcic }: IVIP030027NetworkNotSupportedErrorOptions) {
     super({
       message:
         message ||
@@ -24,6 +24,6 @@ export default class VIP030027NetworkNotSupportedError extends BaseVIP030027Erro
     });
 
     this.genesisHashes = genesisHashes;
-    this.providerID = providerID;
+    this.providerID = vcic;
   }
 }

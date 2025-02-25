@@ -13,12 +13,12 @@ export default class VIP030027UnauthorizedSignerError extends BaseVIP030027Error
   public readonly providerID: string;
   public readonly signer: string | undefined;
 
-  public constructor({ message, providerID, signer }: IVIP030027UnauthorizedSignerErrorOptions) {
+  public constructor({ message, vcic, signer }: IVIP030027UnauthorizedSignerErrorOptions) {
     super({
       message: message || `unauthorized signer${signer ? ` "${signer}"` : ''}`,
     });
 
-    this.providerID = providerID;
+    this.providerID = vcic;
     this.signer = signer;
   }
 }

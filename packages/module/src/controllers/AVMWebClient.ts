@@ -12,7 +12,7 @@ import BaseController from './BaseController';
 import { VIP030027MessageTypeEnum, VIP030027MethodEnum } from '@/enums';
 
 // errors
-import { VIP030027UnauthorizedProviderCredentialError, VIP030027UnknownError } from '@/errors';
+import { VIP030027UnknownError } from '@/errors';
 
 // messages
 import {
@@ -29,8 +29,6 @@ import type {
   IAuthenticateResult,
   IAVMWebClientConfig,
   IAVMWebClientInitOptions,
-  IClientCallbackWithErrorOptions,
-  IClientCallbackWithResultOptions,
   IDisableParams,
   IDisableResult,
   IDiscoverResult,
@@ -45,7 +43,8 @@ import type {
   ISignMessageResult,
   ISignTransactionsParams,
   ISignTransactionsResult,
-  TClientCallback,
+  TClientCallbackOptions,
+  TClientDiscoverCallbackOptions,
   TClientCustomEventListener,
   TParams,
   TResults,
@@ -77,12 +76,16 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
    * private methods
    */
 
-  private _addListener<Result = TResults>(method: VIP030027MethodEnum, callback: TClientCallback<Result>): string {
+  private _addListener<Result = TResults>(
+    method: VIP030027MethodEnum,
+    callback: (options: TClientCallbackOptions<Result>) => void | Promise<void>
+  ): string {
     const __function = '_addListener';
     const listener: TClientCustomEventListener = (event) => {
-      let credential: VIP030026PublicKeyCredential;
       let response: ResponseMessageWithError | ResponseMessageWithResultAndSignature<Result>;
       let request: DiscoverRequestMessage | RequestMessageWithCredential<TParams | undefined> | null;
+      let defaultCallbackOptions: Omit<TClientCallbackOptions, 'error' | 'result' | 'signature'>;
+      let vcic: VIP030026PublicKeyCredential;
 
       try {
         response = JSON.parse(event.detail); // the event.detail should be a stringified object
@@ -101,49 +104,60 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
       this._logger.debug(`${AVMWebClient.name}#${__function}: received response:`, response);
 
+      defaultCallbackOptions = {
+        challenge: request.challenge,
+        vcic: request.vcic,
+        id: response.id,
+        method,
+        requestID: request.id,
+      };
+
       // if we have a result we need to check the correct provider responded
       if ('result' in response) {
         try {
-          credential = VIP030026PublicKeyCredential.fromBytes(decodeBase64(request.credential));
+          vcic = VIP030026PublicKeyCredential.fromBytes(decodeBase64(request.vcic));
+
+          // verify the challenge was successfully signed by the credential in the request
+          if (
+            !vcic.verify({
+              bytes: decodeBase64(request.challenge),
+              signature: decodeBase64(response.signature),
+            })
+          ) {
+            this._logger.debug(
+              `${AVMWebClient.name}#${__function}: provider "${vcic.id()}" failed to verify with request:`,
+              request
+            );
+
+            return;
+          }
         } catch (error) {
           this._logger.error(`${AVMWebClient.name}#${__function}:`, error);
 
           return callback({
-            error: new VIP030027UnauthorizedProviderCredentialError(),
-            id: response.id,
-            requestID: request.id,
-            method,
-          });
-        }
-
-        // verify the challenge was successfully signed by the credential in the request
-        if (
-          credential.verify({
-            bytes: decodeBase64(request.challenge),
-            signature: decodeBase64(response.signature),
-          })
-        ) {
-          this._logger.debug(
-            `${AVMWebClient.name}#${__function}: provider "${credential.id()}" failed to verify with request:`,
-            request
-          );
-
-          return callback({
-            error: new VIP030027UnauthorizedProviderCredentialError({
-              providerID: credential.id(),
+            ...defaultCallbackOptions,
+            error: new VIP030027UnknownError({
+              message: error.message,
             }),
-            id: response.id,
-            requestID: request.id,
-            method,
+            result: null,
+            signature: null,
           });
         }
+
+        return callback({
+          ...defaultCallbackOptions,
+          error: null,
+          result: response.result,
+          signature: response.signature,
+        });
       }
 
+      // for errors
       callback({
-        ...response,
-        challenge: request.challenge,
-        credential: request.credential,
-        method,
+        ...defaultCallbackOptions,
+        error: response.error,
+        result: null,
+        signature: null,
       });
     };
     const listenerID = generateUUID();
@@ -165,7 +179,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
     const id = generateUUID();
     const request = new RequestMessageWithCredential<Params>({
       challenge: options.challenge ?? createChallenge(),
-      credential: options.credential,
+      vcic: options.vcic,
       id,
       params: options.params,
       method: options.method,
@@ -296,38 +310,36 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
   /**
    * Listens to `authenticate` messages sent from providers.
-   * @param {TClientCallback<IAuthenticateResult>} callback - callback that is called when a response message
+   * @param {(options: TClientCallbackOptions<IAuthenticateResult>) => void | Promise<void>} callback - callback that is called when a response message
    * is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onAuthenticate(callback: TClientCallback<IAuthenticateResult>): string {
+  public onAuthenticate(
+    callback: (options: TClientCallbackOptions<IAuthenticateResult>) => void | Promise<void>
+  ): string {
     return this._addListener<IAuthenticateResult>(VIP030027MethodEnum.Authenticate, callback);
   }
 
   /**
    * Listens to `disable` messages sent from providers.
-   * @param {TClientCallback<IDisableResult>} callback - callback that is called when a response message
+   * @param {(options: TClientCallbackOptions<IDisableResult>) => void | Promise<void>} callback - callback that is called when a response message
    * is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onDisable(callback: TClientCallback<IDisableResult>): string {
+  public onDisable(callback: (options: TClientCallbackOptions<IDisableResult>) => void | Promise<void>): string {
     return this._addListener<IDisableResult>(VIP030027MethodEnum.Disable, callback);
   }
 
   /**
    * Listens to `discover` messages sent from providers.
-   * @param {TClientCallback<IDiscoverResult>} callback - callback that is called when a response message
-   * is received.
+   * @param {(options: TClientDiscoverCallbackOptions) => void | Promise<void>} callback - callback that is called when
+   * a response message is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onDiscover(
-    callback: (
-      options: IClientCallbackWithErrorOptions | IClientCallbackWithResultOptions<IDiscoverResult>
-    ) => void | Promise<void>
-  ): string {
+  public onDiscover(callback: (options: TClientDiscoverCallbackOptions) => void | Promise<void>): string {
     const __function = 'onDiscover';
     const method = VIP030027MethodEnum.Discover;
     const listener: TClientCustomEventListener = (event) => {
@@ -344,7 +356,7 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
       request = this._requests.find(({ id }) => id === response.requestID) || null;
 
-      // if the request event is not known or it is not a discover request, ignore
+      // if the request event is not known, or it is not a discover request, ignore
       if (!request || request.method !== VIP030027MethodEnum.Discover) {
         return;
       }
@@ -352,8 +364,18 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
       this._logger.debug(`${AVMWebClient.name}#${__function}: received response:`, response);
 
       callback({
-        ...response,
+        id: response.id,
         method,
+        requestID: request.id,
+        ...('result' in response
+          ? {
+              error: null,
+              result: response.result,
+            }
+          : {
+              error: response.error,
+              result: null,
+            }),
       });
     };
     const listenerID = generateUUID();
@@ -371,55 +393,63 @@ export default class AVMWebClient extends BaseController<IAVMWebClientConfig> {
 
   /**
    * Listens to `enable` messages sent from providers.
-   * @param {TClientCallback<IEnableResult>} callback - callback that is called when a response message
+   * @param {(options: TClientCallbackOptions<IEnableResult>) => void | Promise<void>} callback - callback that is called when a response message
    * is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onEnable(callback: TClientCallback<IEnableResult>): string {
+  public onEnable(callback: (options: TClientCallbackOptions<IEnableResult>) => void | Promise<void>): string {
     return this._addListener<IEnableResult>(VIP030027MethodEnum.Enable, callback);
   }
 
   /**
    * Listens to `post_transactions` messages sent from providers.
-   * @param {TClientCallback<IPostTransactionsResult>} callback - callback that is called when a response
+   * @param {(options: TClientCallbackOptions<IPostTransactionsResult>) => void | Promise<void>} callback - callback that is called when a response
    * message is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onPostTransactions(callback: TClientCallback<IPostTransactionsResult>): string {
+  public onPostTransactions(
+    callback: (options: TClientCallbackOptions<IPostTransactionsResult>) => void | Promise<void>
+  ): string {
     return this._addListener<IPostTransactionsResult>(VIP030027MethodEnum.PostTransactions, callback);
   }
 
   /**
    * Listens to `sign_and_post_transactions` messages sent from providers.
-   * @param {TClientCallback<IPostTransactionsResult>} callback - callback that is called when a response
+   * @param {(options: TClientCallbackOptions<IPostTransactionsResult>) => void | Promise<void>} callback - callback that is called when a response
    * message is received.
    * @public
    */
-  public onSignAndPostTransactions(callback: TClientCallback<IPostTransactionsResult>): string {
+  public onSignAndPostTransactions(
+    callback: (options: TClientCallbackOptions<IPostTransactionsResult>) => void | Promise<void>
+  ): string {
     return this._addListener<IPostTransactionsResult>(VIP030027MethodEnum.SignAndPostTransactions, callback);
   }
 
   /**
    * Listens to `sign_message` messages sent from providers.
-   * @param {TClientCallback<ISignTransactionsResult> | null} callback - callback that is called when a response
+   * @param {(options: TClientCallbackOptions<ISignMessageResult>) => void | Promise<void>} callback - callback that is called when a response
    * message is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onSignMessage(callback: TClientCallback<ISignMessageResult>): string {
+  public onSignMessage(
+    callback: (options: TClientCallbackOptions<ISignMessageResult>) => void | Promise<void>
+  ): string {
     return this._addListener<ISignMessageResult>(VIP030027MethodEnum.SignMessage, callback);
   }
 
   /**
    * Listens to `sign_transactions` messages sent from providers.
-   * @param {TClientCallback<ISignTransactionsResult> | null} callback - callback that is called when a response
-   * message is received.
+   * @param {(options: TClientCallbackOptions<ISignTransactionsResult>) => void | Promise<void>} callback - callback
+   * that is called when a response message is received.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onSignTransactions(callback: TClientCallback<ISignTransactionsResult>): string {
+  public onSignTransactions(
+    callback: (options: TClientCallbackOptions<ISignTransactionsResult>) => void | Promise<void>
+  ): string {
     return this._addListener<ISignTransactionsResult>(VIP030027MethodEnum.SignTransactions, callback);
   }
 

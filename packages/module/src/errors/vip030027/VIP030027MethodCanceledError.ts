@@ -13,12 +13,12 @@ export default class VIP030027MethodCanceledError extends BaseVIP030027Error {
   public readonly name = 'VIP030027MethodCanceledError';
   public readonly providerID: string;
 
-  constructor({ message, method, providerID }: IVIP030027MethodErrorOptions) {
+  constructor({ message, method, vcic }: IVIP030027MethodErrorOptions) {
     super({
-      message: message || `method "${method}" canceled by provider "${providerID}"`,
+      message: message || `method "${method}" canceled by provider "${vcic}"`,
     });
 
     this.method = method;
-    this.providerID = providerID;
+    this.providerID = vcic;
   }
 }

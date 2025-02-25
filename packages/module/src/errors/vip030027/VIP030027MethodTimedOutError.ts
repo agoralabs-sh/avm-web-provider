@@ -13,12 +13,12 @@ export default class VIP030027MethodTimedOutError extends BaseVIP030027Error {
   public readonly name = 'VIP030027MethodTimedOutError';
   public readonly providerID: string;
 
-  constructor({ message, method, providerID }: IVIP030027MethodErrorOptions) {
+  constructor({ message, method, vcic }: IVIP030027MethodErrorOptions) {
     super({
-      message: message || `method "${method}" to provider "${providerID}" timed out`,
+      message: message || `method "${method}" to provider "${vcic}" timed out`,
     });
 
     this.method = method;
-    this.providerID = providerID;
+    this.providerID = vcic;
   }
 }

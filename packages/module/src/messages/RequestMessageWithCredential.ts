@@ -12,14 +12,14 @@ export default class RequestMessageWithCredential<Params = TParams>
   implements IRequestMessageWithCredential<Params>
 {
   public readonly challenge: string;
-  public readonly credential: string;
+  public readonly vcic: string;
   public readonly method: VIP030027MethodEnum;
 
-  public constructor({ challenge, credential, method, ...baseOptions }: IRequestMessageWithCredential<Params>) {
+  public constructor({ challenge, vcic, method, ...baseOptions }: IRequestMessageWithCredential<Params>) {
     super(baseOptions);
 
     this.challenge = challenge;
-    this.credential = credential;
+    this.vcic = vcic;
     this.method = method;
   }
 }

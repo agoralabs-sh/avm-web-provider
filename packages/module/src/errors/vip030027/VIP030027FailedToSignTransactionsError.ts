@@ -14,12 +14,12 @@ export default class VIP030027FailedToSignTransactionsError extends BaseVIP03002
   public readonly name = 'VIP030027FailedToSignTransactionsError';
   public readonly providerID: string;
 
-  constructor({ failedTransactions, message, providerID }: IVIP030027FailedToSignTransactionsErrorOptions) {
+  constructor({ failedTransactions, message, vcic }: IVIP030027FailedToSignTransactionsErrorOptions) {
     super({
       message: message || `failed to sign transactions`,
     });
 
     this.failedTransactions = failedTransactions;
-    this.providerID = providerID;
+    this.providerID = vcic;
   }
 }

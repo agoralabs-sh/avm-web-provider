@@ -34,19 +34,20 @@ import type {
   IPostTransactionsResult,
   IProviderCallbackOptions,
   IProviderCallbackResult,
+  IProviderCallbackOptionsWithCredential,
   ISendResponseMessageOptions,
   ISignMessageParams,
   ISignMessageResult,
   ISignTransactionsParams,
   ISignTransactionsResult,
   TParams,
-  TProviderCallback,
   TProviderCustomEventListener,
   TResults,
 } from '@/types';
 
 // utils
 import { createMessageReference } from '@/utilities';
+import type IProviderCallbackResultWithSignature from '../types/callbacks/IProviderCallbackResultWithSignature';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
   private constructor(config: IAVMWebProviderConfig) {
@@ -59,7 +60,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   private _addListener<Params extends TParams | undefined, Result = TResults>(
     method: VIP030027MethodEnum,
-    callback: TProviderCallback<Params, Result>
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<Params>
+    ) => IProviderCallbackResultWithSignature<Result> | Promise<IProviderCallbackResultWithSignature<Result>>
   ): string {
     const __function = '_addListener';
     const listener: TProviderCustomEventListener<Params> = (event) => {
@@ -103,9 +106,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     const responseReference = createMessageReference(request.method, VIP030027MessageTypeEnum.Response);
 
     // if this is not a discover request and if the credential from the request does not match the initialized credential, ignore
-    if (request.credential !== this._config.credential.toString()) {
+    if (request.vcic !== this._config.credential.toString()) {
       this._logger.debug(
-        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: message credential "${request.credential}" does not match initialized credentials "${this._config.credential.toString()}", ignoring request`
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: message credential "${request.vcic}" does not match initialized credentials "${this._config.credential.toString()}", ignoring request`
       );
 
       return;
@@ -114,7 +117,7 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
     try {
       const { result, signature } = await callback({
         challenge: request.challenge,
-        credential: request.credential,
+        vcic: request.vcic,
         id: request.id,
         method: request.method,
         params: request.params,
@@ -197,9 +200,9 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @static
    * @public
    */
-  public static init({ credential, debug = false }: IAVMWebProviderInitOptions): AVMWebProvider {
+  public static init({ vcic, debug = false }: IAVMWebProviderInitOptions): AVMWebProvider {
     return new AVMWebProvider({
-      credential: VIP030026PublicKeyCredential.fromBytes(decodeBase64(credential)),
+      credential: VIP030026PublicKeyCredential.fromBytes(decodeBase64(vcic)),
       debug: debug || false,
     });
   }
@@ -210,23 +213,35 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   /**
    * Listens to `authenticate` messages sent from clients.
-   * @param {TProviderCallback<IAuthenticateParams, IAuthenticateResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IAuthenticateParams>) => IProviderCallbackResultWithSignature<IAuthenticateResult> | Promise<IProviderCallbackResultWithSignature<IAuthenticateResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onAuthenticate(callback: TProviderCallback<IAuthenticateParams, IAuthenticateResult>): string {
+  public onAuthenticate(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IAuthenticateParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<IAuthenticateResult>
+      | Promise<IProviderCallbackResultWithSignature<IAuthenticateResult>>
+  ): string {
     return this._addListener<IAuthenticateParams, IAuthenticateResult>(VIP030027MethodEnum.Authenticate, callback);
   }
 
   /**
    * Listens to `disable` messages sent from clients.
-   * @param {TProviderCallback<IDisableParams, IDisableResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IDisableParams | undefined>) => IProviderCallbackResultWithSignature<IDiscoverResult> | Promise<IProviderCallbackResultWithSignature<IDisableResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onDisable(callback: TProviderCallback<IDisableParams | undefined, IDisableResult>): string {
+  public onDisable(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IDisableParams | undefined>
+    ) =>
+      | IProviderCallbackResultWithSignature<IDisableResult>
+      | Promise<IProviderCallbackResultWithSignature<IDisableResult>>
+  ): string {
     return this._addListener<IDisableParams | undefined, IDisableResult>(VIP030027MethodEnum.Disable, callback);
   }
 
@@ -335,23 +350,35 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   /**
    * Listens to `enable` messages sent from clients.
-   * @param {TProviderCallback<IEnableParams, IEnableResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IEnableParams | undefined>) => IProviderCallbackResultWithSignature<IEnableResult> | Promise<IProviderCallbackResultWithSignature<IEnableResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onEnable(callback: TProviderCallback<IEnableParams | undefined, IEnableResult>): string {
+  public onEnable(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IEnableParams | undefined>
+    ) =>
+      | IProviderCallbackResultWithSignature<IEnableResult>
+      | Promise<IProviderCallbackResultWithSignature<IEnableResult>>
+  ): string {
     return this._addListener<IEnableParams | undefined, IEnableResult>(VIP030027MethodEnum.Enable, callback);
   }
 
   /**
    * Listens to `post_transactions` messages sent from clients.
-   * @param {TProviderCallback<IPostTransactionsParams, IPostTransactionsResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IPostTransactionsParams>) => IProviderCallbackResultWithSignature<IPostTransactionsResult> | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onPostTransactions(callback: TProviderCallback<IPostTransactionsParams, IPostTransactionsResult>): string {
+  public onPostTransactions(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IPostTransactionsParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<IPostTransactionsResult>
+      | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>
+  ): string {
     return this._addListener<IPostTransactionsParams, IPostTransactionsResult>(
       VIP030027MethodEnum.PostTransactions,
       callback
@@ -360,13 +387,17 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   /**
    * Listens to `sign_and_post_transactions` messages sent from clients.
-   * @param {TProviderCallback<ISignTransactionsParams, IPostTransactionsResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>) => IProviderCallbackResultWithSignature<IPostTransactionsResult> | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
   public onSignAndPostTransactions(
-    callback: TProviderCallback<ISignTransactionsParams, IPostTransactionsResult>
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<IPostTransactionsResult>
+      | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>
   ): string {
     return this._addListener<ISignTransactionsParams, IPostTransactionsResult>(
       VIP030027MethodEnum.SignAndPostTransactions,
@@ -376,23 +407,35 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   /**
    * Listens to `sign_message` messages sent from clients.
-   * @param {TProviderCallback<ISignMessageParams, ISignMessageResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<ISignMessageParams>) => IProviderCallbackResultWithSignature<ISignMessageResult> | Promise<IProviderCallbackResultWithSignature<ISignMessageResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onSignMessage(callback: TProviderCallback<ISignMessageParams, ISignMessageResult>): string {
+  public onSignMessage(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<ISignMessageParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<ISignMessageResult>
+      | Promise<IProviderCallbackResultWithSignature<ISignMessageResult>>
+  ): string {
     return this._addListener<ISignMessageParams, ISignMessageResult>(VIP030027MethodEnum.SignMessage, callback);
   }
 
   /**
    * Listens to `sign_transactions` messages sent from clients.
-   * @param {TProviderCallback<ISignTransactionsParams, ISignTransactionsResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>) => IProviderCallbackResultWithSignature<ISignTransactionsResult> | Promise<IProviderCallbackResultWithSignature<ISignTransactionsResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
    * @public
    */
-  public onSignTransactions(callback: TProviderCallback<ISignTransactionsParams, ISignTransactionsResult>): string {
+  public onSignTransactions(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<ISignTransactionsResult>
+      | Promise<IProviderCallbackResultWithSignature<ISignTransactionsResult>>
+  ): string {
     return this._addListener<ISignTransactionsParams, ISignTransactionsResult>(
       VIP030027MethodEnum.SignTransactions,
       callback

@@ -3,7 +3,7 @@ import { VIP030026PrivateKeyCredential, VIP030026PublicKeyCredential } from '@ag
 import { encode as encodeBase64 } from '@stablelib/base64';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { randomBytes } from '@stablelib/random';
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // controllers
 import AVMWebClient from './AVMWebClient';
@@ -22,20 +22,23 @@ describe(AVMWebProvider.name, () => {
   const signature = 'gqNzaWfEQ...';
   const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
   let client: AVMWebClient;
-  let credential: VIP030026PublicKeyCredential;
   let provider: AVMWebProvider;
+  let vcic: VIP030026PublicKeyCredential;
 
   beforeAll(() => {
     const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
 
-    client = AVMWebClient.init();
-    credential = VIP030026PublicKeyCredential.fromJSON({
+    vcic = VIP030026PublicKeyCredential.fromJSON({
       algorithm: privateKeyCredential.algorithm(),
       id: privateKeyCredential.id(),
       publicKey: privateKeyCredential.publicKey(),
     });
+  });
+
+  beforeEach(() => {
+    client = AVMWebClient.init();
     provider = AVMWebProvider.init({
-      credential: credential.toString(),
+      vcic: vcic.toString(),
     });
   });
 
@@ -53,7 +56,7 @@ describe(AVMWebProvider.name, () => {
         signer,
       };
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -63,8 +66,8 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.authenticate({
-        credential: _credential.toString(),
         params,
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -89,19 +92,19 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               signature: 'gqNzaWfEQ...',
               signer,
             },
             signature: 'gqNzaWfEQ...',
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.authenticate({
-          credential: credential.toString(),
           params,
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -113,7 +116,7 @@ describe(AVMWebProvider.name, () => {
 
       // act
       provider = AVMWebProvider.init({
-        credential: credential.toString(),
+        vcic: vcic.toString(),
       });
 
       // assert
@@ -126,8 +129,8 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const debug = true;
       const _provider = AVMWebProvider.init({
-        credential: credential.toString(),
         debug,
+        vcic: vcic.toString(),
       });
       let config: IAVMWebProviderConfig;
 
@@ -136,7 +139,7 @@ describe(AVMWebProvider.name, () => {
       config = _provider.getConfig();
 
       expect(config.debug).toBe(debug);
-      expect(config.credential.toString()).toBe(credential.toString());
+      expect(config.credential.toString()).toBe(vcic.toString());
     });
   });
 
@@ -145,7 +148,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -155,7 +158,7 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.disable({
-        credential: _credential.toString(),
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -170,18 +173,18 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               genesisHash,
               genesisId,
             },
             signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.disable({
-          credential: credential.toString(),
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -196,9 +199,9 @@ describe(AVMWebProvider.name, () => {
 
           return {
             result: {
-              credential: credential.toString(),
               name,
               networks: [],
+              vcic: vcic.toString(),
             },
           };
         });
@@ -213,7 +216,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -223,7 +226,7 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.enable({
-        credential: _credential.toString(),
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -238,18 +241,18 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               accounts: [],
               genesisHash,
               genesisId,
             },
             signature,
+            vcic: vcic.toString(),
           };
         });
 
         client.enable({
-          credential: credential.toString(),
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -259,7 +262,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -270,10 +273,10 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.postTransactions({
-        credential: _credential.toString(),
         params: {
           stxns,
         },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -294,20 +297,20 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               txnIDs: [],
             },
             signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.postTransactions({
-          credential: credential.toString(),
           params: {
             stxns,
           },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -317,7 +320,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -336,10 +339,10 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.signAndPostTransactions({
-        credential: _credential.toString(),
         params: {
           txns,
         },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -368,20 +371,20 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               txnIDs: [],
             },
             signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.signAndPostTransactions({
-          credential: credential.toString(),
           params: {
             txns,
           },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -391,7 +394,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -401,11 +404,11 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.signMessage({
-        credential: _credential.toString(),
         params: {
           message: 'Hello humie!',
           signer,
         },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -429,19 +432,19 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               signature: 'gqNzaWfEQ...',
               signer,
             },
             signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.signMessage({
-          credential: credential.toString(),
           params,
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -451,7 +454,7 @@ describe(AVMWebProvider.name, () => {
       // arrange
       const callback = vi.fn();
       const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
-      const _credential = VIP030026PublicKeyCredential.fromJSON({
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
         algorithm: privateKeyCredential.algorithm(),
         id: privateKeyCredential.id(),
         publicKey: privateKeyCredential.publicKey(),
@@ -470,10 +473,10 @@ describe(AVMWebProvider.name, () => {
 
       // act
       client.signTransactions({
-        credential: _credential.toString(),
         params: {
           txns,
         },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -502,20 +505,20 @@ describe(AVMWebProvider.name, () => {
           done();
 
           return {
-            credential: credential.toString(),
             result: {
               stxns: ['gqNzaWfEQ...', null],
             },
             signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.signTransactions({
-          credential: credential.toString(),
           params: {
             txns,
           },
+          vcic: vcic.toString(),
         });
       }));
   });

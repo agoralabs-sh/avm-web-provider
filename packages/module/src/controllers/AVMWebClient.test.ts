@@ -1,18 +1,19 @@
 // @vitest-environment jsdom
-import { encode as encodeBase64 } from '@stablelib/base64';
+import { VIP030026PrivateKeyCredential, VIP030026PublicKeyCredential } from '@agoralabs-sh/vip030026';
+import { decode as decodeBase64, encode as encodeBase64 } from '@stablelib/base64';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { randomBytes } from 'crypto';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 // controllers
 import AVMWebClient from './AVMWebClient';
 import AVMWebProvider from './AVMWebProvider';
 
 // enums
-import { ARC0027MethodEnum } from '@app/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 // errors
-import { ARC0027MethodNotSupportedError } from '@app/errors';
+import { VIP030027MethodNotSupportedError } from '@/errors';
 
 // types
 import type {
@@ -24,16 +25,33 @@ import type {
   IPostTransactionsResult,
   ISignMessageResult,
   ISignTransactionsResult,
-} from '@app/types';
+} from '@/types';
 
 describe(AVMWebClient.name, () => {
   const genesisHash = encodeBase64(randomBytes(32));
   const genesisId = 'localhost-v1';
   const name = 'Awesome Wallet';
-  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
   const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
   let client: AVMWebClient;
+  let privateKeyCredential: VIP030026PrivateKeyCredential;
   let provider: AVMWebProvider;
+  let vcic: VIP030026PublicKeyCredential;
+
+  beforeAll(() => {
+    privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+    vcic = VIP030026PublicKeyCredential.fromJSON({
+      algorithm: privateKeyCredential.algorithm(),
+      id: privateKeyCredential.id(),
+      publicKey: privateKeyCredential.publicKey(),
+    });
+  });
+
+  beforeEach(() => {
+    client = AVMWebClient.init();
+    provider = AVMWebProvider.init({
+      vcic: vcic.toString(),
+    });
+  });
 
   afterEach(() => {
     provider?.removeAllListeners();
@@ -43,18 +61,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.Authenticate,
-          providerId,
+        const expectedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.Authenticate,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onAuthenticate(async () => await Promise.reject(expectedError));
         client.onAuthenticate(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Authenticate);
+          expect(method).toEqual(VIP030027MethodEnum.Authenticate);
           expect(error).toEqual(expectedError);
           expect(result).toBeNull();
 
@@ -63,9 +78,11 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.authenticate({
-          authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
-          data: encodeBase64(encodeUTF8('authenticate message')),
-          providerId,
+          params: {
+            authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
+            data: encodeBase64(encodeUTF8('authenticate message')),
+          },
+          vcic: vcic.toString(),
         });
       }));
 
@@ -73,25 +90,25 @@ describe(AVMWebClient.name, () => {
       new Promise<void>((done) => {
         // arrange
         const expectedResult: IAuthenticateResult = {
-          providerId,
           signature: 'gqNzaWfEQ...',
           signer,
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onAuthenticate(({ id }) => {
+        provider.onAuthenticate(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+            vcic: vcic.toString(),
+          };
         });
-        client.onAuthenticate(({ error, method, result, requestId }) => {
+        client.onAuthenticate(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Authenticate);
+          expect(method).toEqual(VIP030027MethodEnum.Authenticate);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -100,9 +117,11 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.authenticate({
-          authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
-          data: encodeBase64(encodeUTF8('authenticate message')),
-          providerId,
+          params: {
+            authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
+            data: encodeBase64(encodeUTF8('authenticate message')),
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -111,18 +130,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError: ARC0027MethodNotSupportedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.Disable,
-          providerId,
+        const expectedError: VIP030027MethodNotSupportedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.Disable,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onDisable(async () => await Promise.reject(expectedError));
         client.onDisable(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Disable);
+          expect(method).toEqual(VIP030027MethodEnum.Disable);
           expect(error).toEqual(expectedError);
           expect(result).toBeNull();
 
@@ -130,7 +146,9 @@ describe(AVMWebClient.name, () => {
         });
 
         // act
-        client.disable();
+        client.disable({
+          vcic: vcic.toString(),
+        });
       }));
 
     it('should return the removed sessions', () =>
@@ -143,25 +161,25 @@ describe(AVMWebClient.name, () => {
         ];
         const expectedResult: IDisableResult = {
           genesisHash,
-          genesisId: 'jest-test-v1.0',
-          providerId,
+          genesisId: 'vip-03-0027-test-v1.0',
           sessionIds,
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onDisable(({ id }) => {
+        provider.onDisable(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+            vcic: vcic.toString(),
+          };
         });
-        client.onDisable(({ error, method, result, requestId }) => {
+        client.onDisable(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Disable);
+          expect(method).toEqual(VIP030027MethodEnum.Disable);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -170,9 +188,11 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.disable({
-          genesisHash,
-          providerId,
-          sessionIds,
+          params: {
+            genesisHash,
+            sessionIds,
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -189,32 +209,31 @@ describe(AVMWebClient.name, () => {
               genesisHash,
               genesisId,
               methods: [
-                ARC0027MethodEnum.Authenticate,
-                ARC0027MethodEnum.Disable,
-                ARC0027MethodEnum.Enable,
-                ARC0027MethodEnum.PostTransactions,
-                ARC0027MethodEnum.SignAndPostTransactions,
-                ARC0027MethodEnum.PostTransactions,
+                VIP030027MethodEnum.Authenticate,
+                VIP030027MethodEnum.Disable,
+                VIP030027MethodEnum.Enable,
+                VIP030027MethodEnum.PostTransactions,
+                VIP030027MethodEnum.SignAndPostTransactions,
+                VIP030027MethodEnum.PostTransactions,
               ],
             },
           ],
-          providerId,
+          vcic: vcic.toString(),
         };
         let actualRequestId: string;
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onDiscover(({ id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+          };
         });
-        client.onDiscover(({ error, method, result, requestId }) => {
+        client.onDiscover(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Discover);
+          expect(method).toEqual(VIP030027MethodEnum.Discover);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -230,18 +249,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError: ARC0027MethodNotSupportedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.Enable,
-          providerId,
+        const expectedError: VIP030027MethodNotSupportedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.Enable,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onEnable(async () => await Promise.reject(expectedError));
         client.onEnable(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Enable);
+          expect(method).toEqual(VIP030027MethodEnum.Enable);
           expect(result).toBeNull();
           expect(error).toEqual(expectedError);
 
@@ -249,7 +265,9 @@ describe(AVMWebClient.name, () => {
         });
 
         // act
-        client.enable();
+        client.enable({
+          vcic: vcic.toString(),
+        });
       }));
 
     it('should return the account information', () =>
@@ -266,25 +284,25 @@ describe(AVMWebClient.name, () => {
               name: 'Wallet-2',
             },
           ],
-          genesisHash: randomBytes(32).toString('base64'),
-          genesisId: 'jest-test-v1.0',
-          providerId,
+          genesisHash: encodeBase64(randomBytes(32)),
+          genesisId: 'vip-03-0027-test-v1.0',
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onEnable(({ id }) => {
+        provider.onEnable(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+            vcic: vcic.toString(),
+          };
         });
-        client.onEnable(({ error, method, result, requestId }) => {
+        client.onEnable(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.Enable);
+          expect(method).toEqual(VIP030027MethodEnum.Enable);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -292,7 +310,9 @@ describe(AVMWebClient.name, () => {
         });
 
         // act
-        client.enable();
+        client.enable({
+          vcic: vcic.toString(),
+        });
       }));
   });
 
@@ -301,7 +321,6 @@ describe(AVMWebClient.name, () => {
       // arrange
       let config: IAVMWebClientConfig;
 
-      // act
       client = AVMWebClient.init();
 
       // assert
@@ -312,10 +331,9 @@ describe(AVMWebClient.name, () => {
 
     it('should initialize the provider with the specified options', () => {
       // arrange
-      const debug: boolean = true;
+      const debug = true;
       let config: IAVMWebClientConfig;
 
-      // act
       client = AVMWebClient.init({
         debug,
       });
@@ -331,18 +349,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError: ARC0027MethodNotSupportedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.PostTransactions,
-          providerId,
+        const expectedError: VIP030027MethodNotSupportedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.PostTransactions,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onPostTransactions(async () => await Promise.reject(expectedError));
         client.onPostTransactions(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.PostTransactions);
+          expect(method).toEqual(VIP030027MethodEnum.PostTransactions);
           expect(result).toBeNull();
           expect(error).toEqual(expectedError);
 
@@ -351,8 +366,10 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.postTransactions({
-          providerId,
-          stxns: ['gqNzaWfEQ...'],
+          params: {
+            stxns: ['gqNzaWfEQ...'],
+          },
+          vcic: vcic.toString(),
         });
       }));
 
@@ -360,24 +377,24 @@ describe(AVMWebClient.name, () => {
       new Promise<void>((done) => {
         // arrange
         const expectedResult: IPostTransactionsResult = {
-          providerId,
           txnIDs: ['OKU6A2Q...'],
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onPostTransactions(({ id }) => {
+        provider.onPostTransactions(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            vcic: vcic.toString(),
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+          };
         });
-        client.onPostTransactions(({ error, method, result, requestId }) => {
+        client.onPostTransactions(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.PostTransactions);
+          expect(method).toEqual(VIP030027MethodEnum.PostTransactions);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -386,8 +403,10 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.postTransactions({
-          providerId,
-          stxns: ['gqNzaWfEQ...'],
+          params: {
+            stxns: ['gqNzaWfEQ...'],
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -396,18 +415,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError: ARC0027MethodNotSupportedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.SignAndPostTransactions,
-          providerId,
+        const expectedError: VIP030027MethodNotSupportedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.SignAndPostTransactions,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onSignAndPostTransactions(async () => await Promise.reject(expectedError));
         client.onSignAndPostTransactions(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.SignAndPostTransactions);
+          expect(method).toEqual(VIP030027MethodEnum.SignAndPostTransactions);
           expect(result).toBeNull();
           expect(error).toEqual(expectedError);
 
@@ -416,16 +432,18 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.signAndPostTransactions({
-          providerId,
-          txns: [
-            {
-              txn: encodeBase64(randomBytes(32)),
-            },
-            {
-              txn: encodeBase64(randomBytes(32)),
-              signers: [],
-            },
-          ],
+          params: {
+            txns: [
+              {
+                txn: encodeBase64(randomBytes(32)),
+              },
+              {
+                txn: encodeBase64(randomBytes(32)),
+                signers: [],
+              },
+            ],
+          },
+          vcic: vcic.toString(),
         });
       }));
 
@@ -433,24 +451,24 @@ describe(AVMWebClient.name, () => {
       new Promise<void>((done) => {
         // arrange
         const expectedResult: IPostTransactionsResult = {
-          providerId,
           txnIDs: ['OKU6A2Q...'],
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onSignAndPostTransactions(({ id }) => {
+        provider.onSignAndPostTransactions(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+            vcic: vcic.toString(),
+          };
         });
-        client.onSignAndPostTransactions(({ error, method, result, requestId }) => {
+        client.onSignAndPostTransactions(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.SignAndPostTransactions);
+          expect(method).toEqual(VIP030027MethodEnum.SignAndPostTransactions);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -459,16 +477,18 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.signAndPostTransactions({
-          providerId,
-          txns: [
-            {
-              txn: encodeBase64(randomBytes(32)),
-            },
-            {
-              txn: encodeBase64(randomBytes(32)),
-              signers: [],
-            },
-          ],
+          params: {
+            txns: [
+              {
+                txn: encodeBase64(randomBytes(32)),
+              },
+              {
+                txn: encodeBase64(randomBytes(32)),
+                signers: [],
+              },
+            ],
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -477,18 +497,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError: ARC0027MethodNotSupportedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.SignMessage,
-          providerId,
+        const expectedError: VIP030027MethodNotSupportedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.SignMessage,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onSignMessage(async () => await Promise.reject(expectedError));
         client.onSignMessage(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.SignMessage);
+          expect(method).toEqual(VIP030027MethodEnum.SignMessage);
           expect(result).toBeNull();
           expect(error).toEqual(expectedError);
 
@@ -497,9 +514,11 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.signMessage({
-          message: 'Hello humie!',
-          providerId,
-          signer,
+          params: {
+            message: 'Hello humie!',
+            signer,
+          },
+          vcic: vcic.toString(),
         });
       }));
 
@@ -507,25 +526,25 @@ describe(AVMWebClient.name, () => {
       new Promise<void>((done) => {
         // arrange
         const expectedResult: ISignMessageResult = {
-          providerId,
           signature: 'gqNzaWfEQ...',
           signer,
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onSignMessage(({ id }) => {
+        provider.onSignMessage(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+            vcic: vcic.toString(),
+          };
         });
-        client.onSignMessage(({ error, method, result, requestId }) => {
+        client.onSignMessage(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.SignMessage);
+          expect(method).toEqual(VIP030027MethodEnum.SignMessage);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -534,9 +553,11 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.signMessage({
-          message: 'Hello humie!',
-          providerId,
-          signer,
+          params: {
+            message: 'Hello humie!',
+            signer,
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -545,18 +566,15 @@ describe(AVMWebClient.name, () => {
     it('should return an error', () =>
       new Promise<void>((done) => {
         // arrange
-        const expectedError: ARC0027MethodNotSupportedError = new ARC0027MethodNotSupportedError({
-          method: ARC0027MethodEnum.SignTransactions,
-          providerId,
+        const expectedError: VIP030027MethodNotSupportedError = new VIP030027MethodNotSupportedError({
+          method: VIP030027MethodEnum.SignTransactions,
+          vcic: vcic.toString(),
         });
-
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
 
         provider.onSignTransactions(async () => await Promise.reject(expectedError));
         client.onSignTransactions(({ error, method, result }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.SignTransactions);
+          expect(method).toEqual(VIP030027MethodEnum.SignTransactions);
           expect(result).toBeNull();
           expect(error).toEqual(expectedError);
 
@@ -565,16 +583,18 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.signTransactions({
-          providerId,
-          txns: [
-            {
-              txn: encodeBase64(randomBytes(32)),
-            },
-            {
-              txn: encodeBase64(randomBytes(32)),
-              signers: [],
-            },
-          ],
+          params: {
+            txns: [
+              {
+                txn: encodeBase64(randomBytes(32)),
+              },
+              {
+                txn: encodeBase64(randomBytes(32)),
+                signers: [],
+              },
+            ],
+          },
+          vcic: vcic.toString(),
         });
       }));
 
@@ -582,24 +602,24 @@ describe(AVMWebClient.name, () => {
       new Promise<void>((done) => {
         // arrange
         const expectedResult: ISignTransactionsResult = {
-          providerId,
           stxns: ['gqNzaWfEQ...', null],
         };
         let actualRequestId: string;
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        provider.onSignTransactions(({ id }) => {
+        provider.onSignTransactions(({ challenge, id }) => {
           actualRequestId = id;
 
-          return expectedResult;
+          return {
+            result: expectedResult,
+            signature: encodeBase64(privateKeyCredential.sign(decodeBase64(challenge))),
+            vcic: vcic.toString(),
+          };
         });
-        client.onSignTransactions(({ error, method, result, requestId }) => {
+        client.onSignTransactions(({ error, method, result, requestID }) => {
           // assert
-          expect(method).toEqual(ARC0027MethodEnum.SignTransactions);
+          expect(method).toEqual(VIP030027MethodEnum.SignTransactions);
           expect(error).toBeNull();
-          expect(requestId).toBe(actualRequestId);
+          expect(requestID).toBe(actualRequestId);
           expect(result).toBeDefined();
           expect(result).toEqual(expectedResult);
 
@@ -608,16 +628,18 @@ describe(AVMWebClient.name, () => {
 
         // act
         client.signTransactions({
-          providerId,
-          txns: [
-            {
-              txn: encodeBase64(randomBytes(32)),
-            },
-            {
-              txn: encodeBase64(randomBytes(32)),
-              signers: [],
-            },
-          ],
+          params: {
+            txns: [
+              {
+                txn: encodeBase64(randomBytes(32)),
+              },
+              {
+                txn: encodeBase64(randomBytes(32)),
+                signers: [],
+              },
+            ],
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
