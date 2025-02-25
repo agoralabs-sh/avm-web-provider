@@ -1,6 +1,6 @@
-import { concat } from '@stablelib/bytes';
-import { hash as sha256 } from '@stablelib/sha256';
-import { sign } from 'tweetnacl';
+import { concat } from '@agoralabs-sh/bytes';
+import { ed25519 } from '@noble/curves/ed25519';
+import { sha256 } from '@noble/hashes/sha2';
 
 // enums
 import { ARC0060ScopeEnum } from '@/enums';
@@ -33,7 +33,7 @@ export default function verifyTypedData({
     case ARC0060ScopeEnum.AUTH:
       signed = concat(sha256(data), sha256(authenticationData));
 
-      return sign.detached.verify(signed, signature, publicKey);
+      return ed25519.verify(signature, signed, publicKey);
     default:
       throw new ARC0060InvalidScopeError({
         message: 'invalid scope',

@@ -49,6 +49,7 @@
     "@agoralabs-sh/bytes": "^1.0.0",
     "@agoralabs-sh/uuid": "^1.1.0",
     "@agoralabs-sh/vip030026": "^1.0.0",
+    "@noble/curves": "^1.8.1",
     "@noble/hashes": "^1.7.1",
     "@stablelib/base64": "^2.0.1",
     "@stablelib/utf8": "^2.0.1"

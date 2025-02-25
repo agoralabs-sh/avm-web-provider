@@ -1,5 +1,5 @@
 // errors
-import { BaseARC0027Error } from '@/errors';
+import { BaseVIP030027Error } from '@/errors';
 
 // messages
 import ResponseMessage from './ResponseMessage';
@@ -8,7 +8,7 @@ import ResponseMessage from './ResponseMessage';
 import type { IResponseMessageWithError } from '@/types';
 
 export default class ResponseMessageWithError extends ResponseMessage implements IResponseMessageWithError {
-  public readonly error: BaseARC0027Error;
+  public readonly error: BaseVIP030027Error;
 
   constructor({ error, ...baseOptions }: IResponseMessageWithError) {
     super(baseOptions);

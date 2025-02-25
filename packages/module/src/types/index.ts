@@ -8,5 +8,4 @@ export * from './networks';
 export * from './options';
 export * from './params';
 export * from './results';
-export * from './vip030027';
 export * from './utilities';

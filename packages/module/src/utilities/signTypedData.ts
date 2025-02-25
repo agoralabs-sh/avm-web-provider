@@ -1,7 +1,7 @@
 import { concat, isEqual } from '@agoralabs-sh/bytes';
+import { ed25519 } from '@noble/curves/ed25519';
 import { sha256 } from '@noble/hashes/sha2';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
-import { sign } from 'tweetnacl';
 
 // enums
 import { ARC0060ScopeEnum } from '@/enums';
@@ -30,7 +30,6 @@ export default function signTypedData({
   scope,
 }: ISignTypedDataOptions): Uint8Array {
   const domainHash = sha256(encodeUTF8(domain));
-  const keyPair = sign.keyPair.fromSeed(privateKey);
   let toSign: Uint8Array;
 
   switch (scope) {
@@ -44,7 +43,7 @@ export default function signTypedData({
 
       toSign = concat(sha256(data), sha256(authenticationData));
 
-      return sign.detached(toSign, keyPair.secretKey);
+      return ed25519.sign(toSign, privateKey);
     default:
       throw new ARC0060InvalidScopeError({
         message: 'invalid scope',

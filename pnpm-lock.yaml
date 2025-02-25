@@ -141,6 +141,9 @@ importers:
       '@agoralabs-sh/vip030026':
         specifier: ^1.0.0
         version: 1.0.0
+      '@noble/curves':
+        specifier: ^1.8.1
+        version: 1.8.1
       '@noble/hashes':
         specifier: ^1.7.1
         version: 1.7.1

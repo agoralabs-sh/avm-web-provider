@@ -1,8 +1,8 @@
 import { concat } from '@agoralabs-sh/bytes';
+import { ed25519 } from '@noble/curves/ed25519';
 import { sha256 } from '@noble/hashes/sha2';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
 import { randomBytes } from 'node:crypto';
-import { sign } from 'tweetnacl';
 import { describe, expect, test } from 'vitest';
 
 // enums
@@ -23,14 +23,14 @@ describe('verifyTypedData', () => {
       hello: 'humie!',
     })
   );
-  const keyPair = sign.keyPair();
+  const privateKey = ed25519.utils.randomPrivateKey();
 
   test('should fail if the scope is not supported', () => {
     try {
       verifyTypedData({
         authenticationData,
         data,
-        publicKey: keyPair.publicKey,
+        publicKey: ed25519.getPublicKey(privateKey),
         scope: ARC0060ScopeEnum.UNKNOWN,
         signature: randomBytes(64),
       });
@@ -45,18 +45,18 @@ describe('verifyTypedData', () => {
 
   describe('AUTH scope', () => {
     test('should return false if the public key is not the correct signer', () => {
-      const _keyPair = sign.keyPair();
+      const _privateKey = ed25519.utils.randomPrivateKey();
       const signature = signTypedData({
         authenticationData,
         data,
         domain,
-        privateKey: keyPair.secretKey.slice(0, sign.seedLength),
+        privateKey,
         scope: ARC0060ScopeEnum.AUTH,
       });
       const result = verifyTypedData({
         authenticationData,
         data,
-        publicKey: _keyPair.publicKey,
+        publicKey: ed25519.getPublicKey(_privateKey), // get he public key of a different key pair
         scope: ARC0060ScopeEnum.AUTH,
         signature,
       });
@@ -69,7 +69,7 @@ describe('verifyTypedData', () => {
         authenticationData,
         data,
         domain,
-        privateKey: keyPair.secretKey.slice(0, sign.seedLength),
+        privateKey,
         scope: ARC0060ScopeEnum.AUTH,
       });
       const result = verifyTypedData({
@@ -79,7 +79,7 @@ describe('verifyTypedData', () => {
             goodbye: 'humie!',
           })
         ),
-        publicKey: keyPair.publicKey,
+        publicKey: ed25519.getPublicKey(privateKey),
         scope: ARC0060ScopeEnum.AUTH,
         signature,
       });
@@ -92,13 +92,13 @@ describe('verifyTypedData', () => {
         authenticationData,
         data,
         domain,
-        privateKey: keyPair.secretKey.slice(0, sign.seedLength),
+        privateKey,
         scope: ARC0060ScopeEnum.AUTH,
       });
       const result = verifyTypedData({
         authenticationData: concat(sha256(encodeUTF8(domain)), randomBytes(12)),
         data,
-        publicKey: keyPair.publicKey,
+        publicKey: ed25519.getPublicKey(privateKey),
         scope: ARC0060ScopeEnum.AUTH,
         signature,
       });
@@ -111,13 +111,13 @@ describe('verifyTypedData', () => {
         authenticationData,
         data,
         domain,
-        privateKey: keyPair.secretKey.slice(0, sign.seedLength),
+        privateKey,
         scope: ARC0060ScopeEnum.AUTH,
       });
       const result = verifyTypedData({
         authenticationData,
         data,
-        publicKey: keyPair.publicKey,
+        publicKey: ed25519.getPublicKey(privateKey),
         scope: ARC0060ScopeEnum.AUTH,
         signature,
       });
