@@ -15,15 +15,15 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name    | Type                                                                            | Required | Default | Description                                    |
-|---------|---------------------------------------------------------------------------------|----------|---------|------------------------------------------------|
-| options | [`IAVMWebProviderInitOptions`](/api-reference/types#iavmwebproviderinitoptions) | no       | -       | An object to change the initial configuration. |
+| Name    | Type                                                                                  | Required | Default | Description                                    |
+|---------|---------------------------------------------------------------------------------------|----------|---------|------------------------------------------------|
+| options | [`IAVMWebProviderInitOptions`](../api-reference/types.mdx#iavmwebproviderinitoptions) | no       | -       | An object to change the initial configuration. |
 
 #### Returns
 
-| Type                                                    | Description                             |
-|---------------------------------------------------------|-----------------------------------------|
-| [`AVMWebProvider`](/api-reference/types#avmwebprovider) | An initialized AVM web provider object. |
+| Type                                                          | Description                             |
+|---------------------------------------------------------------|-----------------------------------------|
+| [`AVMWebProvider`](../api-reference/types.mdx#avmwebprovider) | An initialized AVM web provider object. |
 
 ## Methods
 
@@ -33,9 +33,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type                                                                  | Description                   |
-|-----------------------------------------------------------------------|-------------------------------|
-| [`IAVMWebProviderConfig`](/api-reference/types#iavmwebproviderconfig) | The provider's configuration. |
+| Type                                                                        | Description                   |
+|-----------------------------------------------------------------------------|-------------------------------|
+| [`IAVMWebProviderConfig`](../api-reference/types.mdx#iavmwebproviderconfig) | The provider's configuration. |
 
 ### `onAuthenticate(callback)`
 
@@ -43,9 +43,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                               | Required | Default | Description                                            |
-|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`IAuthenticationResult`](/api-reference/types#iauthenticationresult) \| [`Promise<IAuthenticationResult>`](/api-reference/types#iauthenticationresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                                                 | Required | Default | Description                                            |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`IAuthenticationResult`](../api-reference/types.mdx#iauthenticationresult) \| [`Promise<IAuthenticationResult>`](../api-reference/types.mdx#iauthenticationresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 
@@ -59,9 +59,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                     | Required | Default | Description                                            |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`IDisableResult`](/api-reference/types#idisableresult) \| [`Promise<IDiscoverResult>`](/api-reference/types#idiscoverresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                       | Required | Default | Description                                            |
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`IDisableResult`](../api-reference/types.mdx#idisableresult) \| [`Promise<IDiscoverResult>`](../api-reference/types.mdx#idiscoverresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 
@@ -75,9 +75,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                           | Required | Default | Description                                            |
-|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptions`](/api-reference/types#iproviderlcallbackoptions)) => ([`IDiscoverResult`](/api-reference/types#idiscoverresult) \| [`Promise<IDiscoverResult>`](/api-reference/types#idiscoverresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                             | Required | Default | Description                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptions`](../api-reference/types.mdx#iproviderlcallbackoptions)) => ([`IDiscoverResult`](../api-reference/types.mdx#idiscoverresult) \| [`Promise<IDiscoverResult>`](../api-reference/types.mdx#idiscoverresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 
@@ -91,9 +91,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                               | Required | Default | Description                                            |
-|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`IEnableResult`](/api-reference/types#ienableresult) \| [`Promise<IEnableResult>`](/api-reference/types#ienableresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                 | Required | Default | Description                                            |
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`IEnableResult`](../api-reference/types.mdx#ienableresult) \| [`Promise<IEnableResult>`](../api-reference/types.mdx#ienableresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 
@@ -107,9 +107,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                       | Required | Default | Description                                            |
-|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`IPostTransactionsResult`](/api-reference/types#iposttransactionsresult) \| [`Promise<IPostTransactionsResult>`](/api-reference/types#iposttransactionsresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                                                         | Required | Default | Description                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`IPostTransactionsResult`](../api-reference/types.mdx#iposttransactionsresult) \| [`Promise<IPostTransactionsResult>`](../api-reference/types.mdx#iposttransactionsresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 
@@ -123,9 +123,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                       | Required | Default | Description                                            |
-|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`IPostTransactionsResult`](/api-reference/types#iposttransactionsresult) \| [`Promise<IPostTransactionsResult>`](/api-reference/types#iposttransactionsresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                                                         | Required | Default | Description                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`IPostTransactionsResult`](../api-reference/types.mdx#iposttransactionsresult) \| [`Promise<IPostTransactionsResult>`](../api-reference/types.mdx#iposttransactionsresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 
@@ -139,9 +139,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                   | Required | Default | Description                                            |
-|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`ISignMessageResult`](/api-reference/types#isignmessageresult) \| [`Promise<ISignMessageResult>`](/api-reference/types#isignmessageresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                                     | Required | Default | Description                                            |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`ISignMessageResult`](../api-reference/types.mdx#isignmessageresult) \| [`Promise<ISignMessageResult>`](../api-reference/types.mdx#isignmessageresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 ### `onSignTransactions(callback)`
 
@@ -149,9 +149,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                                                                                                                                                                       | Required | Default | Description                                            |
-|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
-| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](/api-reference/types#iproviderlcallbackoptionswithcredential)) => ([`ISignTransactionsResult`](/api-reference/types#isigntransactionsresult) \| [`Promise<ISignTransactionsResult>`](/api-reference/types#isigntransactionsresult)) | yes      | -       | The listener to call when the request message is sent. |
+| Name     | Type                                                                                                                                                                                                                                                                                                         | Required | Default | Description                                            |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|--------------------------------------------------------|
+| callback | (`options`: [`IProviderCallbackOptionsWithCredential`](../api-reference/types.mdx#iproviderlcallbackoptionswithcredential)) => ([`ISignTransactionsResult`](../api-reference/types.mdx#isigntransactionsresult) \| [`Promise<ISignTransactionsResult>`](../api-reference/types.mdx#isigntransactionsresult)) | yes      | -       | The listener to call when the request message is sent. |
 
 #### Returns
 

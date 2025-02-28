@@ -1,4 +1,4 @@
 # Usage
 
-* [`Clients`](/usage/clients)
-* [`Providers`](/usage/providers)
+* [`Clients`](./clients/index.md)
+* [`Providers`](./providers/index.md)

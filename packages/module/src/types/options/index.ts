@@ -10,7 +10,7 @@ export type { default as ISendRequestMessageOptions } from './ISendRequestMessag
 export type { default as ISendResponseMessageOptions } from './ISendResponseMessageOptions';
 export type { default as ISignTypedDataOptions } from './ISignTypedDataOptions';
 export type { default as IVerifyTypedDataOptions } from './IVerifyTypedDataOptions';
-export type { default as IVIP030027FailedToSignTransactionsErrorOptions } from './IVIP030027FailedToSignTransactionsErrorOptions';
+export type { default as IVIP030027FailedToPostSomeTransactionsErrorOptions } from './IVIP030027FailedToPostSomeTransactionsErrorOptions';
 export type { default as IVIP030027MethodErrorOptions } from './IVIP030027MethodErrorOptions';
 export type { default as IVIP030027NetworkNotSupportedErrorOptions } from './IVIP030027NetworkNotSupportedErrorOptions';
 export type { default as IVIP030027UnauthorizedProviderCredentialErrorOptions } from './IVIP030027UnauthorizedProviderCredentialErrorOptions';

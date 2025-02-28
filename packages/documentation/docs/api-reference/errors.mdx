@@ -18,7 +18,7 @@ import TOCInline from '@theme/TOCInline';
 | 4100 | [`VIP030027UnauthorizedSignerError`](#vip030027unauthorizedsignererror)                         | The provider has not given permission to use a specified signer.                                                                                                                     |
 | 4200 | [`VIP030027InvalidInputError`](#vip030027invalidinputerror)                                     | The input for signing transactions is malformed.                                                                                                                                     |
 | 4201 | [`VIP030027InvalidGroupIdError`](#vip030027invalidgroupiderror)                                 | The computed group ID of the atomic transactions is different from the assigned group ID.                                                                                            |
-| 4300 | [`VIP030027FailedToSignTransactionsError`](#vip030027failedtosigntransactionserror)             | When transactions were not signed.                                                                                                                                                   |
+| 4300 | [`VIP030027FailedToPostSomeTransactionsError`](#vip030027failedtopostsometransactionserror)     | When some transactions failed to be posted to the network.                                                                                                                           |
 | 4401 | [`VIP030027UnauthorizedProviderCredentialError`](#vip030027unauthorizedprovidercredentialerror) | When the provider's VCIC has failed verification. This can be caused if the signature the provider has provided in the response does not pass validation of the request's challenge. |
 
 ### `VIP030027UnknownError`
@@ -109,9 +109,9 @@ This error is thrown when the wallet attempts to sign atomic transactions in whi
 | message         | `string` | -     | A human readable message.                                                                                     |
 | vcic            | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `VIP030027FailedToSignTransactionsError`
+### `VIP030027FailedToPostSomeTransactionsError`
 
-This error is thrown when some transactions failed to sign the provided transactions.
+This error is thrown when some transactions failed to be posted to the network.
 
 #### Properties
 

@@ -11,13 +11,13 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-The disable method is not required for providers to implement. However, it is useful for providers that have a sessioning system in place when a client has previously called [`enable()`](../../api-reference/avm-web-client#enableparams).
+The disable method is not required for providers to implement. However, it is useful for providers that have a sessioning system in place when a client has previously called [`enable()`](../../api-reference/avm-web-client.mdx#enableparams).
 
 The aim of the disable method is for clients to request that these sessions be removed from the provider.
 
 ## Disabling the client with a provider
 
-Assuming a client has been [enabled](enabling-a-client), a request can be sent to disable a client with a provider using:
+Assuming a client has been [enabled](./enabling-a-client.mdx), a request can be sent to disable a client with a provider using:
 
 <Tabs
   defaultValue="javascript"
@@ -81,7 +81,7 @@ Assuming a client has been [enabled](enabling-a-client), a request can be sent t
 
 :::caution
 
-If any providers do not support the `disable` method, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be returned.
+If any providers do not support the `disable` method, then a [`VIP030027MethodNotSupportedError`](../../api-reference/errors.mdx#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
@@ -155,7 +155,7 @@ To disable the client with a specific network, the genesis hash of the network c
 
 :::caution
 
-If the network is specified, and the provider does not support the network, then a [`VIP030027NetworkNotSupportedError`](/api-reference/errors#vip030027networknotsupportederror) **SHOULD** be returned.
+If the network is specified, and the provider does not support the network, then a [`VIP030027NetworkNotSupportedError`](../../api-reference/errors.mdx#vip030027networknotsupportederror) **SHOULD** be returned.
 
 :::
 

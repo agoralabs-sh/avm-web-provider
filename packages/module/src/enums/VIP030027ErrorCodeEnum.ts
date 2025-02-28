@@ -7,7 +7,7 @@ enum VIP030027ErrorCodeEnum {
   UnauthorizedSignerError = 4100,
   InvalidInputError = 4200,
   InvalidGroupIdError = 4201,
-  FailedToSignTransactionsError = 4300,
+  FailedToPostSomeTransactionsError = 4300,
   UnauthorizedProviderCredentialError = 4401,
 }
 

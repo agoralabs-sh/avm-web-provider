@@ -38,7 +38,7 @@ This error is thrown when a user has rejected or canceled the requested action o
 
 ## `MethodNotSupportedError`
 
-This can be thrown by most [`AVMWebClient`](avm-web-client.mdx#methods) methods and indicates that the provider does not support the requested method.
+This can be thrown by most [`AVMWebClient`](./avm-web-client.mdx#methods) methods and indicates that the provider does not support the requested method.
 
 #### Properties
 

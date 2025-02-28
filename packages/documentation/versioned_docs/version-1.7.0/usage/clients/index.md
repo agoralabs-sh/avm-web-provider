@@ -1,10 +1,10 @@
 # Clients
 
-* [Getting Started](clients/getting-started)
-* [Discover Providers](clients/discover-providers)
-* [Enabling A Client](clients/enabling-a-client)
-* [Disabling A Client](clients/disabling-a-client)
-* [Signing Transactions](clients/signing-transactions)
-* [Posting Transactions](clients/posting-transactions)
-* [Signing And Posting Transactions](clients/signing-and-posting-transactions)
-* [Signing A Message](clients/signing-a-message)
+* [Getting Started](./getting-started.mdx)
+* [Discover Providers](./discover-providers.mdx)
+* [Enabling A Client](./enabling-a-client.mdx)
+* [Disabling A Client](./disabling-a-client.mdx)
+* [Signing Transactions](./signing-transactions.mdx)
+* [Posting Transactions](./posting-transactions.mdx)
+* [Signing And Posting Transactions](./signing-and-posting-transactions.mdx)
+* [Signing A Message](./signing-a-message.mdx)

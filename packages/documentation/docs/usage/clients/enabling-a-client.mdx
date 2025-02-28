@@ -18,19 +18,19 @@ Before a client can start interacting with a provider, the provider will **MAY**
 
 :::note
 
-It should be safe to call [`enable()`](../../api-reference/avm-web-client#enableparams). as many times as the client needs; the provider should assume this.
+It should be safe to call [`enable()`](../../api-reference/avm-web-client.mdx#enableparams). as many times as the client needs; the provider should assume this.
 
 :::
 
 :::caution
 
-The definition of "enabling" for a provider can mean different things to different providers, but it is highly **RECOMMENDED** that a client first run [`enable()`](../../api-reference/avm-web-client#enable) before attempting any signing/post methods.
+The definition of "enabling" for a provider can mean different things to different providers, but it is highly **RECOMMENDED** that a client first run [`enable()`](../../api-reference/avm-web-client.mdx#enableparams) before attempting any signing/post methods.
 
 :::
 
 ## Enabling the client with a provider
 
-After [initialization](getting-started), simply call:
+After [initialization](./getting-started.mdx), simply call:
 
 <Tabs
   defaultValue="javascript"
@@ -116,7 +116,7 @@ After [initialization](getting-started), simply call:
 
 :::caution
 
-If any providers do not support the `enable`  method, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be returned.
+If any providers do not support the `enable`  method, then a [`VIP030027MethodNotSupportedError`](../../api-reference/errors.mdx#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
@@ -214,6 +214,6 @@ To target a specific network, a client can pass the genesis hash of the network 
 
 :::caution
 
-If a network is specified, and the provider does not support the network, then a [`VIP030027NetworkNotSupportedError`](/api-reference/errors#vip030027networknotsupportederror) **SHOULD** be returned.
+If a network is specified, and the provider does not support the network, then a [`VIP030027NetworkNotSupportedError`](../../api-reference/errors.mdx#vip030027networknotsupportederror) **SHOULD** be returned.
 
 :::

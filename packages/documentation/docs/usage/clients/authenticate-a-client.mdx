@@ -15,7 +15,7 @@ If supported, providers can sign some typed authentication data.
 
 :::info
 
-When verifying the signature, it **SHOULD** be signed using the [ARC-0060](https://arc.algorand.foundation/ARCs/arc-0060) specification. The utility method [`verifyTypedData`](../../api-reference/utilities#verifytypeddataoptions) can be used to verify the signature.
+When verifying the signature, it **SHOULD** be signed using the [ARC-0060](https://arc.algorand.foundation/ARCs/arc-0060) specification. The utility method [`verifyTypedData`](../../api-reference/utilities.mdx#verifytypeddataoptions) can be used to verify the signature.
 
 :::
 
@@ -137,7 +137,7 @@ When verifying the signature, it **SHOULD** be signed using the [ARC-0060](https
 
 :::caution
 
-If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be sent in the `error` parameter.
+If this method is not supported, then a [`VIP030027MethodNotSupportedError`](../../api-reference/errors.mdx#vip030027methodnotsupportederror) **SHOULD** be sent in the `error` parameter.
 
 :::
 
@@ -263,6 +263,6 @@ If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/ap
 
 :::caution
 
-If the signer is not known, or not authorized, then a [`ARC0060InvalidSignerError`](../../api-reference/errors#arc0060invalidsignererror) **SHOULD** be sent in the `error` parameter.
+If the signer is not known, or not authorized, then a [`ARC0060InvalidSignerError`](../../api-reference/errors.mdx#arc0060invalidsignererror) **SHOULD** be sent in the `error` parameter.
 
 :::

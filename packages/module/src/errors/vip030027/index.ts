@@ -1,5 +1,5 @@
 export { default as BaseVIP030027Error } from './BaseVIP030027Error';
-export { default as VIP030027FailedToSignTransactionsError } from './VIP030027FailedToSignTransactionsError';
+export { default as VIP030027FailedToPostSomeTransactionsError } from './VIP030027FailedToPostSomeTransactionsError';
 export { default as VIP030027InvalidGroupIdError } from './VIP030027InvalidGroupIdError';
 export { default as VIP030027InvalidInputError } from './VIP030027InvalidInputError';
 export { default as VIP030027MethodCanceledError } from './VIP030027MethodCanceledError';

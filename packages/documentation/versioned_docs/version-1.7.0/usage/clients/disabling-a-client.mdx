@@ -11,13 +11,13 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-The disable method is not required for providers to implement. However, it is useful for providers that have a sessioning system in place when a client has previously called [`enable()`](../../api-reference/avm-web-client#enableparams).
+The disable method is not required for providers to implement. However, it is useful for providers that have a sessioning system in place when a client has previously called [`enable()`](../../api-reference/avm-web-client.mdx#enableparams).
 
 The aim of the disable method is for clients to request that these sessions be removed from the provider.
 
 ## Disabling the client with all providers
 
-Assuming a client has been [enabled](enabling-a-client) with one or all providers, you can remove the client from all available providers by:
+Assuming a client has been [enabled](./enabling-a-client.mdx) with one or all providers, you can remove the client from all available providers by:
 
 <Tabs
   defaultValue="javascript"
@@ -83,7 +83,7 @@ Assuming a client has been [enabled](enabling-a-client) with one or all provider
 
 :::caution
 
-If any providers do not support the `disable`  method, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be returned.
+If any providers do not support the `disable`  method, then a [`MethodNotSupportedError`](../../api-reference/errors.md#methodnotsupportederror) should be returned.
 
 :::
 
@@ -162,7 +162,7 @@ If you want to target a specific provider and network, you can simply pass the I
 
 :::caution
 
-If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
+If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors.md#networknotsupportederror) should be thrown.
 
 :::
 
