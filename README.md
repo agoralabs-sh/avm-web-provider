@@ -10,7 +10,7 @@
 
 <div align="center">
 
-[![License: CC0-1.0](https://img.shields.io/github/license/agoralabs-sh/avm-web-provider)](LICENSE)
+[![License: CC0-1.0](https://img.shields.io/github/license/agoralabs-sh/avm-web-provider)](./LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/%40agoralabs-sh%2Favm-web-provider)](https://www.npmjs.com/package/%40agoralabs-sh/avm-web-provider)
 
 </div>
