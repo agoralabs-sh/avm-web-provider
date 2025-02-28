@@ -11,11 +11,11 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-Providers, if supported, can sign single, atomic or multiple transactions. If the provider also supports it, the provider can also sign transactions using multisigs and re-keyed accounts.
+Providers, if supported, can sign single, atomic or multiple transactions. If the provider also supports it, the provider can sign transactions using multisigs and re-keyed accounts.
 
 ## Signing a single transaction
 
-Regardless of whether you are sending multiple transactions or a single transaction, an array of base64 encoded transactions will need to be sent.
+Regardless of whether a client is sending multiple/atomic transactions or a single transaction, an array of base64 encoded transactions will need to be provided.
 
 <Tabs
   defaultValue="javascript"
@@ -25,135 +25,133 @@ Regardless of whether you are sending multiple transactions or a single transact
   ]}>
   <TabItem value="javascript">
 
-```js
-const algosdk = require('algosdk');
+  ```js
+  const algosdk = require('algosdk');
 
-try {
-  const client = new algosdk.Algodv2(
-    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    'http://localhost',
-    '4001',
-  );
-  const encoder = new TextEncoder();
-  const suggestedParams = await client.getTransactionParams().do();
-  const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-    amount: algosdk.algosToMicroalgos(1),
-    from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-    note: encoder.encode('Hello Human!'),
-    suggestedParams,
-    to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-  });
-  const transactionBytes = transaction.toByte();
-} catch (error) {
-  // handle error
-}
-
-// initialized client
-client.onSignTransactions(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
-
-    return;
+  // create a transaction
+  try {
+    const algodClient = new algosdk.Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosdk.algosToMicroalgos(1),
+      from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
   }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    stxns: [
-      'gqNzaWfEQ...',
-    ],
-  }
-  */
-});
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-// send a sign transactions request
-client.signTransactions({
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  txns: [
+      return;
+    }
+
+    console.log(result);
+    /*
     {
-      txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
+
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
+      txns: [
+        {
+          txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
+        },
+      ],
     },
-  ],
-});
-```
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import {
-  Algodv2,
-  algosToMicroalgos,
-  makePaymentTxnWithSuggestedParamsFromObject,
-  SuggestedParams,
-  Transaction,
-} from 'algosdk';
-import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import {
+    Algodv2,
+    algosToMicroalgos,
+    makePaymentTxnWithSuggestedParamsFromObject,
+  } from 'algosdk';
 
-// create a transaction
-try {
-  const client: Algodv2 = new Algodv2(
-    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    'http://localhost',
-    '4001',
-  );
-  const encoder: TextEncoder = new TextEncoder();
-  const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-  const transaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
-    amount: algosToMicroalgos(1),
-    from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-    note: encoder.encode('Hello Human!'),
-    suggestedParams,
-    to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-  });
-  const transactionBytes: Uint8Array = transaction.toByte();
-} catch (error) {
-  // handle error
-}
-
-// initialized client
-client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
-  if (error) {
-    console.error('error:', error);
-
-    return;
+  // create a transaction
+  try {
+    const algodClient = new Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosToMicroalgos(1),
+      from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
   }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    stxns: [
-      'gqNzaWfEQ...',
-    ],
-  }
-  */
-});
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-// send a sign transactions request
-client.signTransactions({
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  txns: [
+      return;
+    }
+
+    console.log(result);
+    /*
     {
-      txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
+
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
+      txns: [
+        {
+          txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
+        },
+      ],
     },
-  ],
-});
-```
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be thrown.
+If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
 ## Signing atomic transactions
 
-When sending atomic transactions, all transactions, regardless of whether the wallet is signing only some of the transactions, must be sent with a matching group ID.
+When sending atomic transactions, regardless of whether the provider is signing only some of the transactions, all transactions must be sent.
 
 <Tabs
   defaultValue="javascript"
@@ -166,14 +164,15 @@ When sending atomic transactions, all transactions, regardless of whether the wa
     ```js
     const algosdk = require('algosdk');
 
+    // create a transaction
     try {
-      const client = new algosdk.Algodv2(
-      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      'http://localhost',
-      '4001',
+      const algodClient = new algosdk.Algodv2(
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        'http://localhost',
+        '4001',
       );
       const encoder = new TextEncoder();
-      const suggestedParams = await client.getTransactionParams().do();
+      const suggestedParams = await algodClient.getTransactionParams().do();
       const firstTransaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosdk.algosToMicroalgos(1),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
@@ -200,7 +199,6 @@ When sending atomic transactions, all transactions, regardless of whether the wa
       // handle error
     }
 
-    // initialized client
     client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
@@ -211,7 +209,6 @@ When sending atomic transactions, all transactions, regardless of whether the wa
       console.log(result);
       /*
       {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
         stxns: [
           'gqNzaWfEQ...',
           'gqNzaWfEQ...',
@@ -222,15 +219,17 @@ When sending atomic transactions, all transactions, regardless of whether the wa
 
     // send a sign transactions request
     client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      txns: [
-        {
-          txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
-        },
-        {
-          txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
-        },
-      ],
+      params: {
+        txns: [
+          {
+            txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
+          },
+          {
+            txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
+          },
+        ],
+      },
+      vcic: 'q5dQ...',
     });
     ```
 
@@ -243,36 +242,33 @@ When sending atomic transactions, all transactions, regardless of whether the wa
       algosToMicroalgos,
       assignGroupID,
       makePaymentTxnWithSuggestedParamsFromObject,
-      SuggestedParams,
-      Transaction,
     } from 'algosdk';
-    import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
-      const client: Algodv2 = new Algodv2(
-      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      'http://localhost',
-      '4001',
+      const algodClient = new Algodv2(
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        'http://localhost',
+        '4001',
       );
-      const encoder: TextEncoder = new TextEncoder();
-      const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-      const firstTransaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      const encoder = new TextEncoder();
+      const suggestedParams = await algodClient.getTransactionParams().do();
+      const firstTransaction = makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosToMicroalgos(1),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
         note: encoder.encode('I am the first transaction, human!'),
         suggestedParams,
         to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
       });
-      const secondTransaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      const secondTransaction = makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosToMicroalgos(2),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
         note: encoder.encode('I am the second transaction, human!'),
         suggestedParams,
         to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
       });
-      let firstTransactionBytes: Uint8Array;
-      let secondTransactionBytes: Uint8Array;
+      let firstTransactionBytes;
+      let secondTransactionBytes;
 
       // assign a group id
       assignGroupID([firstTransaction, secondTransaction]);
@@ -283,8 +279,7 @@ When sending atomic transactions, all transactions, regardless of whether the wa
       // handle error
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -294,7 +289,6 @@ When sending atomic transactions, all transactions, regardless of whether the wa
       console.log(result);
       /*
       {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
         stxns: [
           'gqNzaWfEQ...',
           'gqNzaWfEQ...',
@@ -305,15 +299,17 @@ When sending atomic transactions, all transactions, regardless of whether the wa
 
     // send a sign transactions request
     client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      txns: [
-        {
-          txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
-        },
-        {
-          txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
-        },
-      ],
+      params: {
+        txns: [
+          {
+            txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
+          },
+          {
+            txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
+          },
+        ],
+      },
+      vcic: 'q5dQ...',
     });
     ```
 
@@ -322,13 +318,13 @@ When sending atomic transactions, all transactions, regardless of whether the wa
 
 :::caution
 
-The provider may attempt to compute ID of these atomic transactions and if it doesn't match the assigned ID, then a [`VIP030027InvalidGroupIdError`](/api-reference/errors#vip030027invalidgroupiderror) may be thrown.
+The provider may attempt to compute ID of these atomic transactions and if it doesn't match the assigned ID, then a [`VIP030027InvalidGroupIdError`](/api-reference/errors#vip030027invalidgroupiderror) **SHOULD** be returned.
 
 :::
 
 ## Non-provider signed transactions
 
-In the case of a provider being sent multiple transactions, but only needing to sign a subset of the transactions, an empty `signers` array must be used. This instructs the provider to skip the transaction even if it can sign it.
+In the case when a provider being sent multiple transactions, but the provider only needs to sign a subset of the transactions, an empty `signers` array **MUST** be used. This instructs the provider to skip the transaction, even if it can sign it.
 
 For example:
 
@@ -343,14 +339,15 @@ For example:
     ```js
     const algosdk = require('algosdk');
 
+    // create a transaction
     try {
-      const client = new algosdk.Algodv2(
+      const algodClient = new algosdk.Algodv2(
         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         'http://localhost',
         '4001',
       );
       const encoder = new TextEncoder();
-      const suggestedParams = await client.getTransactionParams().do();
+      const suggestedParams = await algodClient.getTransactionParams().do();
       const firstTransaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosdk.algosToMicroalgos(1),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
@@ -371,7 +368,6 @@ For example:
       // handle error
     }
 
-    // initialized client
     client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
@@ -382,7 +378,6 @@ For example:
       console.log(result);
       /*
       {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
         stxns: [
           'gqNzaWfEQ...',
           null,
@@ -393,16 +388,18 @@ For example:
 
     // send a sign transactions request
     client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      txns: [
-        {
-          txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
-        },
-        {
-          txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
-          signers: [], // use an empty signers array to skip this transaction
-        },
-      ],
+      params: {
+        txns: [
+          {
+            txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
+          },
+          {
+            txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
+            signers: [], // use an empty signers array to skip this transaction
+          },
+        ],
+      },
+      vcic: 'q5dQ...',
     });
     ```
 
@@ -414,42 +411,38 @@ For example:
       Algodv2,
       algosToMicroalgos,
       makePaymentTxnWithSuggestedParamsFromObject,
-      SuggestedParams,
-      Transaction,
     } from 'algosdk';
-    import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
 
     // create a transaction
     try {
-      const client: Algodv2 = new Algodv2(
+      const algodClient = new Algodv2(
         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         'http://localhost',
         '4001',
       );
-      const encoder: TextEncoder = new TextEncoder();
-      const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-      const firstTransaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      const encoder = new TextEncoder();
+      const suggestedParams = await algodClient.getTransactionParams().do();
+      const firstTransaction = makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosToMicroalgos(1),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
         note: encoder.encode('I am the first transaction, human!'),
         suggestedParams,
         to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
       });
-      const secondTransaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      const secondTransaction = makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosToMicroalgos(2),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
         note: encoder.encode('I am the second transaction, human!'),
         suggestedParams,
         to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
       });
-      const firstTransactionBytes: Uint8Array = firstTransaction.toByte();
-      const secondTransactionBytes: Uint8Array = secondTransaction.toByte();
+      const firstTransactionBytes = firstTransaction.toByte();
+      const secondTransactionBytes = secondTransaction.toByte();
     } catch (error) {
       // handle error
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
+    client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
 
@@ -459,7 +452,6 @@ For example:
       console.log(result);
       /*
       {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
         stxns: [
           'gqNzaWfEQ...',
           null,
@@ -470,23 +462,27 @@ For example:
 
     // send a sign transactions request
     client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      txns: [
-        {
-          txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
-        },
-        {
-          txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
-          signers: [], // use an empty signers array to skip this transaction
-        },
-      ],
+      params: {
+        txns: [
+          {
+            txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
+          },
+          {
+            txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
+            signers: [], // use an empty signers array to skip this transaction
+          },
+        ],
+      },
+      vcic: 'q5dQ...',
     });
     ```
 
   </TabItem>
 </Tabs>
 
-As you can see from the above example, when the provider skips signing the transaction, the resulting signed transaction list contains a `null` value at the same index, indicating the transaction was not signed. If you do not want to handle null values, you can supply the signed transaction (`stxn`) to the params when signing the transactions:
+From the above example, when the provider skips signing the transaction, the resulting signed transaction list contains a `null` value at the same index, indicating the transaction was not signed.
+
+To avoid `null` values, a signed transaction (`stxn`) can be supplied to the params which will also instruct the provider to skip the transaction and simply return the singed transaction:
 
 <Tabs
   defaultValue="javascript"
@@ -499,14 +495,15 @@ As you can see from the above example, when the provider skips signing the trans
     ```js
     const algosdk = require('algosdk');
 
+    // create a transaction
     try {
-      const client = new algosdk.Algodv2(
+      const algodClient = new algosdk.Algodv2(
         'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         'http://localhost',
         '4001',
       );
       const encoder = new TextEncoder();
-      const suggestedParams = await client.getTransactionParams().do();
+      const suggestedParams = await algodClient.getTransactionParams().do();
       const firstTransaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         amount: algosdk.algosToMicroalgos(1),
         from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
@@ -527,7 +524,6 @@ As you can see from the above example, when the provider skips signing the trans
       // handle error
     }
 
-    // initialized client
     client.onSignTransactions(({ error, result }) => {
       if (error) {
         console.error('error:', error);
@@ -538,7 +534,6 @@ As you can see from the above example, when the provider skips signing the trans
       console.log(result);
       /*
       {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
         stxns: [
           'gqNzaWfEQ...',
           'gqNzaWfEQ...'
@@ -549,85 +544,82 @@ As you can see from the above example, when the provider skips signing the trans
 
     // send a sign transactions request
     client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-      txns: [
-        {
-          txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
-        },
-        {
-          txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
-          signers: [], // an empty array instructs the wallet to skip signing this transaction
-          stxn: 'gqNzaWfEQ...', // providing the signed transaction will pass it to the result
-        },
-      ],
+      params: {
+        txns: [
+          {
+            txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
+          },
+          {
+            txn: btoa(String.fromCodePoint(...secondTransactionBytes)),
+            signers: [], // an empty array instructs the wallet to skip signing this transaction
+            stxn: 'gqNzaWfEQ...', // providing the signed transaction will pass it to the result
+          },
+        ],
+      },
+      vcic: 'q5dQ...',
     });
     ```
 
   </TabItem>
   <TabItem value="typescript">
 
-    ```typescript
-    import {
-      Algodv2,
-      algosToMicroalgos,
-      makePaymentTxnWithSuggestedParamsFromObject,
-      SuggestedParams,
-      Transaction,
-    } from 'algosdk';
-    import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import {
+    Algodv2,
+    algosToMicroalgos,
+    makePaymentTxnWithSuggestedParamsFromObject,
+  } from 'algosdk';
 
-    // create a transaction
-    try {
-      const client: Algodv2 = new Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder: TextEncoder = new TextEncoder();
-      const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-      const firstTransaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosToMicroalgos(1),
-        from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        note: encoder.encode('I am the first transaction, human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const secondTransaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosToMicroalgos(2),
-        from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        note: encoder.encode('I am the second transaction, human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const firstTransactionBytes: Uint8Array = firstTransaction.toByte();
-      const secondTransactionBytes: Uint8Array = secondTransaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const firstTransaction = makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosToMicroalgos(1),
+      from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      note: encoder.encode('I am the first transaction, human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const secondTransaction = makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosToMicroalgos(2),
+      from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      note: encoder.encode('I am the second transaction, human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const firstTransactionBytes = firstTransaction.toByte();
+    const secondTransactionBytes = secondTransaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+        'gqNzaWfEQ...'
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-          'gqNzaWfEQ...'
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           txn: btoa(String.fromCodePoint(...firstTransactionBytes)), // convert to base64 string
@@ -638,21 +630,23 @@ As you can see from the above example, when the provider skips signing the trans
           stxn: 'gqNzaWfEQ...', // providing the signed transaction will pass it to the result
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 ## Signing transactions with multisig accounts
 
-When using multisig accounts to sign transactions, a few extra options must be provided to the params object.
+When using multisig accounts to sign transactions, a few extra options **MUST** be provided to the params object.
 
 The transaction must now include the `msig` object that conforms to [`algosdk.MultisigMetadata`](https://algorand.github.io/js-algorand-sdk/interfaces/MultisigMetadata.html).
 
 :::caution
 
-The provider may not support multisig accounts, in which case a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be thrown.
+The provider may not support multisig accounts, in which case a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
@@ -664,153 +658,152 @@ The provider may not support multisig accounts, in which case a [`VIP030027Metho
   ]}>
   <TabItem value="javascript">
 
-    ```js
-    const algosdk = require('algosdk');
+  ```js
+  const algosdk = require('algosdk');
 
-    try {
-      const client = new algosdk.Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder = new TextEncoder();
-      const multisigParams = {
-        addrs: [
-          'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
-          '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
-          'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
-        ],
-        threshold: 1,
-        version: 1,
-      };
-      const multisigAddress = algosdk.multisigAddress(multisigParams);
-      const suggestedParams = await client.getTransactionParams().do();
-      const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosdk.algosToMicroalgos(1),
-        from: multisigAddress,
-        note: encoder.encode('Hello Human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const transactionBytes = transaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new algosdk.Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const multisigParams = {
+      addrs: [
+        'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
+        '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
+        'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
+      ],
+      threshold: 1,
+      version: 1,
+    };
+    const multisigAddress = algosdk.multisigAddress(multisigParams);
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosdk.algosToMicroalgos(1),
+      from: multisigAddress,
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  // initialized client
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           msig: multisigParams,
           txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-    ```typescript
-    import {
-      Algodv2,
-      algosToMicroalgos,
-      makePaymentTxnWithSuggestedParamsFromObject,
-      MultisigMetadata,
-      multisigAddress,
-      SuggestedParams,
-      Transaction,
-    } from 'algosdk';
-    import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import {
+    Algodv2,
+    algosToMicroalgos,
+    makePaymentTxnWithSuggestedParamsFromObject,
+    multisigAddress,
+  } from 'algosdk';
 
-    // create a transaction
-    try {
-      const client: Algodv2 = new Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder: TextEncoder = new TextEncoder();
-      const multisigParams: MultisigMetadata = {
-        addrs: [
-          'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
-          '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
-          'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
-        ],
-        threshold: 1,
-        version: 1,
-      };
-      const multisigAddress: string = multisigAddress(multisigParams);
-      const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-      const transaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosToMicroalgos(1),
-        from: multisigAddress,
-        note: encoder.encode('Hello Human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const transactionBytes: Uint8Array = transaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const multisigParams = {
+      addrs: [
+        'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
+        '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
+        'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
+      ],
+      threshold: 1,
+      version: 1,
+    };
+    const multisigAddress = multisigAddress(multisigParams);
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosToMicroalgos(1),
+      from: multisigAddress,
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  // initialized client
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           msig: multisigParams,
           txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 In the above example, even though the threshold is 1, because two of the signers are present and authorized in the provider, both accounts were used to sign the transaction. This still makes the transaction valid.
 
-If you want to only use one address, you can use the `signers` list to instruct the provider to only use certain addresses to sign the transaction.
+If the intent is to have the provider use only one address to sign a transaction, the `signers` list can be used to instruct the provider to only use certain addresses.
 
 <Tabs
   defaultValue="javascript"
@@ -820,61 +813,60 @@ If you want to only use one address, you can use the `signers` list to instruct 
   ]}>
   <TabItem value="javascript">
 
-    ```js
-    const algosdk = require('algosdk');
+  ```js
+  const algosdk = require('algosdk');
 
-    try {
-      const client = new algosdk.Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder = new TextEncoder();
-      const multisigParams = {
-        addrs: [
-          'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
-          '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
-          'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
-        ],
-        threshold: 1,
-        version: 1,
-      };
-      const multisigAddress = algosdk.multisigAddress(multisigParams);
-      const suggestedParams = await client.getTransactionParams().do();
-      const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosdk.algosToMicroalgos(1),
-        from: multisigAddress,
-        note: encoder.encode('Hello Human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const transactionBytes = transaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new algosdk.Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const multisigParams = {
+      addrs: [
+        'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
+        '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
+        'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
+      ],
+      threshold: 1,
+      version: 1,
+    };
+    const multisigAddress = algosdk.multisigAddress(multisigParams);
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosdk.algosToMicroalgos(1),
+      from: multisigAddress,
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           msig: multisigParams,
@@ -884,77 +876,73 @@ If you want to only use one address, you can use the `signers` list to instruct 
           ], // specifying a signer instructs the wallet to only use this address to sign
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-    ```typescript
-    import {
-      Algodv2,
-      algosToMicroalgos,
-      makePaymentTxnWithSuggestedParamsFromObject,
-      MultisigMetadata,
-      multisigAddress,
-      SuggestedParams,
-      Transaction,
-    } from 'algosdk';
-    import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import {
+    Algodv2,
+    algosToMicroalgos,
+    makePaymentTxnWithSuggestedParamsFromObject,
+    multisigAddress,
+  } from 'algosdk';
 
-    // create a transaction
-    try {
-      const client: Algodv2 = new Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder: TextEncoder = new TextEncoder();
-      const multisigParams: MultisigMetadata = {
-        addrs: [
-          'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
-          '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
-          'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
-        ],
-        threshold: 1,
-        version: 1,
-      };
-      const multisigAddress: string = multisigAddress(multisigParams);
-      const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-      const transaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosToMicroalgos(1),
-        from: multisigAddress,
-        note: encoder.encode('Hello Human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const transactionBytes: Uint8Array = transaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new algosdk.Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const multisigParams = {
+      addrs: [
+        'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U', // authorized in provider and will be used to sign
+        '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ', // authorized in provider and will be used to sign
+        'TKDBCV4SCSVR2GECXL7NJ5U34PDNLEIMFBTOYVURAPG53OXJLF4LEDSNGE', // not in provider
+      ],
+      threshold: 1,
+      version: 1,
+    };
+    const multisigAddress = multisigAddress(multisigParams);
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosToMicroalgos(1),
+      from: multisigAddress,
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           msig: multisigParams,
@@ -964,15 +952,17 @@ If you want to only use one address, you can use the `signers` list to instruct 
           ], // specifying a signer instructs the wallet to only use this address to sign
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If any of the accounts supplied in the `signers` list are not an authorized signer, then a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) **SHOULD** be thrown.
+If any of the accounts supplied in the `signers` list are not an authorized signer, then a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) **SHOULD** be returned.
 
 :::
 
@@ -980,11 +970,13 @@ In the above example, only the address `6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJ
 
 ## Signing transactions with re-keyed accounts
 
-When attempting to sign a transaction using a re-keyed account, the `authAddr` field may be used to instruct the provider to use this address as the signer of the transaction. Supplying the `authAddr` will override the sender address in the transaction field.
+When attempting to sign a transaction using a re-keyed account, the `authAddr` field **MAY** be used to instruct the provider to use this address as the signer of the transaction.
+
+Supplying the `authAddr` will override the sender address in the transaction field.
 
 :::caution
 
-The provider may not support re-keyed accounts, in which case a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) will be thrown.
+The provider **MAY** not support re-keyed accounts, in which case the [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
@@ -996,130 +988,128 @@ The provider may not support re-keyed accounts, in which case a [`VIP030027Metho
   ]}>
   <TabItem value="javascript">
 
-    ```js
-    const algosdk = require('algosdk');
+  ```js
+  const algosdk = require('algosdk');
 
-    try {
-      const client = new algosdk.Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder = new TextEncoder();
-      const suggestedParams = await client.getTransactionParams().do();
-      const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosdk.algosToMicroalgos(1),
-        from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        note: encoder.encode('Hello Human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const transactionBytes = transaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new algosdk.Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosdk.algosToMicroalgos(1),
+      from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           authAddr: 'S6V2ITXD3Q4MYATTN5IH75E3KS3WEMB36SVG2LXCQ3XESSH2DYOC3DAXYU', // 'auth-addr' of the re-keyed from account
           txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-    ```typescript
-    import {
-      Algodv2,
-      algosToMicroalgos,
-      makePaymentTxnWithSuggestedParamsFromObject,
-      SuggestedParams,
-      Transaction,
-    } from 'algosdk';
-    import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  import {
+    Algodv2,
+    algosToMicroalgos,
+    makePaymentTxnWithSuggestedParamsFromObject,
+  } from 'algosdk';
 
-    // create a transaction
-    try {
-      const client: Algodv2 = new Algodv2(
-        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        'http://localhost',
-        '4001',
-      );
-      const encoder: TextEncoder = new TextEncoder();
-      const suggestedParams: SuggestedParams = await client.getTransactionParams().do();
-      const transaction: Transaction = makePaymentTxnWithSuggestedParamsFromObject({
-        amount: algosToMicroalgos(1),
-        from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        note: encoder.encode('Hello Human!'),
-        suggestedParams,
-        to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-      });
-      const transactionBytes: Uint8Array = transaction.toByte();
-    } catch (error) {
-      // handle error
+  // create a transaction
+  try {
+    const algodClient = new algosdk.Algodv2(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      'http://localhost',
+      '4001',
+    );
+    const encoder = new TextEncoder();
+    const suggestedParams = await algodClient.getTransactionParams().do();
+    const transaction = makePaymentTxnWithSuggestedParamsFromObject({
+      amount: algosToMicroalgos(1),
+      from: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      note: encoder.encode('Hello Human!'),
+      suggestedParams,
+      to: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+    });
+    const transactionBytes = transaction.toByte();
+  } catch (error) {
+    // handle error
+  }
+
+  client.onSignTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
     }
 
-    // initialized client
-    client.onSignTransactions(({ error, result }: IAVMWebClientCallbackOptions) => {
-      if (error) {
-        console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    }
+    */
+  });
 
-        return;
-      }
-
-      console.log(result);
-      /*
-      {
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-        stxns: [
-          'gqNzaWfEQ...',
-        ],
-      }
-      */
-    });
-
-    // send a sign transactions request
-    client.signTransactions({
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  // send a sign transactions request
+  client.signTransactions({
+    params: {
       txns: [
         {
           authAddr: 'S6V2ITXD3Q4MYATTN5IH75E3KS3WEMB36SVG2LXCQ3XESSH2DYOC3DAXYU', // 'auth-addr' of the re-keyed from account
           txn: btoa(String.fromCodePoint(...transactionBytes)), // convert to base64 string
         },
       ],
-    });
-    ```
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If the supplied `authAddr` is not an authorized signer, then a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) will be thrown.
+If the supplied `authAddr` is not an authorized signer, then a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) **SHOULD** be returned.
 
 :::
