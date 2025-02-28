@@ -29,108 +29,108 @@ When verifying the signature, it **SHOULD** be signed using the [ARC-0060](https
   ]}>
   <TabItem value="javascript">
 
-```js
-import { verifyTypedData } from '@agoralabs-sh/avm-web-provider';
-import { decodeAddress } from 'algosdk';
+  ```js
+  const { verifyTypedData } = require('@agoralabs-sh/avm-web-provider');
+  const { decodeAddress } = require('algosdk');
 
-const authenticationData = await window.crypto.subtle.digest(
-  'SHA-256',
-  new TextEncoder().encode(window.location.hostname),
-);
-const data = {
-  hello: 'humie',
-};
+  const authenticationData = await window.crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(window.location.hostname),
+  );
+  const data = {
+    hello: 'humie',
+  };
 
-// initialized client
-client.onAuthenticate(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  client.onAuthenticate(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    signature: 'gqNzaWfEQ...',
-    signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-  }
-  */
+    console.log(result);
+    /*
+    {
+      signature: 'gqNzaWfEQ...',
+      signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+    }
+    */
 
-  if (
-    verifyTypedData({
-      authenticationData,
-      data,
-      publicKey: decodeAddress('P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U').publicKey,
-      scope: 1, // AUTH
-      signature: new TextEncoder().encode(window.bota(result.signature)),
-    })
-  ) {
-    console.log('authentication successful');
-  }
-});
+    if (
+      verifyTypedData({
+        authenticationData,
+        data,
+        publicKey: decodeAddress('P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U').publicKey,
+        scope: 1, // AUTH
+        signature: new TextEncoder().encode(window.bota(result.signature)),
+      })
+    ) {
+      console.log('authentication successful');
+    }
+  });
 
-// send an authentication request
-client.authenticate({
-  authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
-  data: window.btoa(JSON.stringify(data)),
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-});
-```
+  // send an authentication request
+  client.authenticate({
+    params: {
+      authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
+      data: window.btoa(JSON.stringify(data)),
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import { verifyTypedData } from '@agoralabs-sh/avm-web-provider';
-import { decodeAddress } from 'algosdk';
+  ```typescript
+  import { verifyTypedData } from '@agoralabs-sh/avm-web-provider';
+  import { decodeAddress } from 'algosdk';
 
-const authenticationData = await window.crypto.subtle.digest(
-  'SHA-256',
-  new TextEncoder().encode(window.location.hostname),
-);
-const data = {
-  hello: 'humie',
-};
+  const authenticationData = await window.crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(window.location.hostname),
+  );
+  const data = {
+    hello: 'humie',
+  };
 
-// initialized client
-client.onAuthenticate(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  client.onAuthenticate(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    signature: 'gqNzaWfEQ...',
-    signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-  }
-  */
+    console.log(result);
+    /*
+    {
+      signature: 'gqNzaWfEQ...',
+      signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+    }
+    */
 
-  if (
-    verifyTypedData({
-      authenticationData,
-      data,
-      publicKey: decodeAddress('P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U').publicKey,
-      scope: 1, // AUTH
-      signature: new TextEncoder().encode(window.bota(result.signature)),
-    })
-  ) {
-    console.log('authentication successful');
-  }
-});
+    if (
+      verifyTypedData({
+        authenticationData,
+        data,
+        publicKey: decodeAddress('P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U').publicKey,
+        scope: 1, // AUTH
+        signature: new TextEncoder().encode(window.bota(result.signature)),
+      })
+    ) {
+      console.log('authentication successful');
+    }
+  });
 
-// send an authentication request
-client.authenticate({
-  authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
-  data: window.btoa(JSON.stringify(data)),
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-});
-```
+  // send an authentication request
+  client.authenticate({
+    params: {
+      authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
+      data: window.btoa(JSON.stringify(data)),
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
@@ -151,118 +151,118 @@ If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/ap
   ]}>
   <TabItem value="javascript">
 
-```js
-import { verifyTypedData } from '@agoralabs-sh/avm-web-provider';
-import { decodeAddress } from 'algosdk';
+  ```js
+  const { verifyTypedData } = require('@agoralabs-sh/avm-web-provider');
+  const { decodeAddress } = require('algosdk');
 
-const authenticationData = await window.crypto.subtle.digest(
-  'SHA-256',
-  new TextEncoder().encode(window.location.hostname),
-);
-const data = {
-  hello: 'humie',
-};
-const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
+  const authenticationData = await window.crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(window.location.hostname),
+  );
+  const data = {
+    hello: 'humie',
+  };
+  const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
 
-// initialized client
-client.onAuthenticate(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  client.onAuthenticate(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    signature: 'gqNzaWfEQ...',
-    signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-  }
-  */
+    console.log(result);
+    /*
+    {
+      signature: 'gqNzaWfEQ...',
+      signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+    }
+    */
 
-  if (
-    verifyTypedData({
-      authenticationData,
-      data,
-      publicKey: decodeAddress(signer).publicKey,
-      scope: 1, // AUTH
-      signature: new TextEncoder().encode(window.bota(result.signature)),
-    })
-  ) {
-    console.log('authentication successful');
-  }
-});
+    if (
+      verifyTypedData({
+        authenticationData,
+        data,
+        publicKey: decodeAddress(signer).publicKey,
+        scope: 1, // AUTH
+        signature: new TextEncoder().encode(window.bota(result.signature)),
+      })
+    ) {
+      console.log('authentication successful');
+    }
+  });
 
-// send an authentication request
-client.authenticate({
-  authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
-  data: window.btoa(JSON.stringify(data)),
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  signer,
-});
-```
+  // send an authentication request
+  client.authenticate({
+    params: {
+      authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
+      data: window.btoa(JSON.stringify(data)),
+      signer,
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import { verifyTypedData } from '@agoralabs-sh/avm-web-provider';
-import { decodeAddress } from 'algosdk';
+  ```typescript
+  import { verifyTypedData } from '@agoralabs-sh/avm-web-provider';
+  import { decodeAddress } from 'algosdk';
 
-const authenticationData = await window.crypto.subtle.digest(
-  'SHA-256',
-  new TextEncoder().encode(window.location.hostname),
-);
-const data = {
-  hello: 'humie',
-};
-const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
+  const authenticationData = await window.crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(window.location.hostname),
+  );
+  const data = {
+    hello: 'humie',
+  };
+  const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
 
-// initialized client
-client.onAuthenticate(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  client.onAuthenticate(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    signature: 'gqNzaWfEQ...',
-    signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-  }
-  */
+    console.log(result);
+    /*
+    {
+      signature: 'gqNzaWfEQ...',
+      signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+    }
+    */
 
-  if (
-    verifyTypedData({
-      authenticationData,
-      data,
-      publicKey: decodeAddress(signer).publicKey,
-      scope: 1, // AUTH
-      signature: new TextEncoder().encode(window.bota(result.signature)),
-    })
+    if (
+      verifyTypedData({
+        authenticationData,
+        data,
+        publicKey: decodeAddress(signer).publicKey,
+        scope: 1, // AUTH
+        signature: new TextEncoder().encode(window.bota(result.signature)),
+      })
     ) {
-    console.log('authentication successful');
-  }
-});
+      console.log('authentication successful');
+    }
+  });
 
-// send an authentication request
-client.authenticate({
-  authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
-  data: window.btoa(JSON.stringify(data)),
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  signer,
-});
-```
+  // send an authentication request
+  client.authenticate({
+    params: {
+      authenticationData: window.bota(new TextDecoder.decode(authenticationData)),
+      data: window.btoa(JSON.stringify(data)),
+      signer,
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If the signer is not known, or not authorized, then a [`ARC0060InvalidSignerError`](../../api-reference/errors#arc0060invalidsignererror) will be sent in the `error` parameter.
+If the signer is not known, or not authorized, then a [`ARC0060InvalidSignerError`](../../api-reference/errors#arc0060invalidsignererror) **SHOULD** be sent in the `error` parameter.
 
 :::
