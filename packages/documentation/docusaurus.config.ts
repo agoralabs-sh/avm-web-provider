@@ -132,16 +132,16 @@ const config: () => Promise<Config> = async () => {
                 to: '/',
               },
               {
-                label: 'Terminology',
-                to: 'terminology',
-              },
-              {
                 label: 'Usage',
                 to: 'usage',
               },
               {
                 label: 'API Reference',
                 to: 'api-reference',
+              },
+              {
+                label: 'Terminology',
+                to: 'terminology',
               },
               {
                 label: 'Supported Wallets',

@@ -4,7 +4,6 @@
 const sidebars = {
   docs: [
     'overview',
-    'terminology',
     {
       items: [
         {
@@ -69,6 +68,7 @@ const sidebars = {
       },
       type: 'category',
     },
+    'terminology',
     'supported-wallets',
   ],
 };

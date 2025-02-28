@@ -18,28 +18,35 @@ The AVM Web Provider is an interface that bridges the gap between clients (e.g. 
 The AVM Web Provider works towards achieving two main goals:
 
 1. Creating a common interface between clients and providers.
-2. Allowing clients to choose what provider to use.
+2. Allowing clients to choose what provider and network to use.
 
 ## How it works
 
 Traditionally, web-based provider inject script into a web page's document and "hijack" a property on the global object. This can be problematic as browser extensions are loaded in the web page in an unpredictable and unstable order, so for a user that uses multiple providers this will cause the last provider loaded to re-initialize the global property that was already initialized by another provider.
 
-In order to prevent provider collisions, the client instantiates an event listener and emits an event. The provider listens to any client's incoming events and upon receiving an event, emits an event in response. This forms an event concurrency loop.
+In order to prevent provider conflicts, the AVM Web Provider employs an event concurrency loop. The client and provider both add event listeners, then the client emits an event and waits for a response from the provider. The provider receives the client's event and, once it has handled the request, it will emit an event in response.
 
-Since the client & provider code aren’t guaranteed to run in a particular order, the events are designed to handle such race conditions.
-
-Both clients and providers use the [`window.dispatchEvent`][dispatch-event] function to emit events, and use the [`window.addEventListener`][add-event-listener] function to observe events.
+Both clients and providers use the [`window.dispatchEvent`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent) function to emit events, and use the [`window.addEventListener`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) function to observe events.
 
 :::note
 
-Browser extension providers **MUST** take advantage of the [content scripts][content-scripts] that will allow the provider access to the `window` object.
+Browser extension providers **MUST** take advantage of the [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) that will allow the provider access to the `window` object.
 
 :::
 
-The AVM Web Provider leverages the [`EventTarget`][event-target] API as a transport layer to deliver messages and allows clients and web-based providers to securely communicate without interfering with other providers.
+The AVM Web Provider leverages the [`EventTarget`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget) API as a transport layer to deliver messages and allows clients and web-based providers to securely communicate without interfering with other providers.
+
+:::note
+
+The underlying message schema strictly conforms to [VIP-03-0027][vip-03-0027].
+
+:::
+
+## Security
+
+One issue with using `window.dispatchEvent` is that any provider can respond to the request, which could cause providers "spoofing" the intended provider. To overcome this drawback, the [VIP-03-0027][vip-03-0027] specification proposes that each request (except the `discover` request) include a provider's [VCIC](https://vips.voi.community/03/0026) and an arbitrary challenge. A provider **MUST** sign this challenge, using the private key of the VCIC, and return the signature with the response.
+
+As of v2, the AVMWebProvider now includes the challenge-response mechanism using a provider's VCIC.
 
 <!-- links -->
-[add-event-listener]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-[content-scripts]: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts
-[dispatch-event]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent
-[event-target]: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
+[vip-03-0027]: https://vips.voi.community/03/0027
