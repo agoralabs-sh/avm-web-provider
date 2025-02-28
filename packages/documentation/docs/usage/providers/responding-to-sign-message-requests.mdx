@@ -2,16 +2,26 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Responding To Sign Message Requests
+# Responding to Sign Message Requests
 
 <TOCInline
   maxHeadingLevel={4}
   toc={toc}
 />
 
+## Overview
+
+As providers store the keys of an AVM account, they are able to sign some arbitrary bytes.
+
+:::caution
+
+Providers **MUST** ensure the bytes are either parsed in a pre-defined format, or they use the [`algosdk.signBytes`](https://algorand.github.io/js-algorand-sdk/functions/signBytes.html) which prepends a decoded `MX` to the beginning of the bytes.
+
+:::
+
 ## Responding to a sign message request
 
-Once our provider object has been initialized, we can simply listen to events and respond:
+Once the provider object has been initialized, simply listen to events and respond:
 
 <Tabs
   defaultValue="javascript"
@@ -22,16 +32,16 @@ Once our provider object has been initialized, we can simply listen to events an
   <TabItem value="javascript">
 
   ```js
-  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-  // initialized provider
-  provider.onSignMessage(({ params }) => {
+  provider.onSignMessage(({ challenge, params }) => {
     // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 
     return {
-      providerId,
-      signature:  'gqNzaWfEQ...', // base64 encoded signature
-      signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      result: {
+        signature:  'gqNzaWfEQ...', // base64 encoded signature of the `algosdk.signBytes` result
+        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      },
+      signature: 'gqNzaWfEQ...', // this must be the result of the signing of the challenge using the vcic's private key
+      vcic: vcic.config.credential.toString(),
     };
   });
   ```
@@ -40,18 +50,16 @@ Once our provider object has been initialized, we can simply listen to events an
   <TabItem value="typescript">
 
   ```typescript
-  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
-  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-  // initialized provider
-  provider.onSignMessage(({ params }: IAVMWebProviderCallbackOptions) => {
+  provider.onSignMessage(({ challenge, params }) => {
     // ... using the `params.message` and the `params.signer` parameters, the provider signs the message with the private key of the signer and, with the signature, encodes as a base64 string
 
     return {
-      providerId,
-      signature:  'gqNzaWfEQ...', // base64 encoded signature
-      signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      result: {
+        signature:  'gqNzaWfEQ...', // base64 encoded signature of the `algosdk.signBytes` result
+        signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+      },
+      signature: 'gqNzaWfEQ...', // this must be the result of the signing of the challenge using the vcic's private key
+      vcic: vcic.config.credential.toString(),
     };
   });
   ```
@@ -61,12 +69,12 @@ Once our provider object has been initialized, we can simply listen to events an
 
 :::caution
 
-If this method is not supported, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) should be thrown.
+If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be thrown.
 
 :::
 
 :::caution
 
-If the signer, supplied in the `params`, is not known, or not authorized, a [`ARC0027UnauthorizedSignerError`](../../api-reference/errors#arc0027unauthorizedsignererror) should be thrown.
+If the signer, specified by `params.signer`, is not known, or not authorized, a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) **SHOULD** be thrown.
 
 :::

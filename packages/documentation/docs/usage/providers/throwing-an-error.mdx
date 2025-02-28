@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Throwing An Error
+# Throwing an Error
 
 <TOCInline
   maxHeadingLevel={4}
@@ -11,7 +11,7 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-When receiving a request from the client, you can throw errors within the listener function and these errors will propagate back to the client's listener arguments.
+When receiving a request from the client, a provider can throw errors within the listener function and these errors will propagate back to the client's listener arguments.
 
 ## Throwing an error
 
@@ -36,8 +36,8 @@ When receiving a request from the client, you can throw errors within the listen
           method: 'disable',
         },
         message: 'disable method is not supported',
-        name: 'MethodNotSupportedError',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+        name: 'VIP030027MethodNotSupportedError',
+        vcic: 'gqNzaWfEQ...',
       }
       */
 
@@ -49,13 +49,13 @@ When receiving a request from the client, you can throw errors within the listen
   client.disable();
 
   // AVMWebProvider
-  const { ARC0027MethodSupportedError } = require('@agoralabs-sh/avm-web-provider');
+  const { VIP030027MethodNotSupportedError } = require('@agoralabs-sh/avm-web-provider');
 
   provider.onDisable(({ params }) => {
-    throw new ARC0027MethodSupportedError({
+    throw new VIP030027MethodNotSupportedError({
       method: 'disable',
       message: 'disable method is not supported',
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      vcic: provider.config.credential.toString(),
     });
   });
   ```
@@ -75,8 +75,8 @@ When receiving a request from the client, you can throw errors within the listen
           method: 'disable',
         },
         message: 'disable method is not supported',
-        name: 'MethodNotSupportedError',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+        name: 'VIP030027MethodNotSupportedError',
+        vcic: 'gqNzaWfEQ...',
       }
       */
 
@@ -89,10 +89,10 @@ When receiving a request from the client, you can throw errors within the listen
 
     // AVMWebProvider
     provider.onDisable(({ params }) => {
-      throw new window.AVMWebProviderSDK.ARC0027MethodSupportedError({
+      throw new window.AVMWebProviderSDK.VIP030027MethodNotSupportedError({
         method: 'disable',
         message: 'disable method is not supported',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+        vcic: provider.config.credential.toString(),
       });
     });
     ```
@@ -112,8 +112,8 @@ When receiving a request from the client, you can throw errors within the listen
           method: 'disable',
         },
         message: 'disable method is not supported',
-        name: 'MethodNotSupportedError',
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+        name: 'VIP030027MethodNotSupportedError',
+        vcic: 'gqNzaWfEQ...',
       }
       */
 
@@ -125,13 +125,13 @@ When receiving a request from the client, you can throw errors within the listen
   client.disable();
 
   // AVMWebProvider
-  import { ARC0027MethodEnum, ARC0027MethodSupportedError } from '@agoralabs-sh/avm-web-provider';
+  import { VIP030027MethodEnum, VIP030027MethodNotSupportedError } from '@agoralabs-sh/avm-web-provider';
 
   provider.onDisable(({ params }) => {
-    throw new ARC0027MethodSupportedError({
-      method: ARC0027MethodEnum.Disable,
-      message: `${ARC0027MethodEnum.Disable} method is not supported`,
-      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    throw new VIP030027MethodNotSupportedError({
+      method: VIP030027MethodEnum.Disable,
+      message: `${VIP030027MethodEnum.Disable} method is not supported`,
+      vcic: provider.config.credential.toString(),
     });
   });
   ```
@@ -141,6 +141,6 @@ When receiving a request from the client, you can throw errors within the listen
 
 :::note
 
-The SDK provides several common errors, see [errors](../../api-reference/errors).
+The SDK provides several common errors, see [errors](/api-reference/errors).
 
 :::

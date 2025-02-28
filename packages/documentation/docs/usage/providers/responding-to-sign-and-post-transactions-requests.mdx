@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Responding To Sign And Post Transactions Requests
+# Responding to Sign & Post Transactions Requests
 
 <TOCInline
   maxHeadingLevel={4}
@@ -11,11 +11,11 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-If your provider is able to both sign and post transactions, this method can simply be implemented to allow clients to perform both these methods within one method.
+If a provider is able to both sign & post transactions, this method can simply be implemented to allow clients to perform both these methods within one method.
 
 ## Responding to a sign and post transactions request
 
-Once our provider object has been initialized, we can simply listen to events and respond:
+Once the provider object has been initialized, simply listen to events and respond:
 
 <Tabs
   defaultValue="javascript"
@@ -26,17 +26,17 @@ Once our provider object has been initialized, we can simply listen to events an
   <TabItem value="javascript">
 
   ```js
-  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-  // initialized provider
-  provider.onSignAndPostTransactions(({ params }) => {
+  provider.onSignAndPostTransactions(({ challenge, params }) => {
     // ... using the `params.txns` parameter, the provider signs and posts the transactions to the network and returns the transaction ids
 
     return {
-      providerId,
-      txnIDs: [
-        'OKU6A2Q...',
-      ],
+      result: {
+        txnIDs: [
+          'OKU6A2Q...',
+        ],
+      },
+      signature: 'gqNzaWfEQ...', // this must be the result of the signing of the challenge using the vcic's private key
+      vcic: vcic.config.credential.toString(),
     };
   });
   ```
@@ -45,19 +45,17 @@ Once our provider object has been initialized, we can simply listen to events an
   <TabItem value="typescript">
 
   ```typescript
-  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
-  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-  // initialized provider
-  provider.onSignAndPostTransactions(({ params }: IAVMWebProviderCallbackOptions) => {
+  provider.onSignAndPostTransactions(({ challenge, params }) => {
     // ... using the `params.txns` parameter, the provider signs and posts the transactions to the network and returns the transaction ids
 
     return {
-      providerId,
-      txnIDs: [
-        'OKU6A2Q...',
-      ],
+      result: {
+        txnIDs: [
+          'OKU6A2Q...',
+        ],
+      },
+      signature: 'gqNzaWfEQ...', // this must be the result of the signing of the challenge using the vcic's private key
+      vcic: vcic.config.credential.toString(),
     };
   });
   ```
@@ -67,24 +65,24 @@ Once our provider object has been initialized, we can simply listen to events an
 
 :::caution
 
-If this method is not supported, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) should be thrown.
+If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be thrown.
 
 :::
 
 :::caution
 
-If there is a group of atomic transactions, but the computed group ID doesn't match the assigned ID, then a [`ARC0027InvalidGroupIdError`](../../api-reference/errors#arc0027invalidgroupiderror) should be thrown.
+If there is a group of atomic transactions, but the computed group ID doesn't match the assigned ID, then a [`VIP030027InvalidGroupIdError`](/api-reference/errors#vip030027invalidgroupiderror) **SHOULD** be thrown.
 
 :::
 
 :::caution
 
-If any of the transactions are malformed, then a [`ARC0027InvalidInputError`](../../api-reference/errors#arc0027invalidinputerror) should be thrown.
+If any of the transactions are malformed, then a [`VIP030027InvalidInputError`](/api-reference/errors#vip030027invalidinputerror) **SHOULD** be thrown.
 
 :::
 
 :::caution
 
-If the transactions fail to be accepted by the network, then a [`ARC0027FailedToPostSomeTransactionsError`](../../api-reference/errors#arc0027failedtopostsometransactionserror) should be thrown.
+If the transactions fail to be accepted by the network, then a [`VIP030027FailedToPostSomeTransactionsError`](/api-reference/errors#vip030027failedtopostsometransactionserror) **SHOULD** be thrown.
 
 :::

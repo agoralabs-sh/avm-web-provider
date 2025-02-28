@@ -147,7 +147,7 @@ client.signTransactions({
 
 :::caution
 
-If this method is not supported, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) should be thrown.
+If this method is not supported, then a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be thrown.
 
 :::
 
@@ -322,7 +322,7 @@ When sending atomic transactions, all transactions, regardless of whether the wa
 
 :::caution
 
-The provider may attempt to compute ID of these atomic transactions and if it doesn't match the assigned ID, then a [`ARC0027InvalidGroupIdError`](../../api-reference/errors#arc0027invalidgroupiderror) may be thrown.
+The provider may attempt to compute ID of these atomic transactions and if it doesn't match the assigned ID, then a [`VIP030027InvalidGroupIdError`](/api-reference/errors#vip030027invalidgroupiderror) may be thrown.
 
 :::
 
@@ -652,7 +652,7 @@ The transaction must now include the `msig` object that conforms to [`algosdk.Mu
 
 :::caution
 
-The provider may not support multisig accounts, in which case a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) should be thrown.
+The provider may not support multisig accounts, in which case a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) **SHOULD** be thrown.
 
 :::
 
@@ -972,7 +972,7 @@ If you want to only use one address, you can use the `signers` list to instruct 
 
 :::caution
 
-If any of the accounts supplied in the `signers` list are not an authorized signer, then a [`ARC0027UnauthorizedSignerError`](../../api-reference/errors#arc0027unauthorizedsignererror) should be thrown.
+If any of the accounts supplied in the `signers` list are not an authorized signer, then a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) **SHOULD** be thrown.
 
 :::
 
@@ -984,7 +984,7 @@ When attempting to sign a transaction using a re-keyed account, the `authAddr` f
 
 :::caution
 
-The provider may not support re-keyed accounts, in which case a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) will be thrown.
+The provider may not support re-keyed accounts, in which case a [`VIP030027MethodNotSupportedError`](/api-reference/errors#vip030027methodnotsupportederror) will be thrown.
 
 :::
 
@@ -1120,6 +1120,6 @@ The provider may not support re-keyed accounts, in which case a [`ARC0027MethodN
 
 :::caution
 
-If the supplied `authAddr` is not an authorized signer, then a [`ARC0027UnauthorizedSignerError`](../../api-reference/errors#arc0027unauthorizedsignererror) will be thrown.
+If the supplied `authAddr` is not an authorized signer, then a [`VIP030027UnauthorizedSignerError`](/api-reference/errors#vip030027unauthorizedsignererror) will be thrown.
 
 :::
