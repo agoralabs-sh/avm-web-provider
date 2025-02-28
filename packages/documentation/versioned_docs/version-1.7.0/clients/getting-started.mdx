@@ -1,0 +1,76 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Getting Started
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Installation
+
+### Using a package manager
+
+Use your favourite package manager to install:
+
+```bash npm2yarn
+npm install --save @agoralabs-sh/avm-web-provider
+```
+
+### Download via a CDN
+
+Include the minified browser bundle directly in your HTML like so:
+
+```html
+<html>
+  ...
+  <script src="https://github.com/agoralabs-sh/avm-web-provider/releases/latest/download/avm-web-provider.min.js"></script>
+  ...
+</html>
+```
+
+## Initialization
+
+Firstly, we want to initialize the AVM web client:
+
+<Tabs
+  defaultValue="javascript-via-package-manager"
+  values={[
+    { label: 'JavaScript (via package manager)', value: 'javascript-via-package-manager' },
+    { label: 'JavaScript (via CDN)', value: 'javascript-via-cdn' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript-via-package-manager">
+
+    ```js
+    const { AVMWebClient } = require('@agoralabs-sh/avm-web-provider');
+
+    const client = AVMWebClient.init();
+    ```
+
+  </TabItem>
+  <TabItem value="javascript-via-cdn">
+
+    ```js
+    var client = window.AVMWebProviderSDK.AVMWebClient.init();
+    ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+    ```typescript
+    import { AVMWebClient } from '@agoralabs-sh/avm-web-provider';
+
+    const client: AVMWebClient = AVMWebClient.init();
+    ```
+
+  </TabItem>
+</Tabs>
+
+:::note
+
+See [`IAVMWebClientInitOptions`](../../api-reference/types#iavmwebclientinitoptions) for more information on what options are supported.
+
+:::

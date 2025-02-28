@@ -38,6 +38,7 @@ const config: () => Promise<Config> = async () => {
         {
           blog: false,
           docs: {
+            lastVersion: 'current',
             remarkPlugins: [
               [
                 await import('@docusaurus/remark-plugin-npm2yarn'),
@@ -48,6 +49,15 @@ const config: () => Promise<Config> = async () => {
             ],
             routeBasePath: '/',
             sidebarPath: resolve(scriptsDir, 'sidebars.js'),
+            versions: {
+              current: {
+                label: '2.0.0',
+              },
+              ['1.7.0']: {
+                label: '1.7.0',
+                path: '1.7.0',
+              },
+            },
           },
           sitemap: {
             changefreq: 'weekly',
@@ -103,6 +113,10 @@ const config: () => Promise<Config> = async () => {
             label: 'API',
           },
           // right
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
+          },
           {
             href: githubLink,
             position: 'right',

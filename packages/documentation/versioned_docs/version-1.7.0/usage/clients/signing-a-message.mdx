@@ -1,0 +1,98 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Signing A Message
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+Providers, if supported, can sign an arbitrary UTF-8 string.
+
+## Signing a message
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+```js
+// initialized client
+client.onSignMessage(({ error, result }) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    signature: 'gqNzaWfEQ...',
+    signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+  }
+  */
+});
+
+// send a sign message request
+client.signMessage({
+  message: 'Hello humie!',
+  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+});
+```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+```typescript
+import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+// initialized client
+client.onSignMessage(({ error, result }: IAVMWebClientCallbackOptions) => {
+  if (error) {
+    console.error('error:', error);
+
+    return;
+  }
+
+  console.log(result);
+  /*
+  {
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    signature: 'gqNzaWfEQ...',
+    signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+  }
+  */
+});
+
+// send a sign message request
+client.signMessage({
+  message: 'Hello humie!',
+  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  signer: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+});
+```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) will be sent in the `error` parameter.
+
+:::
+
+:::caution
+
+If the signer is not known, or not authorized, then a [`UnauthorizedSignerError`](../../api-reference/errors#unauthorizedsignererror) will be sent in the `error` parameter.
+
+:::

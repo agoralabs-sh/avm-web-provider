@@ -1,0 +1,174 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Responding To Enable Requests
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+The main purpose of an enable request to is for clients to get a list of authorized accounts. However, it can be used to handle sessioning. While it is not enforced through this SDK, it is heavily recommended.
+
+## Responding to an enable request
+
+Once our provider object has been initialized, we can simply listen to events and respond:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  // initialized provider
+  provider.onEnable(({ params }) => {
+    return {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+  // initialized provider
+  provider.onEnable(({ params }: IAVMWebProviderCallbackOptions) => {
+    return {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    };
+  });
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If this method is not supported, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be thrown.
+
+:::
+
+## Responding to an enable request with a specific network
+
+The `enable` request allows the client to specify the network. This is denoted in the supplied `params.genesisHash` parameter.
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+    ```js
+    const { ARC0027NetworkNotSupportedError } = require('@agoralabs-sh/avm-web-provider');
+
+    const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
+    const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+    // initialized provider
+    provider.onEnable(({ params }) => {
+      // if the genesis hash has been defined, it is recommended that you throw and error
+      if (param.genesisHash && param.genesisHash !== genesisHash) {
+        throw new ARC0027NetworkNotSupportedError({
+          genesisHashes: [param.genesisHash],
+          providerId,
+        });
+      }
+
+      return {
+        accounts: [
+          {
+            address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+            name: 'Wallet-1',
+          },
+          {
+            address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+            name: 'Wallet-2',
+          },
+        ],
+        genesisHash,
+        genesisId: 'testnet-v1.0',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      };
+    });
+    ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+    ```typescript
+    import type { ARC0027NetworkNotSupportedError, IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+    const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
+    const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+    // initialized provider
+    provider.onEnable(({ params }: IAVMWebProviderCallbackOptions) => {
+      // if the genesis hash has been defined, it is recommended that you throw and error
+      if (param.genesisHash && param.genesisHash !== genesisHash) {
+        throw new ARC0027NetworkNotSupportedError({
+          genesisHashes: [param.genesisHash],
+          providerId,
+        });
+      }
+
+      return {
+        accounts: [
+          {
+            address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+            name: 'Wallet-1',
+          },
+          {
+            address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+            name: 'Wallet-2',
+          },
+        ],
+        genesisHash,
+        genesisId: 'testnet-v1.0',
+        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      };
+    });
+    ```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If the network is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
+
+:::

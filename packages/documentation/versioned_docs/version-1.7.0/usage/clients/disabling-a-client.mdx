@@ -1,0 +1,239 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import TOCInline from '@theme/TOCInline';
+
+# Disabling A Client
+
+<TOCInline
+  maxHeadingLevel={4}
+  toc={toc}
+/>
+
+## Overview
+
+The disable method is not required for providers to implement. However, it is useful for providers that have a sessioning system in place when a client has previously called [`enable()`](../../api-reference/avm-web-client#enableparams).
+
+The aim of the disable method is for clients to request that these sessions be removed from the provider.
+
+## Disabling the client with all providers
+
+Assuming a client has been [enabled](enabling-a-client) with one or all providers, you can remove the client from all available providers by:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  // initialized client
+  client.onDisable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
+    }
+
+    console.log(result);
+    /*
+    {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    }
+    */
+  });
+
+  // send a disable request
+  client.disable();
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+  // initialized client
+  client.onDisable(({ error, result }: IAVMWebClientCallbackOptions) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
+    }
+
+    console.log(result);
+    /*
+    {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    }
+    */
+  });
+
+  // send a disable request
+  client.disable();
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If any providers do not support the `disable`  method, then a [`MethodNotSupportedError`](../../api-reference/errors#methodnotsupportederror) should be returned.
+
+:::
+
+## Disabling the client with a specific provider and network
+
+If you want to target a specific provider and network, you can simply pass the ID of the provider and the genesis hash of the network in the params:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  // initialized client
+  client.onDisable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
+    }
+
+    console.log(result);
+    /*
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    }
+    */
+  });
+
+  // send a disable request
+  client.disable({
+    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+  const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+
+  // initialized client
+  client.onDisable(({ error, result }: IAVMWebClientCallbackOptions) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
+    }
+
+    console.log(result);
+    /*
+    {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+    }
+    */
+  });
+
+  // send a disable request
+  client.disable({
+    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+  });
+  ```
+
+  </TabItem>
+</Tabs>
+
+:::caution
+
+If the network and the provider ID is specified, and the provider does not support the network, then a [`NetworkNotSupportedError`](../../api-reference/errors#networknotsupportederror) should be thrown.
+
+:::
+
+## Disabling a client for a specific session
+
+If you want to remove a specific session, you can provide the session ID(s) in the params:
+
+<Tabs
+  defaultValue="javascript"
+  values={[
+    { label: 'Javascript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+  ]}>
+  <TabItem value="javascript">
+
+  ```js
+  // initialized client
+  client.onDisable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
+    }
+
+    console.log(result);
+    /*
+    {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      sessionIds: ['ab192498-0c63-4028-80fd-f148710611d8'],
+    }
+    */
+  });
+
+  // send a disable request
+  client.disable({
+    sessionIds: ['ab192498-0c63-4028-80fd-f148710611d8'],
+  });
+  ```
+
+  </TabItem>
+  <TabItem value="typescript">
+
+  ```typescript
+  import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+
+  // initialized client
+  client.onDisable(({ error, result }: IAVMWebClientCallbackOptions) => {
+    if (error) {
+      console.error('error:', error);
+
+      return;
+    }
+
+    console.log(result);
+    /*
+    {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisId: 'testnet-v1.0',
+      providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+      sessionIds: ['ab192498-0c63-4028-80fd-f148710611d8'],
+    }
+    */
+  });
+
+  // send a disable request
+  client.disable({
+    sessionIds: ['ab192498-0c63-4028-80fd-f148710611d8'],
+  });
+  ```
+
+  </TabItem>
+</Tabs>
