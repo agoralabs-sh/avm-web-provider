@@ -8,14 +8,14 @@ const sidebars = {
       items: [
         {
           items: [
-            'clients/getting-started',
-            'clients/discover-providers',
-            'clients/enabling-a-client',
-            'clients/disabling-a-client',
-            'clients/signing-transactions',
-            'clients/posting-transactions',
-            'clients/signing-and-posting-transactions',
-            'clients/signing-a-message',
+            'usage/clients/getting-started',
+            'usage/clients/discover-providers',
+            'usage/clients/enabling-a-client',
+            'usage/clients/disabling-a-client',
+            'usage/clients/signing-transactions',
+            'usage/clients/posting-transactions',
+            'usage/clients/signing-and-posting-transactions',
+            'usage/clients/signing-a-message',
           ],
           label: 'Clients',
           link: {
@@ -26,15 +26,15 @@ const sidebars = {
         },
         {
           items: [
-            'providers/getting-started',
-            'providers/responding-to-discover-requests',
-            'providers/responding-to-enable-requests',
-            'providers/responding-to-disable-requests',
-            'providers/responding-to-sign-transactions-requests',
-            'providers/responding-to-post-transactions-requests',
-            'providers/responding-to-sign-and-post-transactions-requests',
-            'providers/responding-to-sign-message-requests',
-            'providers/throwing-an-error',
+            'usage/providers/getting-started',
+            'usage/providers/responding-to-discover-requests',
+            'usage/providers/responding-to-enable-requests',
+            'usage/providers/responding-to-disable-requests',
+            'usage/providers/responding-to-sign-transactions-requests',
+            'usage/providers/responding-to-post-transactions-requests',
+            'usage/providers/responding-to-sign-and-post-transactions-requests',
+            'usage/providers/responding-to-sign-message-requests',
+            'usage/providers/throwing-an-error',
           ],
           label: 'Providers',
           link: {

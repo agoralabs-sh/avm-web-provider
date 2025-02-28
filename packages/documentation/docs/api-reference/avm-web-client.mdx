@@ -15,15 +15,15 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name    | Type                                                                              | Required | Default | Description                                    |
-|---------|-----------------------------------------------------------------------------------|----------|---------|------------------------------------------------|
-| options | [`IAVMWebClientInitOptions`](../api-reference/types.mdx#iavmwebclientinitoptions) | no       | -       | An object to change the initial configuration. |
+| Name    | Type                                                               | Required | Default | Description                                    |
+|---------|--------------------------------------------------------------------|----------|---------|------------------------------------------------|
+| options | [`IAVMWebClientInitOptions`](./types.mdx#iavmwebclientinitoptions) | no       | -       | An object to change the initial configuration. |
 
 #### Returns
 
-| Type                                                      | Description                           |
-|-----------------------------------------------------------|---------------------------------------|
-| [`AVMWebClient`](../api-reference/types.mdx#avmwebclient) | An initialized AVM web client object. |
+| Type                                   | Description                           |
+|----------------------------------------|---------------------------------------|
+| [`AVMWebClient`](./avm-web-client.mdx) | An initialized AVM web client object. |
 
 ## Methods
 
@@ -33,9 +33,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                                        | Required | Default | Description                                                              |
-|--------|-----------------------------------------------------------------------------|----------|---------|--------------------------------------------------------------------------|
-| params | [`IAuthenticationParams`](../api-reference/types.mdx#iauthenticationparams) | yes      | -       | Params that specify which provider, signer and the data to authenticate. |
+| Name   | Type                                                     | Required | Default | Description                                                              |
+|--------|----------------------------------------------------------|----------|---------|--------------------------------------------------------------------------|
+| params | [`IAuthenticateParams`](./types.mdx#iauthenticateparams) | yes      | -       | Params that specify which provider, signer and the data to authenticate. |
 
 #### Returns
 
@@ -49,9 +49,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                          | Required | Default | Description                                                             |
-|--------|---------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------|
-| params | [`IDisableParams`](../api-reference/types.mdx#idisableparams) | yes      | -       | Params that specify which provider,network and/or specific session IDs. |
+| Name   | Type                                           | Required | Default | Description                                                             |
+|--------|------------------------------------------------|----------|---------|-------------------------------------------------------------------------|
+| params | [`IDisableParams`](./types.mdx#idisableparams) | yes      | -       | Params that specify which provider,network and/or specific session IDs. |
 
 #### Returns
 
@@ -75,9 +75,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                        | Required | Default | Description                                          |
-|--------|-------------------------------------------------------------|----------|---------|------------------------------------------------------|
-| params | [`IEnableParams`](../api-reference/types.mdx#ienableparams) | no       | -       | Params that specify the provider and/or the network. |
+| Name   | Type                                         | Required | Default | Description                                          |
+|--------|----------------------------------------------|----------|---------|------------------------------------------------------|
+| params | [`IEnableParams`](./types.mdx#ienableparams) | no       | -       | Params that specify the provider and/or the network. |
 
 #### Returns
 
@@ -91,9 +91,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Returns
 
-| Type                                                                    | Description                 |
-|-------------------------------------------------------------------------|-----------------------------|
-| [`IAVMWebClientConfig`](../api-reference/types.mdx#iavmwebclientconfig) | The client's configuration. |
+| Type                                                     | Description                 |
+|----------------------------------------------------------|-----------------------------|
+| [`IAVMWebClientConfig`](./types.mdx#iavmwebclientconfig) | The client's configuration. |
 
 
 ### `onAuthenticate(callback)`
@@ -102,9 +102,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -118,9 +118,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -134,9 +134,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|-------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientDiscoverCallbackOptions`](../api-reference/types.mdx#iclientdiscovercallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientDiscoverCallbackOptions`](./types.mdx#tclientdiscovercallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -150,9 +150,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -166,9 +166,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -182,9 +182,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -198,9 +198,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 ### `onSignTransactions(callback)`
 
@@ -208,9 +208,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                                      | Required | Default | Description                                                                                                                   |
-|----------|---------------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IClientCallbackOptions`](../api-reference/types.mdx#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                       | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`TClientCallbackOptions`](./types.mdx#tclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -224,9 +224,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                                            | Required | Default | Description                                                   |
-|--------|---------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------|
-| params | [`IPostTransactionsParams`](../api-reference/types.mdx#iposttransactionsparams) | yes      | -       | Params that specify the provider and the signed transactions. |
+| Name   | Type                                                             | Required | Default | Description                                                   |
+|--------|------------------------------------------------------------------|----------|---------|---------------------------------------------------------------|
+| params | [`IPostTransactionsParams`](./types.mdx#iposttransactionsparams) | yes      | -       | Params that specify the provider and the signed transactions. |
 
 #### Returns
 
@@ -266,9 +266,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                                            | Required | Default | Description                                                     |
-|--------|---------------------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
-| params | [`ISignTransactionsParams`](../api-reference/types.mdx#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
+| Name   | Type                                                             | Required | Default | Description                                                     |
+|--------|------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
+| params | [`ISignTransactionsParams`](./types.mdx#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
 
 #### Returns
 
@@ -282,9 +282,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                                  | Required | Default | Description                                                           |
-|--------|-----------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------------|
-| params | [`ISignMessageParams`](../api-reference/types.mdx#isignmessageparams) | yes      | -       | Params that specify the message to sign, the signer and the provider. |
+| Name   | Type                                                   | Required | Default | Description                                                           |
+|--------|--------------------------------------------------------|----------|---------|-----------------------------------------------------------------------|
+| params | [`ISignMessageParams`](./types.mdx#isignmessageparams) | yes      | -       | Params that specify the message to sign, the signer and the provider. |
 
 #### Returns
 
@@ -298,9 +298,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name   | Type                                                                            | Required | Default | Description                                                     |
-|--------|---------------------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
-| params | [`ISignTransactionsParams`](../api-reference/types.mdx#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
+| Name   | Type                                                             | Required | Default | Description                                                     |
+|--------|------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------|
+| params | [`ISignTransactionsParams`](./types.mdx#isigntransactionsparams) | yes      | -       | Params that specify the unsigned transactions and the provider. |
 
 #### Returns
 
