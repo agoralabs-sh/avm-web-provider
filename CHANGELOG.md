@@ -1,3 +1,51 @@
+# [2.0.0-beta.2](https://github.com/agoralabs-sh/avm-web-provider/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2025-02-28)
+
+
+### Features
+
+* conversion to vip-03-0027 specification ([#41](https://github.com/agoralabs-sh/avm-web-provider/issues/41)) ([b90d997](https://github.com/agoralabs-sh/avm-web-provider/commit/b90d997c88c9c8c51b4d0ae64b684a3064965a7c))
+
+
+### BREAKING CHANGES
+
+* implement vip-03-0027 specification
+
+* feat: sign and verify a message
+
+* feat: add new vip-03-0026 public key credential
+
+* refactor(vip030026): verify credentials e2e
+
+* chore: squsah
+
+* refactor: allow disabled params for certain functions and fix provider tests
+
+* test: update tests to use new vcic
+
+* chore: fix build errors
+
+* docs: update types and errors to reflect new vcic
+
+* refactor: use consistent naming convention
+
+* docs: update provider docs
+
+* docs: update client use docs
+
+* chore: squash
+
+* chore: squash
+
+* refactor: replace references to arc-0027
+
+* chore: squash
+
+* docs: add versioning
+
+* docs: fix broken links
+
+* chore: docs
+
 # [2.0.0-beta.1](https://github.com/agoralabs-sh/avm-web-provider/compare/v1.7.0...v2.0.0-beta.1) (2025-02-18)
 
 
