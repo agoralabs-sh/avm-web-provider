@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Responding To Discover Requests
+# Responding to Discover Requests
 
 <TOCInline
   maxHeadingLevel={4}
@@ -11,11 +11,11 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-It is likely that clients will want to find out the capabilities of your provider before they start interacting with it. Therefore, it is good practice to handle discover request from clients, responding with your provider's supported networks & methods.
+For clients to identify providers, clients will likely send a `discover` request. Responding to this request, a provider **MUST** return their VCIC, the supported networks as well as the supported capabilities (methods) for each network.
 
 ## Responding to a discover request
 
-Once our provider object has been initialized, we can simply listen to events and respond:
+Once the provider object has been initialized, simply listen to events and respond:
 
 <Tabs
   defaultValue="javascript"
@@ -26,36 +26,41 @@ Once our provider object has been initialized, we can simply listen to events an
   <TabItem value="javascript">
 
     ```js
-    // initialized provider
-    provider.onDiscover(({ params }) => {
+    provider.onDiscover(() => {
       return {
-        host: 'https://awesome-wallet.com',
-        name: 'Awesome Wallet',
-        networks: [
-          {
-            genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-            genesisId: 'testnet-v1.0',
-            methods: [
-              'disable',
-              'enable',
-              'post_transactions',
-              'sign_and_post_transactions',
-              'sign_transactions',
-            ],
-          },
-          {
-            genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-            genesisId: 'voitest-v1',
-            methods: [
-              'disable',
-              'enable',
-              'post_transactions',
-              'sign_and_post_transactions',
-              'sign_transactions',
-            ],
-          },
-        ],
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+        result: {
+          host: 'https://awesome-wallet.com',
+          name: 'Awesome Wallet',
+          networks: [
+            {
+              genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+              genesisId: 'testnet-v1.0',
+              methods: [
+                'authenticate',
+                'disable',
+                'enable',
+                'post_transactions',
+                'sign_and_post_transactions',
+                'sign_message',
+                'sign_transactions',
+              ],
+            },
+            {
+              genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+              genesisId: 'voitest-v1',
+              methods: [
+                'authenticate',
+                'disable',
+                'enable',
+                'post_transactions',
+                'sign_and_post_transactions',
+                'sign_message',
+                'sign_transactions',
+              ],
+            },
+          ],
+          vcic: provide.config.credential.toString(),
+        },
       };
     });
     ```
@@ -64,38 +69,41 @@ Once our provider object has been initialized, we can simply listen to events an
   <TabItem value="typescript">
 
     ```typescript
-    import type { IAVMWebProviderCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
-    // initialized provider
-    provider.onDiscover(({ params }: IAVMWebProviderCallbackOptions) => {
+    provider.onDiscover(() => {
       return {
-        host: 'https://awesome-wallet.com',
-        name: 'Awesome Wallet',
-        networks: [
-          {
-            genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-            genesisId: 'testnet-v1.0',
-            methods: [
-              'disable',
-              'enable',
-              'post_transactions',
-              'sign_and_post_transactions',
-              'sign_transactions',
-            ],
-          },
-          {
-            genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-            genesisId: 'voitest-v1',
-            methods: [
-              'disable',
-              'enable',
-              'post_transactions',
-              'sign_and_post_transactions',
-              'sign_transactions',
-            ],
-          },
-        ],
-        providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
+        result: {
+          host: 'https://awesome-wallet.com',
+          name: 'Awesome Wallet',
+          networks: [
+            {
+              genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+              genesisId: 'testnet-v1.0',
+              methods: [
+                'authenticate',
+                'disable',
+                'enable',
+                'post_transactions',
+                'sign_and_post_transactions',
+                'sign_message',
+                'sign_transactions',
+              ],
+            },
+            {
+              genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+              genesisId: 'voitest-v1',
+              methods: [
+                'authenticate',
+                'disable',
+                'enable',
+                'post_transactions',
+                'sign_and_post_transactions',
+                'sign_message',
+                'sign_transactions',
+              ],
+            },
+          ],
+          vcic: provide.config.credential.toString(),
+        },
       };
     });
     ```

@@ -1,24 +1,17 @@
 // errors
-import { BaseARC0027Error } from '@app/errors';
+import { BaseVIP030027Error } from '@/errors';
 
 // messages
-import BaseResponseMessage from './BaseResponseMessage';
+import ResponseMessage from './ResponseMessage';
 
 // types
-import type { IResponseMessageWithError } from '@app/types';
+import type { IResponseMessageWithError } from '@/types';
 
-interface IOptions {
-  error: BaseARC0027Error;
-  id: string;
-  reference: string;
-  requestId: string;
-}
+export default class ResponseMessageWithError extends ResponseMessage implements IResponseMessageWithError {
+  public readonly error: BaseVIP030027Error;
 
-export default class ResponseMessageWithError extends BaseResponseMessage implements IResponseMessageWithError {
-  public readonly error: BaseARC0027Error;
-
-  constructor({ error, id, reference, requestId }: IOptions) {
-    super({ id, reference, requestId });
+  constructor({ error, ...baseOptions }: IResponseMessageWithError) {
+    super(baseOptions);
 
     this.error = error;
   }

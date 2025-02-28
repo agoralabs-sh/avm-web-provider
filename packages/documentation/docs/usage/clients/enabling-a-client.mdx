@@ -2,7 +2,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import TOCInline from '@theme/TOCInline';
 
-# Enabling A Client
+# Enabling a Client
 
 <TOCInline
   maxHeadingLevel={4}
@@ -11,26 +11,26 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-Before we can start interacting with a provider, we need ask the provider to enable the client. This will achieve two things:
+Before a client can start interacting with a provider, the provider will **MAY** need to enable the client. This will achieve two things:
 
-* if necessary, it will authorize your client with the provider; and
-* it will get a list of the authorized accounts available to your client.
+* if necessary, it will authorize the client with the provider; and
+* it will get a list of the authorized accounts available to the client.
 
 :::note
 
-It should be safe to call [`enable()`](../../api-reference/avm-web-client#enableparams). as many times as your client needs; the provider should assume this.
+It should be safe to call [`enable()`](../../api-reference/avm-web-client.mdx#enableparams). as many times as the client needs; the provider should assume this.
 
 :::
 
 :::caution
 
-The definition of "enabling" for a provider can mean different things to different providers, but it is highly recommended that you first run [`enable()`](../../api-reference/avm-web-client#enable) before attempting any signing/post methods.
+The definition of "enabling" for a provider can mean different things to different providers, but it is highly **RECOMMENDED** that a client first run [`enable()`](../../api-reference/avm-web-client.mdx#enableparams) before attempting any signing/post methods.
 
 :::
 
-## Enabling the client with all providers
+## Enabling the client with a provider
 
-After [initialization](getting-started), you can simply call:
+After [initialization](./getting-started.mdx), simply call:
 
 <Tabs
   defaultValue="javascript"
@@ -40,183 +40,89 @@ After [initialization](getting-started), you can simply call:
   ]}>
   <TabItem value="javascript">
 
-```js
-// initialized client
-client.onEnable(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  ```js
+  client.onEnable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    accounts: [
-      {
-        address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        name: 'Wallet-1',
-      },
-      {
-        address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-        name: 'Wallet-2',
-      },
-    ],
-    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-    genesisId: 'testnet-v1.0',
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    sessionId: 'ab192498-0c63-4028-80fd-f148710611d8',
-  }
-  */
-});
+    console.log(result);
+    /*
+    {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisID: 'testnet-v1.0',
+      sessionID: 'ab192498-0c63-4028-80fd-f148710611d8',
+    }
+    */
+  });
 
-// send a enable request
-client.enable();
-```
+  // send a enable request
+  client.enable({
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  client.onEnable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-// initialized client
-client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
-  if (error) {
-    console.error('error:', error);
+      return;
+    }
 
-    return;
-  }
+    console.log(result);
+    /*
+    {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisID: 'testnet-v1.0',
+      sessionID: 'ab192498-0c63-4028-80fd-f148710611d8',
+    }
+    */
+  });
 
-  console.log(result);
-  /*
-  {
-    accounts: [
-      {
-        address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        name: 'Wallet-1',
-      },
-      {
-        address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-        name: 'Wallet-2',
-      },
-    ],
-    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-    genesisId: 'testnet-v1.0',
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    sessionId: 'ab192498-0c63-4028-80fd-f148710611d8',
-  }
-  */
-});
-
-// send a enable request
-client.enable();
-```
+  // send a enable request
+  client.enable({
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If any providers do not support the `enable`  method, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) will be returned.
+If any providers do not support the `enable`  method, then a [`VIP030027MethodNotSupportedError`](../../api-reference/errors.mdx#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
-## Enabling the client with a specific provider
+## Enabling a client for a specific network
 
-If you want to target a specific provider, you can simply pass the ID of the provider in the params:
-
-<Tabs
-  defaultValue="javascript"
-  values={[
-    { label: 'Javascript', value: 'javascript' },
-    { label: 'TypeScript', value: 'typescript' },
-  ]}>
-  <TabItem value="javascript">
-
-```js
-const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-// initialized client
-client.onEnable(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
-
-    return;
-  }
-
-  console.log(result);
-  /*
-  {
-    accounts: [
-      {
-        address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        name: 'Wallet-1',
-      },
-      {
-        address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-        name: 'Wallet-2',
-      },
-    ],
-    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-    genesisId: 'testnet-v1.0',
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    sessionId: 'ab192498-0c63-4028-80fd-f148710611d8',
-  }
-  */
-});
-
-// send a enable request
-client.enable({ providerId });
-    ```
-
-  </TabItem>
-  <TabItem value="typescript">
-
-```typescript
-import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
- const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
-
-// initialized client
-client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
-  if (error) {
-    console.error('error:', error);
-
-    return;
-  }
-
-  console.log(result);
-  /*
-  {
-    accounts: [
-      {
-        address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        name: 'Wallet-1',
-      },
-      {
-        address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-        name: 'Wallet-2',
-      },
-    ],
-    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-    genesisId: 'testnet-v1.0',
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    sessionId: 'ab192498-0c63-4028-80fd-f148710611d8',
-  }
-  */
-});
-
-// send a enable request
-client.enable({ providerId });
-```
-
-  </TabItem>
-</Tabs>
-
-## Enabling a client on a specific network
-
-If you want to target a specific network, and any providers support it, you can simply pass the genesis hash of the network in the params:
+To target a specific network, a client can pass the genesis hash of the network in the params:
 
 <Tabs
   defaultValue="javascript"
@@ -226,88 +132,88 @@ If you want to target a specific network, and any providers support it, you can 
   ]}>
   <TabItem value="javascript">
 
-```js
-const genesisHash = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
+  ```js
+  client.onEnable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-// initialized client
-client.onEnable(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+      return;
+    }
 
-    return;
-  }
+    console.log(result);
+    /*
+    {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisID: 'testnet-v1.0',
+      sessionID: 'ab192498-0c63-4028-80fd-f148710611d8',
+    }
+    */
+  });
 
-  console.log(result);
-  /*
-  {
-    accounts: [
-      {
-        address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        name: 'Wallet-1',
-      },
-      {
-        address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-        name: 'Wallet-2',
-      },
-    ],
-    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-    genesisId: 'testnet-v1.0',
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    sessionId: 'ab192498-0c63-4028-80fd-f148710611d8',
-  }
-  */
-});
-
-// send a enable request
-client.enable({ genesisHash });
-```
+  // send a enable request
+  client.enable({
+    params: {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  client.onEnable(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-const genesisHash: string = 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=';
+      return;
+    }
 
-// initialized client
-client.onEnable(({ error, result }: IAVMWebClientCallbackOptions) => {
-  if (error) {
-    console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      accounts: [
+        {
+          address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
+          name: 'Wallet-1',
+        },
+        {
+          address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
+          name: 'Wallet-2',
+        },
+      ],
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+      genesisID: 'testnet-v1.0',
+      sessionID: 'ab192498-0c63-4028-80fd-f148710611d8',
+    }
+    */
+  });
 
-    return;
-  }
-
-  console.log(result);
-  /*
-  {
-    accounts: [
-      {
-        address: 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U',
-        name: 'Wallet-1',
-      },
-      {
-        address: '6GT6EXFDAHZDZYUOPT725ZRWYBZDCEGYT7SYYXGJKRFUAG5B7JMI7DQRNQ',
-        name: 'Wallet-2',
-      },
-    ],
-    genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-    genesisId: 'testnet-v1.0',
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    sessionId: 'ab192498-0c63-4028-80fd-f148710611d8',
-  }
-  */
-});
-
-// send a enable request
-client.enable({ genesisHash });
-```
+  // send a enable request
+  client.enable({
+    params: {
+      genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If the network and the provider ID is specified, and the provider does not support the network, then a [`ARC0027NetworkNotSupportedError`](../../api-reference/errors#arc0027networknotsupportederror) should be thrown.
+If a network is specified, and the provider does not support the network, then a [`VIP030027NetworkNotSupportedError`](../../api-reference/errors.mdx#vip030027networknotsupportederror) **SHOULD** be returned.
 
 :::

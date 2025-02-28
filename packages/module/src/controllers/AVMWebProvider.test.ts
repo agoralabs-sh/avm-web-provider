@@ -1,51 +1,74 @@
 // @vitest-environment jsdom
-import { randomBytes } from 'crypto';
+import { VIP030026PrivateKeyCredential, VIP030026PublicKeyCredential } from '@agoralabs-sh/vip030026';
 import { encode as encodeBase64 } from '@stablelib/base64';
 import { encode as encodeUTF8 } from '@stablelib/utf8';
-import { uuid } from '@stablelib/uuid';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { randomBytes } from '@stablelib/random';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // controllers
 import AVMWebClient from './AVMWebClient';
 import AVMWebProvider from './AVMWebProvider';
 
 // enums
-import { ARC0027MethodEnum } from '@app/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 // types
-import type { IARC0001Transaction, IAuthenticateParams, IAVMWebProviderConfig, ISignMessageParams } from '@app/types';
+import type { IARC0001Transaction, IAuthenticateParams, IAVMWebProviderConfig, ISignMessageParams } from '@/types';
 
 describe(AVMWebProvider.name, () => {
   const genesisHash = encodeBase64(randomBytes(32));
-  const genesisId = 'localhost-v1';
+  const genesisID = 'localhost-v1';
   const name = 'Awesome Wallet';
-  const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  const signature = 'gqNzaWfEQ...';
   const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
   let client: AVMWebClient;
   let provider: AVMWebProvider;
+  let vcic: VIP030026PublicKeyCredential;
+
+  beforeAll(() => {
+    const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+
+    vcic = VIP030026PublicKeyCredential.fromJSON({
+      algorithm: privateKeyCredential.algorithm(),
+      id: privateKeyCredential.id(),
+      publicKey: privateKeyCredential.publicKey(),
+    });
+  });
+
+  beforeEach(() => {
+    client = AVMWebClient.init();
+    provider = AVMWebProvider.init({
+      vcic: vcic.toString(),
+    });
+  });
 
   afterEach(() => {
     provider?.removeAllListeners();
   });
 
   describe(`${AVMWebProvider.name}#authenticate`, () => {
-    it('should not receive the client request, if a different provider id is provided', () => {
+    it('should not receive the client request, if a different provider is provided', () => {
       // arrange
       const callback = vi.fn();
       const params: IAuthenticateParams = {
         authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
         data: encodeBase64(encodeUTF8('authenticate message')),
-        providerId: uuid(), // call random provider
         signer,
       };
-
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
 
       provider.onAuthenticate(callback);
 
       // act
-      client.authenticate(params);
+      client.authenticate({
+        params,
+        vcic: _vcic.toString(),
+      });
 
       // assert
       expect(callback.mock.calls.length).toBe(0);
@@ -57,30 +80,32 @@ describe(AVMWebProvider.name, () => {
         const params: IAuthenticateParams = {
           authenticationData: encodeBase64(encodeUTF8('awesome-dapp.sh')),
           data: encodeBase64(encodeUTF8('authenticate message')),
-          providerId,
           signer,
         };
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
         // assert
         provider.onAuthenticate(({ method, params }) => {
-          expect(method).toBe(ARC0027MethodEnum.Authenticate);
+          expect(method).toBe(VIP030027MethodEnum.Authenticate);
           expect(params).toBeDefined();
           expect(params).toEqual(params);
 
           done();
 
           return {
-            providerId,
+            result: {
+              signature: 'gqNzaWfEQ...',
+              signer,
+            },
             signature: 'gqNzaWfEQ...',
-            signer,
+            vcic: vcic.toString(),
           };
         });
 
         // act
-        client.authenticate(params);
+        client.authenticate({
+          params,
+          vcic: vcic.toString(),
+        });
       }));
   });
 
@@ -90,7 +115,9 @@ describe(AVMWebProvider.name, () => {
       let config: IAVMWebProviderConfig;
 
       // act
-      provider = AVMWebProvider.init(providerId);
+      provider = AVMWebProvider.init({
+        vcic: vcic.toString(),
+      });
 
       // assert
       config = provider.getConfig();
@@ -101,34 +128,37 @@ describe(AVMWebProvider.name, () => {
     it('should initialize the provider with the specified options', () => {
       // arrange
       const debug = true;
+      const _provider = AVMWebProvider.init({
+        debug,
+        vcic: vcic.toString(),
+      });
       let config: IAVMWebProviderConfig;
 
       // act
-      provider = AVMWebProvider.init(providerId, {
-        debug,
-      });
-
       // assert
-      config = provider.getConfig();
+      config = _provider.getConfig();
 
       expect(config.debug).toBe(debug);
-      expect(config.providerId).toBe(providerId);
+      expect(config.credential.toString()).toBe(vcic.toString());
     });
   });
 
   describe(`${AVMWebProvider.name}#onDisable`, () => {
-    it('should not receive the client request, if a different provider id is provided', () => {
+    it('should not receive the client request, if a different provider is provided', () => {
       // arrange
       const callback = vi.fn();
-
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
 
       provider.onDisable(callback);
 
       // act
       client.disable({
-        providerId: uuid(), // call random provider
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -137,70 +167,42 @@ describe(AVMWebProvider.name, () => {
 
     it('should receive the client request, if the matching provider id is provided', () =>
       new Promise<void>((done) => {
-        // arrange
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        // assert
         provider.onDisable(({ method }) => {
-          expect(method).toBe(ARC0027MethodEnum.Disable);
+          expect(method).toBe(VIP030027MethodEnum.Disable);
 
           done();
 
           return {
-            genesisHash,
-            genesisId,
-            providerId,
+            result: {
+              genesisHash,
+              genesisID,
+            },
+            signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.disable({
-          providerId,
+          vcic: vcic.toString(),
         });
-      }));
-
-    it('should receive the client request, if no provider id is provided', () =>
-      new Promise<void>((done) => {
-        // arrange
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        // assert
-        provider.onDisable(({ method }) => {
-          expect(method).toBe(ARC0027MethodEnum.Disable);
-
-          done();
-
-          return {
-            genesisHash,
-            genesisId,
-            providerId,
-          };
-        });
-
-        // act
-        client.disable();
       }));
   });
 
   describe(`${AVMWebProvider.name}#onDiscover`, () => {
     it('should receive the client request', () =>
       new Promise<void>((done) => {
-        // arrange
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        // assert
         provider.onDiscover(({ method }) => {
-          expect(method).toBe(ARC0027MethodEnum.Discover);
+          expect(method).toBe(VIP030027MethodEnum.Discover);
 
           done();
 
           return {
-            name,
-            networks: [],
-            providerId,
+            result: {
+              name,
+              networks: [],
+              vcic: vcic.toString(),
+            },
           };
         });
 
@@ -210,90 +212,71 @@ describe(AVMWebProvider.name, () => {
   });
 
   describe(`${AVMWebProvider.name}#onEnable`, () => {
-    it('should not receive the client request, if a different provider id is provided', () => {
+    it('should not receive the client request, if a different provider is provided', () => {
       // arrange
       const callback = vi.fn();
-
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
 
       provider.onEnable(callback);
 
       // act
       client.enable({
-        providerId: uuid(), // call random provider
+        vcic: _vcic.toString(),
       });
 
       // assert
       expect(callback.mock.calls.length).toBe(0);
     });
 
-    it('should receive the client request, if the matching provider id is provided', () =>
-      new Promise<void>((done) => {
-        // arrange
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        // assert
-        provider.onEnable(({ method }) => {
-          expect(method).toBe(ARC0027MethodEnum.Enable);
-
-          done();
-
-          return {
-            accounts: [],
-            genesisHash,
-            genesisId,
-            providerId,
-          };
-        });
-
-        // act
-        client.enable({
-          providerId,
-        });
-      }));
-
     it('should receive the client request', () =>
       new Promise<void>((done) => {
-        // arrange
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
-        // assert
         provider.onEnable(({ method }) => {
-          expect(method).toBe(ARC0027MethodEnum.Enable);
+          expect(method).toBe(VIP030027MethodEnum.Enable);
 
           done();
 
           return {
-            accounts: [],
-            genesisHash,
-            genesisId,
-            providerId,
+            result: {
+              accounts: [],
+              genesisHash,
+              genesisID,
+            },
+            signature,
+            vcic: vcic.toString(),
           };
         });
 
-        // act
-        client.enable();
+        client.enable({
+          vcic: vcic.toString(),
+        });
       }));
   });
 
   describe(`${AVMWebProvider.name}#onPostTransactions`, () => {
-    it('should not receive the client request, if a different provider id is provided', () => {
+    it('should not receive the client request, if a different provider is provided', () => {
       // arrange
       const callback = vi.fn();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
       const stxns = ['gqNzaWfEQ...'];
-
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
 
       provider.onPostTransactions(callback);
 
       // act
       client.postTransactions({
-        providerId: uuid(), // call random provider
-        stxns,
+        params: {
+          stxns,
+        },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -305,28 +288,29 @@ describe(AVMWebProvider.name, () => {
         // arrange
         const stxns = ['gqNzaWfEQ...'];
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
         // assert
         provider.onPostTransactions(({ method, params }) => {
-          expect(method).toBe(ARC0027MethodEnum.PostTransactions);
+          expect(method).toBe(VIP030027MethodEnum.PostTransactions);
           expect(params).toBeDefined();
-          expect(params?.providerId).toBe(providerId);
           expect(params?.stxns).toEqual(stxns);
 
           done();
 
           return {
-            providerId,
-            txnIDs: [],
+            result: {
+              txnIDs: [],
+            },
+            signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.postTransactions({
-          providerId,
-          stxns,
+          params: {
+            stxns,
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -335,6 +319,12 @@ describe(AVMWebProvider.name, () => {
     it('should not receive the client request, if a different provider id is provided', () => {
       // arrange
       const callback = vi.fn();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
       const txns: IARC0001Transaction[] = [
         {
           txn: encodeBase64(randomBytes(32)),
@@ -345,15 +335,14 @@ describe(AVMWebProvider.name, () => {
         },
       ];
 
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
-
       provider.onSignAndPostTransactions(callback);
 
       // act
       client.signAndPostTransactions({
-        providerId: uuid(), // call random provider
-        txns,
+        params: {
+          txns,
+        },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -373,28 +362,29 @@ describe(AVMWebProvider.name, () => {
           },
         ];
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
         // assert
         provider.onSignAndPostTransactions(({ method, params }) => {
-          expect(method).toBe(ARC0027MethodEnum.SignAndPostTransactions);
+          expect(method).toBe(VIP030027MethodEnum.SignAndPostTransactions);
           expect(params).toBeDefined();
-          expect(params?.providerId).toBe(providerId);
           expect(params?.txns).toEqual(txns);
 
           done();
 
           return {
-            providerId,
-            txnIDs: [],
+            result: {
+              txnIDs: [],
+            },
+            signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.signAndPostTransactions({
-          providerId,
-          txns,
+          params: {
+            txns,
+          },
+          vcic: vcic.toString(),
         });
       }));
   });
@@ -403,19 +393,23 @@ describe(AVMWebProvider.name, () => {
     it('should receive the client request', () => {
       // arrange
       const callback = vi.fn();
-      const params: ISignMessageParams = {
-        message: 'Hello humie!',
-        providerId: uuid(), // call random provider
-        signer,
-      };
-
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
 
       provider.onSignMessage(callback);
 
       // act
-      client.signMessage(params);
+      client.signMessage({
+        params: {
+          message: 'Hello humie!',
+          signer,
+        },
+        vcic: _vcic.toString(),
+      });
 
       // assert
       expect(callback.mock.calls.length).toBe(0);
@@ -426,37 +420,45 @@ describe(AVMWebProvider.name, () => {
         // arrange
         const params: ISignMessageParams = {
           message: 'Hello humie!',
-          providerId,
           signer,
         };
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
         // assert
         provider.onSignMessage(({ method, params }) => {
-          expect(method).toBe(ARC0027MethodEnum.SignMessage);
+          expect(method).toBe(VIP030027MethodEnum.SignMessage);
           expect(params).toBeDefined();
           expect(params).toEqual(params);
 
           done();
 
           return {
-            providerId,
-            signature: 'gqNzaWfEQ...',
-            signer,
+            result: {
+              signature: 'gqNzaWfEQ...',
+              signer,
+            },
+            signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
-        client.signMessage(params);
+        client.signMessage({
+          params,
+          vcic: vcic.toString(),
+        });
       }));
   });
 
   describe(`${AVMWebProvider.name}#onSignTransactions`, () => {
-    it('should not receive the client request, if a different provider id is provided', () => {
+    it('should not receive the client request, if a different provider is provided', () => {
       // arrange
       const callback = vi.fn();
+      const privateKeyCredential = VIP030026PrivateKeyCredential.generate();
+      const _vcic = VIP030026PublicKeyCredential.fromJSON({
+        algorithm: privateKeyCredential.algorithm(),
+        id: privateKeyCredential.id(),
+        publicKey: privateKeyCredential.publicKey(),
+      });
       const txns: IARC0001Transaction[] = [
         {
           txn: encodeBase64(randomBytes(32)),
@@ -467,15 +469,14 @@ describe(AVMWebProvider.name, () => {
         },
       ];
 
-      provider = AVMWebProvider.init(providerId);
-      client = AVMWebClient.init();
-
       provider.onSignTransactions(callback);
 
       // act
       client.signTransactions({
-        providerId: uuid(), // call random provider
-        txns,
+        params: {
+          txns,
+        },
+        vcic: _vcic.toString(),
       });
 
       // assert
@@ -495,28 +496,29 @@ describe(AVMWebProvider.name, () => {
           },
         ];
 
-        provider = AVMWebProvider.init(providerId);
-        client = AVMWebClient.init();
-
         // assert
         provider.onSignTransactions(({ method, params }) => {
-          expect(method).toBe(ARC0027MethodEnum.SignTransactions);
+          expect(method).toBe(VIP030027MethodEnum.SignTransactions);
           expect(params).toBeDefined();
-          expect(params?.providerId).toBe(providerId);
           expect(params?.txns).toEqual(txns);
 
           done();
 
           return {
-            providerId,
-            stxns: ['gqNzaWfEQ...', null],
+            result: {
+              stxns: ['gqNzaWfEQ...', null],
+            },
+            signature,
+            vcic: vcic.toString(),
           };
         });
 
         // act
         client.signTransactions({
-          providerId,
-          txns,
+          params: {
+            txns,
+          },
+          vcic: vcic.toString(),
         });
       }));
   });

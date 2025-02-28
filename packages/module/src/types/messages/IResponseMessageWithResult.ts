@@ -1,8 +1,11 @@
 // types
-import type IBaseResponseMessage from './IBaseResponseMessage';
-import type { TResponseResults } from '@app/types';
+import type { TResults } from '@/types';
+import type IResponseMessage from './IResponseMessage';
 
-interface IResponseMessageWithResult<Result = TResponseResults> extends IBaseResponseMessage {
+/**
+ * @property {TResults} result - The result from the provider.
+ */
+interface IResponseMessageWithResult<Result = TResults> extends IResponseMessage {
   result: Result;
 }
 

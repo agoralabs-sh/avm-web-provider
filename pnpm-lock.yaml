@@ -132,23 +132,29 @@ importers:
 
   packages/module:
     dependencies:
-      '@stablelib/bytes':
-        specifier: ^2.0.1
-        version: 2.0.1
-      '@stablelib/sha256':
+      '@agoralabs-sh/bytes':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@agoralabs-sh/uuid':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@agoralabs-sh/vip030026':
+        specifier: ^1.0.0
+        version: 1.0.0
+      '@noble/curves':
+        specifier: ^1.8.1
+        version: 1.8.1
+      '@noble/hashes':
+        specifier: ^1.7.1
+        version: 1.7.1
+      '@stablelib/base64':
         specifier: ^2.0.1
         version: 2.0.1
       '@stablelib/utf8':
         specifier: ^2.0.1
         version: 2.0.1
-      '@stablelib/uuid':
-        specifier: ^2.0.1
-        version: 2.0.1
-      tweetnacl:
-        specifier: ^1.0.3
-        version: 1.0.3
     devDependencies:
-      '@stablelib/base64':
+      '@stablelib/random':
         specifier: ^2.0.1
         version: 2.0.1
       '@types/node':
@@ -177,6 +183,15 @@ importers:
         version: 3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(jiti@2.4.2)(jsdom@20.0.3)(sass@1.85.0)(terser@5.39.0)(yaml@2.7.0)
 
 packages:
+
+  '@agoralabs-sh/bytes@1.0.0':
+    resolution: {integrity: sha512-NifTB5dPWOQSjCdxRThs3OpIz18rzHYVm2QIv1qT81atfdDMN9IVySJ2YBaa26ZaAFJV20zDt5l/K7UqP8uGHw==}
+
+  '@agoralabs-sh/uuid@1.1.0':
+    resolution: {integrity: sha512-Or/N9YG/zAnrSzZrG4Dlu9/vxMzU8tjpKjUBoGrSC3C/vAGlPRuxNMt0GGiJjuEqe/JtLb+IOYC8LISaHrT3rw==}
+
+  '@agoralabs-sh/vip030026@1.0.0':
+    resolution: {integrity: sha512-G5Qp+a0J6L8HGbINMmtMnKxsSqbtvMIwWItC+jD91vaLhXd0OHFT6k2ca0B3UoWRdksJxY4HDg1gM8VKeCGTyw==}
 
   '@algolia/autocomplete-core@1.17.9':
     resolution: {integrity: sha512-O7BxrpLDPJWWHv/DLA9DRFWs+iY1uOJZkqUwjS5HSZAGcl0hIVCQ97LTLewiZmZ402JYUrun+8NqFP+hCknlbQ==}
@@ -1646,6 +1661,14 @@ packages:
   '@microsoft/tsdoc@0.15.1':
     resolution: {integrity: sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==}
 
+  '@noble/curves@1.8.1':
+    resolution: {integrity: sha512-warwspo+UYUPep0Q+vtdVB4Ugn8GGQj8iyB3gnRWsztmUHTI3S1nhdiWNsPUGL0vud7JlRRk1XEu7Lq1KGTnMQ==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.7.1':
+    resolution: {integrity: sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -2082,9 +2105,6 @@ packages:
   '@stablelib/bytes@2.0.1':
     resolution: {integrity: sha512-QIzI6V7nkJA5CjOZ7GoceBd4CIKrJoC471VaI6jh1xPQ2cMhkhQK4HddyzCXOR2y+fBF3/5B2HO3FXXI9C+Xzg==}
 
-  '@stablelib/hash@2.0.0':
-    resolution: {integrity: sha512-u3WPSqGido8lwJuMcrBgM5K54LrPGhkWAdtsyccf7dGsLixAZUds77zOAbu7bvKPwQlmoByH0txBi5rTmEKuHg==}
-
   '@stablelib/hex@2.0.1':
     resolution: {integrity: sha512-nsAgs3109myeijRQg3HASq3vlxe/8uDKHEUuIwn9ZLxfWtXavgojAGLBjI7Sda6seOhy7rKrpmeehYo0Z5VGQA==}
 
@@ -2093,9 +2113,6 @@ packages:
 
   '@stablelib/random@2.0.1':
     resolution: {integrity: sha512-W6GAtXEEs7r+dSbuBsvoFmlyL3gLxle41tQkjKu17dDWtDdjhVUbtRfRCQcCUeczwkgjQxMPopgwYEvxXtHXGw==}
-
-  '@stablelib/sha256@2.0.1':
-    resolution: {integrity: sha512-LA1PaLDc6Lv72ppA4PEZ7abDE741KfG7k7QhBiUyIfViMqrwWv8HqQQFPeuPfS4k2OxFv++IAgc8HlvdBatD+w==}
 
   '@stablelib/utf8@2.0.1':
     resolution: {integrity: sha512-7+C2Iap42fbLyoKMaEIIDSb1TrcQVo+lGDItYAwb2JoAJr7QffyuDnbtvV/qzTyokOIMBrJgT+Rpsp1bPR8SjA==}
@@ -7480,6 +7497,23 @@ packages:
 
 snapshots:
 
+  '@agoralabs-sh/bytes@1.0.0':
+    dependencies:
+      '@stablelib/bytes': 2.0.1
+
+  '@agoralabs-sh/uuid@1.1.0':
+    dependencies:
+      '@stablelib/hex': 2.0.1
+      '@stablelib/uuid': 2.0.1
+
+  '@agoralabs-sh/vip030026@1.0.0':
+    dependencies:
+      '@agoralabs-sh/bytes': 1.0.0
+      '@agoralabs-sh/uuid': 1.1.0
+      '@noble/curves': 1.8.1
+      '@noble/hashes': 1.7.1
+      '@stablelib/base64': 2.0.1
+
   '@algolia/autocomplete-core@1.17.9(@algolia/client-search@5.20.3)(algoliasearch@5.20.3)(search-insights@2.17.3)':
     dependencies:
       '@algolia/autocomplete-plugin-algolia-insights': 1.17.9(@algolia/client-search@5.20.3)(algoliasearch@5.20.3)(search-insights@2.17.3)
@@ -9798,6 +9832,12 @@ snapshots:
 
   '@microsoft/tsdoc@0.15.1': {}
 
+  '@noble/curves@1.8.1':
+    dependencies:
+      '@noble/hashes': 1.7.1
+
+  '@noble/hashes@1.7.1': {}
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -10276,8 +10316,6 @@ snapshots:
 
   '@stablelib/bytes@2.0.1': {}
 
-  '@stablelib/hash@2.0.0': {}
-
   '@stablelib/hex@2.0.1': {}
 
   '@stablelib/int@2.0.1': {}
@@ -10285,12 +10323,6 @@ snapshots:
   '@stablelib/random@2.0.1':
     dependencies:
       '@stablelib/binary': 2.0.1
-      '@stablelib/wipe': 2.0.1
-
-  '@stablelib/sha256@2.0.1':
-    dependencies:
-      '@stablelib/binary': 2.0.1
-      '@stablelib/hash': 2.0.0
       '@stablelib/wipe': 2.0.1
 
   '@stablelib/utf8@2.0.1': {}

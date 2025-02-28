@@ -1,7 +1,7 @@
 # API Reference
 
-* [`AVMWebClient`](api-reference/avm-web-client) - initialized by clients, such as dApps, and allows a client to interact with provider(s).
-* [`AVMWebProvider`](api-reference/avm-web-provider) - initialized by a providers, such as wallets, and allows a provider to interact the client.
-* [`Errors`](api-reference/errors) - various error responses that can be thrown.
-* [`Types`](api-reference/types) - various types used by the client and providers.
-* [`Utilities`](api-reference/utilities) - various utility functions.
+* [`AVMWebClient`](./avm-web-client.mdx) - initialized by clients, such as dApps, and allows a client to interact with provider(s).
+* [`AVMWebProvider`](./avm-web-provider.mdx) - initialized by a providers, such as wallets, and allows a provider to interact the client.
+* [`Errors`](./errors.mdx) - various error responses that can be thrown.
+* [`Types`](./types.mdx) - various types used by the client and providers.
+* [`Utilities`](./utilities.mdx) - various utility functions.

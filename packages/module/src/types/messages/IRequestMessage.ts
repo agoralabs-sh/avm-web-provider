@@ -1,9 +1,14 @@
 // types
-import type { TRequestParams } from '@app/types';
+import type { TParams } from '@/types';
 
-interface IRequestMessage<Params = TRequestParams> {
+/**
+ * @property {string} id - A UUID v4 unique identifier for the request.
+ * @property {TParams} params - The params for the request.
+ * @property {string} reference - The VIP-03-0027 request reference.
+ */
+interface IRequestMessage<Params = TParams> {
   id: string;
-  params?: Params;
+  params: Params;
   reference: string;
 }
 

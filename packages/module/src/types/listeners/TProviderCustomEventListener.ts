@@ -1,11 +1,11 @@
 // messages
-import { RequestMessage } from '@app/messages';
+import { RequestMessageWithCredential } from '@/messages';
 
 // types
-import type { TRequestParams } from '@app/types';
+import type { TParams } from '@/types';
 
-type TProviderCustomEventListener<Params = TRequestParams> = (
-  event: CustomEvent<RequestMessage<Params>>
+type TProviderCustomEventListener<Params = TParams | undefined> = (
+  event: CustomEvent<RequestMessageWithCredential<Params>>
 ) => Promise<void> | void;
 
 export default TProviderCustomEventListener;

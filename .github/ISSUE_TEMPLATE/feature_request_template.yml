@@ -1,5 +1,5 @@
 name: "✨ Feature Request"
-description: Suggest an idea or feature for ARC-0027 SDK
+description: Suggest an idea or feature for the AVM Web Provider
 title: "[Feature]: "
 labels: ["✨ feature"]
 assignees:
@@ -15,14 +15,14 @@ body:
   - type: textarea
     attributes:
       label: What is your idea or feature suggestion?
-      description: Tell us, what idea or feature you suggest to be added to ARC-0027 SDK.
+      description: Tell us, what idea or feature you suggest to be added to AVM Web Provider.
     validations:
       required: true
 
   - type: textarea
     attributes:
       label: Benefits
-      description: Tell us, how this this will be beneficial to ARC-0027 SDK.
+      description: Tell us, how this this will be beneficial to AVM Web Provider.
     validations:
       required: false
 

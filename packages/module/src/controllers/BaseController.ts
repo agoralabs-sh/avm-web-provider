@@ -2,7 +2,7 @@
 import Logger from './Logger';
 
 // types
-import type { IBaseConfig, IListenerItem } from '@app/types';
+import type { IBaseConfig, IListenerItem } from '@/types';
 
 export default abstract class BaseController<Config extends IBaseConfig> {
   protected readonly _config: Config;

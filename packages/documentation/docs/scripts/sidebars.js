@@ -4,7 +4,6 @@
 const sidebars = {
   docs: [
     'overview',
-    'terminology',
     {
       items: [
         {
@@ -16,8 +15,8 @@ const sidebars = {
             'usage/clients/signing-transactions',
             'usage/clients/posting-transactions',
             'usage/clients/signing-and-posting-transactions',
-            'usage/clients/authenticate-a-client',
             'usage/clients/signing-a-message',
+            'usage/clients/authenticate-a-client',
           ],
           label: 'Clients',
           link: {
@@ -35,8 +34,8 @@ const sidebars = {
             'usage/providers/responding-to-sign-transactions-requests',
             'usage/providers/responding-to-post-transactions-requests',
             'usage/providers/responding-to-sign-and-post-transactions-requests',
-            'usage/providers/responding-to-authentication-requests',
             'usage/providers/responding-to-sign-message-requests',
+            'usage/providers/responding-to-authentication-requests',
             'usage/providers/throwing-an-error',
           ],
           label: 'Providers',
@@ -69,6 +68,7 @@ const sidebars = {
       },
       type: 'category',
     },
+    'terminology',
     'supported-wallets',
   ],
 };

@@ -38,45 +38,20 @@ import TOCInline from '@theme/TOCInline';
 
 ### `IAVMWebProviderConfig`
 
-| Name       | Type      | Required | Default | Description                               |
-|------------|-----------|----------|---------|-------------------------------------------|
-| providerId | `string`  | yes      | -       | The ID of the provider.                   |
-| debug      | `boolean` | no       | `false` | Outputs debug information to the console. |
+| Name       | Type                             | Required | Default | Description                                                                            |
+|------------|----------------------------------|----------|---------|----------------------------------------------------------------------------------------|
+| credential | [`VIP030026PublicKeyCredential`] | yes      | -       | An initialized public key credential object that conforms to the VIP-03-0026 standard. |
+| debug      | `boolean`                        | no       | `false` | Outputs debug information to the console.                                              |
 
 ### `INetworkConfiguration`
 
 | Name        | Type       | Required | Default | Description                                                                  |
 |-------------|------------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string`   | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
-| genesisId   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
+| genesisID   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
 | methods     | `string[]` | yes      | -       | A list of methods available from the provider for the chain.                 |
 
-## Errors
-
-### `IBaseError`
-
-| Name       | Type     | Required | Default | Description                                                                        |
-|------------|----------|----------|---------|------------------------------------------------------------------------------------|
-| code       | `number` | yes      | -       | The code of the error. See the [error codes](errors#summary) for more information. |
-| message    | `string` | yes      | -       | A human-readable error message that can be displayed to a user.                    |
-| providerId | `string` | no       | -       | The ID of the provider that threw the error.                                       |
-
-:::note
-
-This is the basic type for an error. For specific details on errors check out the [errors](errors).
-
-:::
-
 ## Options
-
-### `IAVMWebClientCallbackOptions`
-
-| Name   | Type                                                                                                                                                                                                                                          | Required | Default | Description                                                                                                                           |
-|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------|
-| error  | [`IBaseError`](#ibaseerror) \| `null`                                                                                                                                                                                                         | yes      | -       | If an error occured (defined as one of the [errors](errors)), this will be defined. If a request was successful, this will be `null`. |
-| id     | `string`                                                                                                                                                                                                                                      | yes      | -       | A unique identifier for the response message.                                                                                         |
-| method | `disable` \| `discover` \| `enable`  \| `post_transactions`  \| `sign_and_post_transactions`  \| `sign_transactions`                                                                                                                          | yes      | -       | An enum that represents the method of the message.                                                                                    |
-| result | [`IDisableResult`](#idisableresult) \| [`IDiscoverResult`](#idiscoverresult) \| [`IEnableResult`](#ienableresult) \| [`IPostTransactionsResult`](#iposttransactionsresult) \| [`ISignTransactionsResult`](#isigntransactionsresult) \| `null` | yes      | -       | If a request was successful, this will contain the details of the result, otherwise, if an error occurred, this will be `null`.       |
 
 ### `IAVMWebClientInitOptions`
 
@@ -84,19 +59,31 @@ This is the basic type for an error. For specific details on errors check out th
 |-------|-----------|----------|---------|-------------------------------------------|
 | debug | `boolean` | no       | `false` | Outputs debug information to the console. |
 
-### `IAVMWebProviderCallbackOptions`
-
-| Name   | Type                                                                                                                                                                                                                                | Required | Default | Description                                        |
-|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|----------------------------------------------------|
-| id     | `string`                                                                                                                                                                                                                            | yes      | -       | A unique identifier for the request message.       |
-| method | `disable` \| `discover` \| `enable`  \| `post_transactions`  \| `sign_and_post_transactions`  \| `sign_transactions`                                                                                                                | yes      | -       | An enum that represents the method of the message. |
-| params | [`IDisableParams`](#idisableparams) \| [`IDiscoverParams`](#idiscoverparams) \| [`IEnableParams`](#ienableparams) \| [`IPostTransactionsParams`](#iposttransactionsparams) \| [`ISignTransactionsParams`](#isigntransactionsparams) | no       | -       | Parameters that were sent by the request.          |
-
 ### `IAVMWebProviderInitOptions`
 
-| Name  | Type      | Required | Default | Description                               |
-|-------|-----------|----------|---------|-------------------------------------------|
-| debug | `boolean` | no       | `false` | Outputs debug information to the console. |
+| Name  | Type      | Required | Default | Description                                                                                       |
+|-------|-----------|----------|---------|---------------------------------------------------------------------------------------------------|
+| debug | `boolean` | no       | `false` | Outputs debug information to the console.                                                         |
+| vcic  | `string`  | yes      | -       | A base 64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
+
+### `IProviderCallbackOptions`
+
+| Name   | Type                                                                                                                                                                                                                                        | Required | Default | Description                                                |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|------------------------------------------------------------|
+| id     | `string`                                                                                                                                                                                                                                    | yes      | -       | A unique identifier for the request message.               |
+| method | `authenticate` \| `disable` \| `discover` \| `enable`  \| `post_transactions`  \| `sign_and_post_transactions`  \| `sign_transactions`                                                                                                      | yes      | -       | An enum that represents the method of the request message. |
+| params | [`IAuthenticateParams`](#iauthenticateparams) \| [`IDisableParams`](#idisableparams) \| [`IEnableParams`](#ienableparams) \| [`IPostTransactionsParams`](#iposttransactionsparams) \| [`ISignTransactionsParams`](#isigntransactionsparams) | no       | -       | Parameters that were sent by the request.                  |
+
+### `IProviderCallbackOptionsWithCredential`
+
+| Name      | Type                                                                                                                                                                                                                                        | Required | Default | Description                                                                                                                                               |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| challenge | `string`                                                                                                                                                                                                                                    | yes      | -       | A base64 challenge that **MUST** be signed by the provider's VCIC private key in the response.                                                            |
+| id        | `string`                                                                                                                                                                                                                                    | yes      | -       | A unique identifier for the request message.                                                                                                              |
+| method    | `authenticate` \| `disable` \| `discover` \| `enable`  \| `post_transactions`  \| `sign_and_post_transactions`  \| `sign_transactions`                                                                                                      | yes      | -       | An enum that represents the method of the request message.                                                                                                |
+| params    | [`IAuthenticateParams`](#iauthenticateparams) \| [`IDisableParams`](#idisableparams) \| [`IEnableParams`](#ienableparams) \| [`IPostTransactionsParams`](#iposttransactionsparams) \| [`ISignTransactionsParams`](#isigntransactionsparams) | no       | -       | Parameters that were sent by the request.                                                                                                                 |
+| vcic      | `string`                                                                                                                                                                                                                                    | yes      | -       | A base 64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. This is the to identity the intended recipent provider. |
+
 
 ### `ISignTypedDataOptions`
 
@@ -118,15 +105,37 @@ This is the basic type for an error. For specific details on errors check out th
 | scope              | `number`     | yes      | `-`     | The purpose of the signature.                        |
 | signature          | `Uint8Array` | yes      | `-`     | The signature of the signed data.                    |
 
+### `TClientCallbackOptions`
+
+| Name      | Type                                                                                                                                                                                                                                                 | Required | Default | Description                                                                                                                                                                             |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| challenge | `string`                                                                                                                                                                                                                                             | yes      | -       | The base64 challenge sent to the prvovider.                                                                                                                                             |
+| error     | `BaseVIP030027Error` \| `null`                                                                                                                                                                                                                       | yes      | -       | If an error occured (defined as one of the [errors](errors)), this will be defined. If a request was successful, this will be `null`.                                                   |
+| id        | `string`                                                                                                                                                                                                                                             | yes      | -       | A unique identifier for the response message.                                                                                                                                           |
+| method    | `authenticate` \| `disable` \| `enable`  \| `post_transactions`  \| `sign_and_post_transactions`  \| `sign_transactions`                                                                                                                             | yes      | -       | An enum that represents the method of the message.                                                                                                                                      |
+| requestID | `string`                                                                                                                                                                                                                                             | yes      | -       | A unique identifier for the request message.                                                                                                                                            |
+| result    | [`IAuthenticateResult`](#iauthenticateresult) \|[`IDisableResult`](#idisableresult) \| [`IEnableResult`](#ienableresult) \| [`IPostTransactionsResult`](#iposttransactionsresult) \| [`ISignTransactionsResult`](#isigntransactionsresult) \| `null` | yes      | -       | If a request was successful, this will contain the details of the result, otherwise, if an error occurred, this will be `null`.                                                         |
+| signature | `string` \| `null`                                                                                                                                                                                                                                   | yes      | -       | If a request was successful, this is the base64 encoded signature using the provider's provided VCIC and the request's challenge, otherwise, if an error occurred, this will be `null`. |
+| vcic      | `string`                                                                                                                                                                                                                                             | yes      | -       | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard.                                                                           |
+
+### `TClientDiscoverCallbackOptions`
+
+| Name      | Type                                            | Required | Default | Description                                                                                                                                          |
+|-----------|-------------------------------------------------|----------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| error     | `BaseVIP030027Error` \| `null`                  | yes      | -       | If an error occured (defined as one of the [errors](./errors.mdx)), this will be defined. If a request was successful, this will be `null`.          |
+| id        | `string`                                        | yes      | -       | A unique identifier for the response message.                                                                                                        |
+| method    | `discover`                                      | yes      | -       | The `discover` method.                                                                                                                               |
+| requestID | `string`                                        | yes      | -       | A unique identifier for the request message.                                                                                                         |
+| result    | [`IDiscoverResult`](#idiscoverresult) \| `null` | yes      | -       | If a request was successful, this will contain the details of the `discover` request's result, otherwise, if an error occurred, this will be `null`. |
+
 ## Params
 
-### `IAuthenticationParams`
+### `IAuthenticateParams`
 
 | Name               | Type     | Required | Default | Description                                                                                               |
 |--------------------|----------|----------|---------|-----------------------------------------------------------------------------------------------------------|
 | authenticationData | `string` | yes      | -       | A base64 encoded string of the authentication data.                                                       |
 | data               | `string` | yes      | -       | A base64 encoded string of some arbitrary data to be used to authenticate.                                |
-| providerId         | `string` | no       | -       | A unique identifier for the provider.                                                                     |
 | signer             | `string` | no       | -       | The account to be used to authenticate. If this is omitted, the provider will choose the default account. |
 
 ### `IDisableParams`
@@ -134,27 +143,18 @@ This is the basic type for an error. For specific details on errors check out th
 | Name        | Type       | Required | Default | Description                                                                  |
 |-------------|------------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string`   | no       | -       | The unique identifier for the network that is the hash of the genesis block. |
-| providerId  | `string`   | no       | -       | The ID of the provider.                                                      |
-| sessionIds  | `string[]` | no       | -       | A list of specific session IDs to remove.                                    |
-
-### `IDiscoverParams`
-
-| Name       | Type     | Required | Default | Description             |
-|------------|----------|----------|---------|-------------------------|
-| providerId | `string` | yes      | -       | The ID of the provider. |
+| sessionIDs  | `string[]` | no       | -       | A list of specific session IDs to remove.                                    |
 
 ### `IEnableParams`
 
 | Name        | Type     | Required | Default | Description                                                                  |
 |-------------|----------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string` | no       | -       | The unique identifier for the network that is the hash of the genesis block. |
-| providerId  | `string` | no       | -       | The ID of the provider.                                                      |
 
 ### `IPostTransactionsParams`
 
 | Name       | Type       | Required | Default | Description                                   |
 |------------|------------|----------|---------|-----------------------------------------------|
-| providerId | `string`   | yes      | -       | The ID of the provider.                       |
 | stxns      | `string[]` | yes      | -       | A list of base64 encoded signed transactions. |
 
 ### `ISignMessageParams`
@@ -162,23 +162,20 @@ This is the basic type for an error. For specific details on errors check out th
 | Name       | Type     | Required | Default | Description                                 |
 |------------|----------|----------|---------|---------------------------------------------|
 | message    | `string` | yes      | -       | A human-readable UTF-8 string to sign.      |
-| providerId | `string` | no       | -       | The ID of the provider.                     |
 | signer     | `string` | no       | -       | The address to be used to sign the message. |
 
 ### `ISignTransactionsParams`
 
 | Name       | Type                    | Required | Default | Description                                       |
 |------------|-------------------------|----------|---------|---------------------------------------------------|
-| providerId | `string`                | no       | -       | The ID of the provider.                           |
 | txns       | `IARC0001Transaction[]` | yes      | -       | A list of transactions to be signed by providers. |
 
 ## Results
 
-### `IAuthenticationResult`
+### `IAuthenticateResult`
 
 | Name       | Type     | Required | Default | Description                                                                              |
 |------------|----------|----------|---------|------------------------------------------------------------------------------------------|
-| providerId | `string` | yes      | -       | A unique identifier for the provider.                                                    |
 | signature  | `string` | yes      | -       | A base64 encoded signature of the data signed by the private key of the intended signer. |
 | signer     | `string` | yes      | -       | The address used to authenticate.                                                        |
 
@@ -187,19 +184,18 @@ This is the basic type for an error. For specific details on errors check out th
 | Name        | Type       | Required | Default | Description                                                                  |
 |-------------|------------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string`   | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
-| genesisId   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
-| providerId  | `string`   | yes      | -       | The ID of the provider.                                                      |
-| sessionIds  | `string[]` | no       | -       | A list of removed session IDs.                                               |
+| genesisID   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
+| sessionIDs  | `string[]` | no       | -       | A list of removed session IDs.                                               |
 
 ### `IDiscoverResult`
 
-| Name       | Type                                                | Required | Default | Description                                      |
-|------------|-----------------------------------------------------|----------|---------|--------------------------------------------------|
-| host       | `string`                                            | no       | -       | The domain name of the provider.                 |
-| icon       | `string`                                            | no       | -       | A URI pointing to an image.                      |
-| name       | `string`                                            | yes      | -       | A human-readable canonical name of the provider. |
-| networks   | [`INetworkConfiguration[]`](#inetworkconfiguration) | yes      | -       | A list of networks available for the provider.   |
-| providerId | `string`                                            | yes      | -       | The ID of the provider.                          |
+| Name     | Type                                                | Required | Default | Description                                                                                                                                                 |
+|----------|-----------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| host     | `string`                                            | no       | -       | The domain name of the provider.                                                                                                                            |
+| icon     | `string`                                            | no       | -       | A URI pointing to an image.                                                                                                                                 |
+| name     | `string`                                            | yes      | -       | A human-readable canonical name of the provider.                                                                                                            |
+| networks | [`INetworkConfiguration[]`](#inetworkconfiguration) | yes      | -       | A list of networks available for the provider.                                                                                                              |
+| vcic     | `string`                                            | yes      | -       | A base64 encoded provider public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. This can be used to verify a provider's identity. |
 
 ### `IEnableResult`
 
@@ -207,21 +203,19 @@ This is the basic type for an error. For specific details on errors check out th
 |-------------|---------------------------|----------|---------|------------------------------------------------------------------------------|
 | accounts    | [`IAccount[]`](#iaccount) | yes      | -       | A list of accounts authorized accounts on the provider.                      |
 | genesisHash | `string`                  | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
-| genesisId   | `string`                  | yes      | -       | A human-readable identifier for the network.                                 |
-| providerId  | `string`                  | yes      | -       | The ID of the provider.                                                      |
+| genesisID   | `string`                  | yes      | -       | A human-readable identifier for the network.                                 |
+| sessionID   | `string`                  | no       | -       | A unique identifier for the session as defined by the provider.              |
 
 ### `IPostTransactionsResult`
 
 | Name       | Type       | Required | Default | Description                                                                                          |
 |------------|------------|----------|---------|------------------------------------------------------------------------------------------------------|
-| providerId | `string`   | yes      | -       | The ID of the provider.                                                                              |
 | txnIDs     | `string[]` | yes      | -       | A list of 52-character base32 strings (without padding) corresponding the completed transaction IDs. |
 
 ### `ISignMessageResult`
 
 | Name       | Type     | Required | Default | Description                                                                                 |
 |------------|----------|----------|---------|---------------------------------------------------------------------------------------------|
-| providerId | `string` | yes      | -       | The ID of the provider.                                                                     |
 | signature  | `string` | yes      | -       | A base64 encoded signature of the message signed by the private key of the intended signer. |
 | signer     | `string` | yes      | -       | The address used to sign the message.                                                       |
 
@@ -229,5 +223,7 @@ This is the basic type for an error. For specific details on errors check out th
 
 | Name       | Type                    | Required | Default | Description                                                                                                                                                                                                                                 |
 |------------|-------------------------|----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| providerId | `string`                | yes      | -       | The ID of the provider.                                                                                                                                                                                                                     |
 | stxns      | `(string  \| null)[]`   | yes      | -       | The list of base64 encoded signed transactions that is ready to be posted to the network. If any of the transactions were not signed by the wallet, and no `stxns` were supplied, then null will be in the place of the signed transaction. |
+
+<!-- links -->
+[vip-03-0026]: https://vips.voi.community/03/0026

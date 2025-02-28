@@ -11,127 +11,11 @@ import TOCInline from '@theme/TOCInline';
 
 ## Overview
 
-Before we can start interacting with a provider, we first need to find out what providers are available and what AVM networks & methods these providers support.
+For clients to identify providers, clients can send a `discover` request and providers will respond with their VCIC, any supported networks as well as the supported capabilities (methods) for each network.
 
-## Discovering all providers
+## Discovering providers
 
-The first thing we want to do, after [initialization](getting-started), is start listening to discover messages. The callback passed will be called everytime a `discover` message is responded to by a provider. However, before we receive any `discover` messages we need then broadcast to any providers a request.
-
-<Tabs
-  defaultValue="javascript"
-  values={[
-    { label: 'Javascript', value: 'javascript' },
-    { label: 'TypeScript', value: 'typescript' },
-  ]}>
-  <TabItem value="javascript">
-
-```js
-// initialized client
-client.onDiscover(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
-
-    return;
-  }
-
-  console.log(result);
-  /*
-  {
-    host: 'https://awesome-wallet.com',
-    name: 'Awesome Wallet',
-    networks: [
-      {
-        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-        genesisId: 'testnet-v1.0',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-      {
-        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-        genesisId: 'voitest-v1',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-    ],
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  }
-  */
-});
-
-// send a discover request
-client.discover();
-```
-
-  </TabItem>
-  <TabItem value="typescript">
-
-```typescript
-import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
-
-// initialized client
-client.onDiscover(({ error, result }: IAVMWebClientCallbackOptions) => {
-  if (error) {
-    console.error('error:', error);
-
-    return;
-  }
-
-  console.log(result);
-  /*
-  {
-    host: 'https://awesome-wallet.com',
-    name: 'Awesome Wallet',
-    networks: [
-      {
-        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-        genesisId: 'testnet-v1.0',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-      {
-        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-        genesisId: 'voitest-v1',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-    ],
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  }
-  */
-});
-
-// send a discover request
-client.discover();
-```
-
-  </TabItem>
-</Tabs>
-
-## Discovering a specific provider
-
-If you know the ID of the provider, you can request only a response from that provider.
-
-As before, let's first add a listener and then broadcast, but this time we will specify the provider ID:
+After [initialization](./getting-started.mdx), a client can start listening to `discover` messages. The callback passed will be called everytime a `discover` message is responded to by a provider.
 
 <Tabs
   defaultValue="javascript"
@@ -141,108 +25,108 @@ As before, let's first add a listener and then broadcast, but this time we will 
   ]}>
   <TabItem value="javascript">
 
-```js
-const providerId = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+  ```js
+  client.onDiscover(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-// initialized client
-client.onDiscover(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+      return;
+    }
 
-    return;
-  }
+    console.log(result);
+    /*
+    {
+      host: 'https://awesome-wallet.com',
+      name: 'Awesome Wallet',
+      networks: [
+        {
+          genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+          genesisId: 'testnet-v1.0',
+          methods: [
+            'authenticate',
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_message',
+            'sign_transactions',
+          ],
+        },
+        {
+          genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+          genesisId: 'voitest-v1',
+          methods: [
+            'authenticate',
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_message',
+            'sign_transactions',
+          ],
+        },
+      ],
+      vcic: 'q5dQ...',
+    }
+    */
+  });
 
-  console.log(result);
-  /*
-  {
-    host: 'https://awesome-wallet.com',
-    name: 'Awesome Wallet',
-    networks: [
-      {
-        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-        genesisId: 'testnet-v1.0',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-      {
-        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-        genesisId: 'voitest-v1',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-    ],
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  }
-  */
-});
-
-// send a discover request
-client.discover({ providerId });
-```
+  // send a discover request
+  client.discover();
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-import { IAVMWebClientCallbackOptions } from '@agoralabs-sh/avm-web-provider';
+  ```typescript
+  client.onDiscover(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-const providerId: string = '02657eaf-be17-4efc-b0a4-19d654b2448e';
+      return;
+    }
 
-// initialized client
-client.onDiscover(({ error, result }: IAVMWebClientCallbackOptions) => {
-  if (error) {
-    console.error('error:', error);
+    console.log(result);
+    /*
+    {
+      host: 'https://awesome-wallet.com',
+      name: 'Awesome Wallet',
+      networks: [
+        {
+          genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
+          genesisId: 'testnet-v1.0',
+          methods: [
+            'authenticate',
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_message',
+            'sign_transactions',
+          ],
+        },
+        {
+          genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
+          genesisId: 'voitest-v1',
+          methods: [
+            'authenticate',
+            'disable',
+            'enable',
+            'post_transactions',
+            'sign_and_post_transactions',
+            'sign_message',
+            'sign_transactions',
+          ],
+        },
+      ],
+      vcic: 'q5dQ...',
+    }
+    */
+  });
 
-    return;
-  }
-
-  console.log(result);
-  /*
-  {
-    host: 'https://awesome-wallet.com',
-    name: 'Awesome Wallet',
-    networks: [
-      {
-        genesisHash: 'SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=',
-        genesisId: 'testnet-v1.0',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-      {
-        genesisHash: 'IXnoWtviVVJW5LGivNFc0Dq14V3kqaXuK2u5OQrdVZo=',
-        genesisId: 'voitest-v1',
-        methods: [
-          'disable',
-          'enable',
-          'post_transactions',
-          'sign_and_post_transactions',
-          'sign_transactions',
-        ],
-      },
-    ],
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  }
-  */
-});
-
-// send a discover request
-client.discover({ providerId });
-```
+  // send a discover request
+  client.discover();
+  ```
 
   </TabItem>
 </Tabs>

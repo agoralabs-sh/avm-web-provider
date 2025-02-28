@@ -10,7 +10,7 @@
 
 <div align="center">
 
-[![License: CC0-1.0](https://img.shields.io/github/license/agoralabs-sh/avm-web-provider)](LICENSE)
+[![License: CC0-1.0](https://img.shields.io/github/license/agoralabs-sh/avm-web-provider)](./LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/%40agoralabs-sh%2Favm-web-provider)](https://www.npmjs.com/package/%40agoralabs-sh/avm-web-provider)
 
 </div>
@@ -45,7 +45,6 @@
 * [3. Appendix](#-3-appendix)
   * [3.1. Useful Commands](#31-useful-commands)
 * [4. How To Contribute](#-4-how-to-contribute)
-* [5. License](#-5-license)
 
 ## 🔭 1. Overview
 
@@ -102,12 +101,6 @@ This will compile the Typescript source code into a `dist/` directory.
 ## 👏 4. How To Contribute
 
 Please read the [**Contributing Guide**](CONTRIBUTING.md) to learn about the development process.
-
-<sup>[Back to top ^][table-of-contents]</sup>
-
-## 📄 5. License
-
-Please refer to the [LICENSE](LICENSE) file.
 
 <sup>[Back to top ^][table-of-contents]</sup>
 

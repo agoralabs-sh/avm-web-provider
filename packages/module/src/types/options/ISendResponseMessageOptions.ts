@@ -1,16 +1,15 @@
-// enums
-import { ARC0027MethodEnum } from '@app/enums';
-
 // messages
-import { RequestMessage } from '@app/messages';
+import { RequestMessageWithCredential } from '@/messages';
 
 // types
-import type { TAVMWebProviderCallback, TRequestParams, TResponseResults } from '@app/types';
+import type { TParams, TResults, IProviderCallbackResultWithSignature } from '@/types';
+import type IProviderCallbackOptionsWithCredential from './IProviderCallbackOptionsWithCredential';
 
-interface ISendResponseMessageOptions<Params = TRequestParams, Result = TResponseResults> {
-  callback: TAVMWebProviderCallback<Params, Result>;
-  method: ARC0027MethodEnum;
-  requestMessage: RequestMessage<Params>;
+interface ISendResponseMessageOptions<Params = TParams, Result = TResults> {
+  callback: (
+    options: IProviderCallbackOptionsWithCredential<Params>
+  ) => IProviderCallbackResultWithSignature<Result> | Promise<IProviderCallbackResultWithSignature<Result>>;
+  request: RequestMessageWithCredential<Params>;
 }
 
 export default ISendResponseMessageOptions;

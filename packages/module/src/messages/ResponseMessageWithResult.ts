@@ -1,24 +1,17 @@
 // messages
-import BaseResponseMessage from './BaseResponseMessage';
+import ResponseMessage from './ResponseMessage';
 
 // types
-import type { IResponseMessageWithResult, TResponseResults } from '@app/types';
+import type { IResponseMessageWithResult, TResults } from '@/types';
 
-interface IOptions<Result = TResponseResults> {
-  id: string;
-  reference: string;
-  requestId: string;
-  result: Result;
-}
-
-export default class ResponseMessageWithResult<Result = TResponseResults>
-  extends BaseResponseMessage
+export default class ResponseMessageWithResult<Result = TResults>
+  extends ResponseMessage
   implements IResponseMessageWithResult<Result>
 {
   public readonly result: Result;
 
-  constructor({ id, reference, requestId, result }: IOptions<Result>) {
-    super({ id, reference, requestId });
+  constructor({ result, ...baseOptions }: IResponseMessageWithResult<Result>) {
+    super(baseOptions);
 
     this.result = result;
   }

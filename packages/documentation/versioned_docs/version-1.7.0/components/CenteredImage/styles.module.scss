@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+
+  &__outer {
+    padding: 2rem 1rem;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.image {
+  width: 100%;
+}

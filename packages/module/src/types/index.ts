@@ -8,4 +8,4 @@ export * from './networks';
 export * from './options';
 export * from './params';
 export * from './results';
-export * from './utils';
+export * from './utilities';

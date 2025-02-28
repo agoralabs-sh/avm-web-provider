@@ -1,19 +1,20 @@
 // types
-import type { INetworkConfiguration } from '@app/types';
+import type { INetworkConfiguration } from '@/types';
 
 /**
- * @property {string} host - [optional] the domain name of the provider.
- * @property {string} icon - [optional] the URI pointing to an image.
- * @property {string} name - a human-readable canonical name of the provider.
- * @property {INetworkConfiguration[]} networks - a list of networks available for the provider.
- * @property {string} providerId - a unique identifier for the provider.
+ * @property {string} host - [optional] The domain name of the provider.
+ * @property {string} icon - [optional] The URI pointing to an image.
+ * @property {string} name - A human-readable canonical name of the provider.
+ * @property {INetworkConfiguration[]} networks - A list of networks available for the provider.
+ * @property {string} vcic - A base64 encoded provider public key credential that conforms to the VIP-03-0026
+ * standard. This can be used to verify a provider's identity.
  */
 interface IDiscoverResult {
   host?: string;
   icon?: string;
   name: string;
   networks: INetworkConfiguration[];
-  providerId: string;
+  vcic: string;
 }
 
 export default IDiscoverResult;

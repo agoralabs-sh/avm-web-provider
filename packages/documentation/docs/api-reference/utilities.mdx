@@ -7,6 +7,18 @@ import TOCInline from '@theme/TOCInline';
   toc={toc}
 />
 
+## VIP-03-0027
+
+### `createChallenge()`
+
+> Convenience function to create a base64 encoded random 32-byte challenge that can be used in requests.
+
+#### Returns
+
+| Type     | Description                                 |
+|----------|---------------------------------------------|
+| `string` | A base 64 encoded random 32-byte challenge. |
+
 ## ARC-0060
 
 ### `signTypedData(options)`
@@ -15,9 +27,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name    | Type                                                   | Required | Default | Description                                                                                 |
-|---------|--------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------|
-| options | [`ISignTypedDataOptions`](types#isigntypeddataoptions) | yes      | -       | The authentication data, the data, the domain, the private key of the signer and the scope. |
+| Name    | Type                                                         | Required | Default | Description                                                                                 |
+|---------|--------------------------------------------------------------|----------|---------|---------------------------------------------------------------------------------------------|
+| options | [`ISignTypedDataOptions`](./types.mdx#isigntypeddataoptions) | yes      | -       | The authentication data, the data, the domain, the private key of the signer and the scope. |
 
 #### Returns
 
@@ -31,9 +43,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name    | Type                                                       | Required | Default | Description                                                                    |
-|---------|------------------------------------------------------------|----------|---------|--------------------------------------------------------------------------------|
-| options | [`IVerifyTypedDataOptions`](types#iverifytypeddataoptions) | yes      | -       | The authentication data, the data, the public key of the signer and the scope. |
+| Name    | Type                                                             | Required | Default | Description                                                                    |
+|---------|------------------------------------------------------------------|----------|---------|--------------------------------------------------------------------------------|
+| options | [`IVerifyTypedDataOptions`](./types.mdx#iverifytypeddataoptions) | yes      | -       | The authentication data, the data, the public key of the signer and the scope. |
 
 #### Returns
 

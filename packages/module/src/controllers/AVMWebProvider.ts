@@ -1,16 +1,23 @@
-import { uuid } from '@stablelib/uuid';
+import { generate as generateUUID } from '@agoralabs-sh/uuid';
+import { VIP030026PublicKeyCredential } from '@agoralabs-sh/vip030026';
+import { decode as decodeBase64 } from '@stablelib/base64';
 
 // controllers
 import BaseController from './BaseController';
 
 // enums
-import { ARC0027MessageTypeEnum, ARC0027MethodEnum } from '@app/enums';
+import { VIP030027MessageTypeEnum, VIP030027MethodEnum } from '@/enums';
 
 // errors
-import { ARC0027UnknownError, BaseARC0027Error } from '@app/errors';
+import { BaseVIP030027Error, VIP030027UnknownError } from '@/errors';
 
 // messages
-import { RequestMessage, ResponseMessageWithError, ResponseMessageWithResult } from '@app/messages';
+import {
+  DiscoverRequestMessage,
+  ResponseMessageWithError,
+  ResponseMessageWithResult,
+  ResponseMessageWithResultAndSignature,
+} from '@/messages';
 
 // types
 import type {
@@ -20,25 +27,27 @@ import type {
   IAVMWebProviderInitOptions,
   IDisableParams,
   IDisableResult,
-  IDiscoverParams,
   IDiscoverResult,
   IEnableParams,
   IEnableResult,
   IPostTransactionsParams,
   IPostTransactionsResult,
+  IProviderCallbackOptions,
+  IProviderCallbackResult,
+  IProviderCallbackOptionsWithCredential,
   ISendResponseMessageOptions,
   ISignMessageParams,
   ISignMessageResult,
   ISignTransactionsParams,
   ISignTransactionsResult,
-  TAVMWebProviderCallback,
+  TParams,
   TProviderCustomEventListener,
-  TRequestParams,
-  TResponseResults,
-} from '@app/types';
+  TResults,
+} from '@/types';
 
 // utils
-import { createMessageReference } from '@app/utils';
+import { createMessageReference } from '@/utilities';
+import type IProviderCallbackResultWithSignature from '../types/callbacks/IProviderCallbackResultWithSignature';
 
 export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig> {
   private constructor(config: IAVMWebProviderConfig) {
@@ -49,25 +58,26 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * private methods
    */
 
-  private _addListener<Params extends TRequestParams, Result extends TResponseResults>(
-    method: ARC0027MethodEnum,
-    callback: TAVMWebProviderCallback<Params, Result>
+  private _addListener<Params extends TParams | undefined, Result = TResults>(
+    method: VIP030027MethodEnum,
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<Params>
+    ) => IProviderCallbackResultWithSignature<Result> | Promise<IProviderCallbackResultWithSignature<Result>>
   ): string {
-    const _functionName = '_addListener';
+    const __function = '_addListener';
     const listener: TProviderCustomEventListener<Params> = (event) => {
       this._logger.debug(
-        `[${this._config.providerId}]${AVMWebProvider.name}#${_functionName}: received request event:`,
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request:`,
         event.detail
       );
 
       return this._sendResponseMessage({
         callback,
-        method,
-        requestMessage: event.detail as RequestMessage<Params>,
+        request: event.detail,
       });
     };
-    const listenerID = uuid();
-    const reference = createMessageReference(method, ARC0027MessageTypeEnum.Request);
+    const listenerID = generateUUID();
+    const reference = createMessageReference(method, VIP030027MessageTypeEnum.Request);
 
     // start listening to request events and add the listener to the map
     window.addEventListener(reference, listener);
@@ -87,67 +97,65 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts}
    * @private
    */
-  private async _sendResponseMessage<Params extends TRequestParams, Result extends TResponseResults>({
+  private async _sendResponseMessage<Params = TParams | undefined, Result = TResults>({
     callback,
-    method,
-    requestMessage,
+    request,
   }: ISendResponseMessageOptions<Params, Result>): Promise<void> {
-    const _functionName = '_sendResponseMessage';
-    let id: string;
-    let reference: string;
-    let result: Result;
+    const __function = '_sendResponseMessage';
+    const responseID = generateUUID();
+    const responseReference = createMessageReference(request.method, VIP030027MessageTypeEnum.Response);
 
-    // if the provider id is supplied in the request, and it does not match the registered provider id, ignore
-    if (requestMessage.params?.providerId && requestMessage.params.providerId !== this._config.providerId) {
+    // if this is not a discover request and if the credential from the request does not match the initialized credential, ignore
+    if (request.vcic !== this._config.credential.toString()) {
       this._logger.debug(
-        `[${this._config.providerId}]${AVMWebProvider.name}#${_functionName}: message "${requestMessage.reference}" is for provider "${requestMessage.params.providerId}", skipping`
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: message credential "${request.vcic}" does not match initialized credentials "${this._config.credential.toString()}", ignoring request`
       );
 
       return;
     }
 
-    id = uuid();
-    reference = createMessageReference(method, ARC0027MessageTypeEnum.Response);
-
     try {
-      result = await callback({
-        id: requestMessage.id,
-        method,
-        params: requestMessage.params,
+      const { result, signature } = await callback({
+        challenge: request.challenge,
+        vcic: request.vcic,
+        id: request.id,
+        method: request.method,
+        params: request.params,
       });
 
       // dispatch a response event with the result
       window.dispatchEvent(
-        new CustomEvent(reference, {
+        new CustomEvent(responseReference, {
           detail: JSON.stringify(
-            new ResponseMessageWithResult<Result>({
-              id,
-              reference,
-              requestId: requestMessage.id,
+            new ResponseMessageWithResultAndSignature<Result>({
+              id: responseID,
+              reference: responseReference,
+              requestID: request.id,
               result,
+              signature,
             })
           ),
         })
       );
 
       this._logger.debug(
-        `[${this._config.providerId}]${AVMWebProvider.name}#${_functionName}: posted response message "${reference}" with id "${id}"`
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: dispatched response message "${responseReference}" with id "${responseID}"`
       );
 
       return;
     } catch (error) {
       this._logger.error(error);
 
-      // if we have an arc-0027 error, send it in the response
-      if ((error as BaseARC0027Error).code) {
+      // if we have a vip-03-0027 error, send it in the response
+      if ((error as BaseVIP030027Error).isVIP030027Error) {
         window.dispatchEvent(
-          new CustomEvent(reference, {
+          new CustomEvent(responseReference, {
             detail: JSON.stringify(
               new ResponseMessageWithError({
                 error,
-                id,
-                reference,
-                requestId: requestMessage.id,
+                id: responseID,
+                reference: responseReference,
+                requestID: request.id,
               })
             ),
           })
@@ -158,16 +166,15 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
       // otherwise, wrap the message in an unknown error
       window.dispatchEvent(
-        new CustomEvent(reference, {
+        new CustomEvent(responseReference, {
           detail: JSON.stringify(
             new ResponseMessageWithError({
-              error: new ARC0027UnknownError({
+              error: new VIP030027UnknownError({
                 message: error.message,
-                providerId: this._config.providerId,
               }),
-              id,
-              reference,
-              requestId: requestMessage.id,
+              id: responseID,
+              reference: responseReference,
+              requestID: request.id,
             })
           ),
         })
@@ -181,10 +188,22 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
    * public static methods
    */
 
-  public static init(providerId: string, { debug }: IAVMWebProviderInitOptions = { debug: false }): AVMWebProvider {
+  /**
+   * Initializes the provider. The provider **MUST** be initialized with a base64 encoded public key credential that
+   * conforms to the VIP-03-0026 standard. This credential acts as an identifier to clients and will be used to filter
+   * requests intended for other providers.
+   * @param {IAVMWebProviderInitOptions} options - The base64 encoded public key credential that conforms to the
+   * VIP-03-0026 standard.
+   * @returns {AVMWebProvider} An initialized AVMWebProvider.
+   * @throws {VIP030026InvalidCredentialLengthError} If the public key credential is invalid.
+   * @see {@link https://vips.voi.community/03/0026/}
+   * @static
+   * @public
+   */
+  public static init({ vcic, debug = false }: IAVMWebProviderInitOptions): AVMWebProvider {
     return new AVMWebProvider({
+      credential: VIP030026PublicKeyCredential.fromBytes(decodeBase64(vcic)),
       debug: debug || false,
-      providerId,
     });
   }
 
@@ -194,95 +213,231 @@ export default class AVMWebProvider extends BaseController<IAVMWebProviderConfig
 
   /**
    * Listens to `authenticate` messages sent from clients.
-   * @param {TAVMWebProviderCallback<IAuthenticateParams, IAuthenticateResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IAuthenticateParams>) => IProviderCallbackResultWithSignature<IAuthenticateResult> | Promise<IProviderCallbackResultWithSignature<IAuthenticateResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
-  public onAuthenticate(callback: TAVMWebProviderCallback<IAuthenticateParams, IAuthenticateResult>): string {
-    return this._addListener<IAuthenticateParams, IAuthenticateResult>(ARC0027MethodEnum.Authenticate, callback);
+  public onAuthenticate(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IAuthenticateParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<IAuthenticateResult>
+      | Promise<IProviderCallbackResultWithSignature<IAuthenticateResult>>
+  ): string {
+    return this._addListener<IAuthenticateParams, IAuthenticateResult>(VIP030027MethodEnum.Authenticate, callback);
   }
 
   /**
    * Listens to `disable` messages sent from clients.
-   * @param {TAVMWebProviderCallback<IDisableParams, IDisableResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IDisableParams | undefined>) => IProviderCallbackResultWithSignature<IDiscoverResult> | Promise<IProviderCallbackResultWithSignature<IDisableResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
-  public onDisable(callback: TAVMWebProviderCallback<IDisableParams, IDisableResult>): string {
-    return this._addListener<IDisableParams, IDisableResult>(ARC0027MethodEnum.Disable, callback);
+  public onDisable(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IDisableParams | undefined>
+    ) =>
+      | IProviderCallbackResultWithSignature<IDisableResult>
+      | Promise<IProviderCallbackResultWithSignature<IDisableResult>>
+  ): string {
+    return this._addListener<IDisableParams | undefined, IDisableResult>(VIP030027MethodEnum.Disable, callback);
   }
 
   /**
    * Listens to `discover` messages sent from clients.
-   * @param {TAVMWebProviderCallback<IDiscoverParams, IDiscoverResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptions<undefined>) => IProviderCallbackResult<IDiscoverResult> | Promise<IProviderCallbackResult<IDiscoverResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
-  public onDiscover(callback: TAVMWebProviderCallback<IDiscoverParams, IDiscoverResult>): string {
-    return this._addListener<IDiscoverParams, IDiscoverResult>(ARC0027MethodEnum.Discover, callback);
+  public onDiscover(
+    callback: (
+      options: IProviderCallbackOptions<undefined>
+    ) => IProviderCallbackResult<IDiscoverResult> | Promise<IProviderCallbackResult<IDiscoverResult>>
+  ): string {
+    const __function = '_addListener';
+    const method = VIP030027MethodEnum.Discover;
+    const listener = async (event: CustomEvent<DiscoverRequestMessage>) => {
+      const request = event.detail;
+      const responseID = generateUUID();
+      const responseReference = createMessageReference(method, VIP030027MessageTypeEnum.Response);
+
+      this._logger.debug(
+        `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: received request event:`,
+        request
+      );
+
+      try {
+        const { result } = await callback({
+          id: request.id,
+          method,
+          params: request.params,
+        });
+
+        // dispatch a response event with the result
+        window.dispatchEvent(
+          new CustomEvent(responseReference, {
+            detail: JSON.stringify(
+              new ResponseMessageWithResult<IDiscoverResult>({
+                id: responseID,
+                reference: responseReference,
+                requestID: request.id,
+                result,
+              })
+            ),
+          })
+        );
+
+        this._logger.debug(
+          `[${this._config.credential.id()}]${AVMWebProvider.name}#${__function}: dispatched response message "${responseReference}" with id "${responseID}"`
+        );
+
+        return;
+      } catch (error) {
+        this._logger.error(error);
+
+        // if we have a vip-03-0027 error, send it in the response
+        if ((error as BaseVIP030027Error).isVIP030027Error) {
+          window.dispatchEvent(
+            new CustomEvent(responseReference, {
+              detail: JSON.stringify(
+                new ResponseMessageWithError({
+                  error,
+                  id: responseID,
+                  reference: responseReference,
+                  requestID: request.id,
+                })
+              ),
+            })
+          );
+
+          return;
+        }
+
+        // otherwise, wrap the message in an unknown error
+        window.dispatchEvent(
+          new CustomEvent(responseReference, {
+            detail: JSON.stringify(
+              new ResponseMessageWithError({
+                error: new VIP030027UnknownError({
+                  message: error.message,
+                }),
+                id: responseID,
+                reference: responseReference,
+                requestID: request.id,
+              })
+            ),
+          })
+        );
+
+        return;
+      }
+    };
+    const listenerID = generateUUID();
+    const reference = createMessageReference(VIP030027MethodEnum.Discover, VIP030027MessageTypeEnum.Request);
+
+    // start listening to request events and add the listener to the map
+    window.addEventListener(reference, listener);
+    this._listeners.set(listenerID, {
+      listener,
+      reference,
+    });
+
+    return listenerID;
   }
 
   /**
    * Listens to `enable` messages sent from clients.
-   * @param {TAVMWebProviderCallback<IEnableParams, IEnableResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IEnableParams | undefined>) => IProviderCallbackResultWithSignature<IEnableResult> | Promise<IProviderCallbackResultWithSignature<IEnableResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
-  public onEnable(callback: TAVMWebProviderCallback<IEnableParams, IEnableResult>): string {
-    return this._addListener<IEnableParams, IDisableResult>(ARC0027MethodEnum.Enable, callback);
+  public onEnable(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IEnableParams | undefined>
+    ) =>
+      | IProviderCallbackResultWithSignature<IEnableResult>
+      | Promise<IProviderCallbackResultWithSignature<IEnableResult>>
+  ): string {
+    return this._addListener<IEnableParams | undefined, IEnableResult>(VIP030027MethodEnum.Enable, callback);
   }
 
   /**
    * Listens to `post_transactions` messages sent from clients.
-   * @param {TAVMWebProviderCallback<IPostTransactionsParams, IPostTransactionsResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<IPostTransactionsParams>) => IProviderCallbackResultWithSignature<IPostTransactionsResult> | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onPostTransactions(
-    callback: TAVMWebProviderCallback<IPostTransactionsParams, IPostTransactionsResult>
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<IPostTransactionsParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<IPostTransactionsResult>
+      | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>
   ): string {
     return this._addListener<IPostTransactionsParams, IPostTransactionsResult>(
-      ARC0027MethodEnum.PostTransactions,
+      VIP030027MethodEnum.PostTransactions,
       callback
     );
   }
 
   /**
    * Listens to `sign_and_post_transactions` messages sent from clients.
-   * @param {TAVMWebProviderCallback<ISignTransactionsParams, IPostTransactionsResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>) => IProviderCallbackResultWithSignature<IPostTransactionsResult> | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onSignAndPostTransactions(
-    callback: TAVMWebProviderCallback<ISignTransactionsParams, IPostTransactionsResult>
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<IPostTransactionsResult>
+      | Promise<IProviderCallbackResultWithSignature<IPostTransactionsResult>>
   ): string {
     return this._addListener<ISignTransactionsParams, IPostTransactionsResult>(
-      ARC0027MethodEnum.SignAndPostTransactions,
+      VIP030027MethodEnum.SignAndPostTransactions,
       callback
     );
   }
 
   /**
    * Listens to `sign_message` messages sent from clients.
-   * @param {TAVMWebProviderCallback<ISignMessageParams, ISignMessageResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<ISignMessageParams>) => IProviderCallbackResultWithSignature<ISignMessageResult> | Promise<IProviderCallbackResultWithSignature<ISignMessageResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
-  public onSignMessage(callback: TAVMWebProviderCallback<ISignMessageParams, ISignMessageResult>): string {
-    return this._addListener<ISignMessageParams, ISignMessageResult>(ARC0027MethodEnum.SignMessage, callback);
+  public onSignMessage(
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<ISignMessageParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<ISignMessageResult>
+      | Promise<IProviderCallbackResultWithSignature<ISignMessageResult>>
+  ): string {
+    return this._addListener<ISignMessageParams, ISignMessageResult>(VIP030027MethodEnum.SignMessage, callback);
   }
 
   /**
    * Listens to `sign_transactions` messages sent from clients.
-   * @param {TAVMWebProviderCallback<ISignTransactionsParams, ISignTransactionsResult>} callback - the callback to handle requests from
+   * @param {(options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>) => IProviderCallbackResultWithSignature<ISignTransactionsResult> | Promise<IProviderCallbackResultWithSignature<ISignTransactionsResult>>} callback - the callback to handle requests from
    * the client.
    * @returns {string} the ID of the listener.
+   * @public
    */
   public onSignTransactions(
-    callback: TAVMWebProviderCallback<ISignTransactionsParams, ISignTransactionsResult>
+    callback: (
+      options: IProviderCallbackOptionsWithCredential<ISignTransactionsParams>
+    ) =>
+      | IProviderCallbackResultWithSignature<ISignTransactionsResult>
+      | Promise<IProviderCallbackResultWithSignature<ISignTransactionsResult>>
   ): string {
     return this._addListener<ISignTransactionsParams, ISignTransactionsResult>(
-      ARC0027MethodEnum.SignTransactions,
+      VIP030027MethodEnum.SignTransactions,
       callback
     );
   }

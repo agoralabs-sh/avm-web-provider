@@ -32,7 +32,13 @@ Include the minified browser bundle directly in your HTML like so:
 
 ## Initialization
 
-Firstly, we want to initialize the AVM web provider with an ID:
+To initialize the AVM web provider, a VCIC will need to be provided:
+
+:::note
+
+The Verifiable Compact Identity Credential (VCIC) is a special identifier that allows clients to identify a provider and verify any provider messages. See the [VIP-03-0026](https://vips.voi.community/03/0026) for details on how a VCIC is implemented.
+
+:::
 
 <Tabs
   defaultValue="javascript-via-package-manager"
@@ -46,14 +52,18 @@ Firstly, we want to initialize the AVM web provider with an ID:
     ```js
     const { AVMWebProvider } = require('@agoralabs-sh/avm-web-provider');
 
-    const provider = AVMWebProvider.init('02657eaf-be17-4efc-b0a4-19d654b2448e');
+    const provider = AVMWebProvider.init({
+      vcic: 'gqNzaWfEQ...', // a vcic must be base64 encoded
+    });
     ```
 
   </TabItem>
   <TabItem value="javascript-via-cdn">
 
     ```js
-    var provider = window.AVMWebProviderSDK.AVMWebProvider.init();
+    var provider = window.AVMWebProviderSDK.AVMWebProvider.init({
+      vcic: 'gqNzaWfEQ...', // a vcic must be base64 encoded
+    });
     ```
 
   </TabItem>
@@ -62,7 +72,9 @@ Firstly, we want to initialize the AVM web provider with an ID:
     ```typescript
     import { AVMWebProvider } from '@agoralabs-sh/avm-web-provider';
 
-    const provider: AVMWebProvider = AVMWebProvider.init('02657eaf-be17-4efc-b0a4-19d654b2448e');
+    const provider = AVMWebProvider.init({
+      vcic: 'gqNzaWfEQ...', // a vcic must be base64 encoded
+    });
     ```
 
   </TabItem>
@@ -70,12 +82,6 @@ Firstly, we want to initialize the AVM web provider with an ID:
 
 :::note
 
-The provider ID is what will identify your provider with clients. It is recommended that you use a [UUIDv4](https://www.rfc-editor.org/rfc/rfc4122) compliant string.
-
-:::
-
-:::note
-
-See [`IAVMWebProviderInitOptions`](../../api-reference/types#iavmwebproviderinitoptions) for more information on what options are supported.
+See [`IAVMWebProviderInitOptions`](../../api-reference/types.mdx#iavmwebproviderinitoptions) for more information on what options are supported.
 
 :::

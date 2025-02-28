@@ -33,7 +33,7 @@ Include the minified browser bundle directly in your HTML like so:
 
 ## Initialization
 
-Firstly, we want to initialize the AVM web client:
+Initialize the AVM web client:
 
 <Tabs
   defaultValue="javascript-via-package-manager"
@@ -45,7 +45,7 @@ Firstly, we want to initialize the AVM web client:
   <TabItem value="javascript-via-package-manager">
 
     ```js
-    import { AVMWebClient } from '@agoralabs-sh/avm-web-provider';
+    const { AVMWebClient } = require('@agoralabs-sh/avm-web-provider');
 
     const client = AVMWebClient.init();
     ```
@@ -71,6 +71,6 @@ Firstly, we want to initialize the AVM web client:
 
 :::note
 
-See [`IAVMWebClientInitOptions`](../../api-reference/types#iavmwebclientinitoptions) for more information on what options are supported.
+See [`IAVMWebClientInitOptions`](../../api-reference/types.mdx#iavmwebclientinitoptions) for more information on what options are supported.
 
 :::

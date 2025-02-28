@@ -1,13 +1,15 @@
 // enums
-import { ARC0027MethodEnum } from '@app/enums';
+import { VIP030027MethodEnum } from '@/enums';
 
 // types
-import type { TRequestParams } from '@app/types';
+import type { TParams } from '@/types';
 
-interface ISendRequestMessageOptions<Params = TRequestParams> {
-  method: ARC0027MethodEnum;
-  params?: Params;
+interface ISendRequestMessageOptions<Params = TParams | undefined> {
+  challenge?: string;
+  method: VIP030027MethodEnum;
+  params: Params;
   timeout?: number;
+  vcic: string;
 }
 
 export default ISendRequestMessageOptions;

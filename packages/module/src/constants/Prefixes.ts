@@ -1,1 +1,1 @@
-export const ARC0027_PREFIX: string = 'arc0027';
+export const VIP030027_PREFIX: string = 'vip030027';

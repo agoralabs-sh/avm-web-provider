@@ -13,13 +13,7 @@ import TOCInline from '@theme/TOCInline';
 
 Providers, if supported, can commit transactions to the network using their connection to a node.
 
-## Sending transactions to the provider
-
-:::note
-
-Posting transactions requires the ID of the provider.
-
-:::
+## Posting transactions to the network using a provider
 
 <Tabs
   defaultValue="javascript"
@@ -29,78 +23,78 @@ Posting transactions requires the ID of the provider.
   ]}>
   <TabItem value="javascript">
 
-```js
-// initialized client
-client.onPostTransactions(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  ```js
+  client.onPostTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    txnIDs: [
-      'OKU6A2Q...',
-    ],
-  }
-  */
-});
+    console.log(result);
+    /*
+    {
+      txnIDs: [
+        'OKU6A2Q...',
+      ],
+    }
+    */
+  });
 
-// send a post transactions request
-client.postTransactions({
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  stxns: [
-    'gqNzaWfEQ...',
-  ],
-});
-```
+  // send a post transactions request
+  client.postTransactions({
+    params: {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
   <TabItem value="typescript">
 
-```typescript
-// initialized client
-client.onPostTransactions(({ error, result }) => {
-  if (error) {
-    console.error('error:', error);
+  ```typescript
+  client.onPostTransactions(({ error, result }) => {
+    if (error) {
+      console.error('error:', error);
 
-    return;
-  }
+      return;
+    }
 
-  console.log(result);
-  /*
-  {
-    providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-    txnIDs: [
-      'OKU6A2Q...',
-    ],
-  }
-  */
-});
+    console.log(result);
+    /*
+    {
+      txnIDs: [
+        'OKU6A2Q...',
+      ],
+    }
+    */
+  });
 
-// send a post transactions request
-client.postTransactions({
-  providerId: '02657eaf-be17-4efc-b0a4-19d654b2448e',
-  stxns: [
-    'gqNzaWfEQ...',
-  ],
-});
-```
+  // send a post transactions request
+  client.postTransactions({
+    params: {
+      stxns: [
+        'gqNzaWfEQ...',
+      ],
+    },
+    vcic: 'q5dQ...',
+  });
+  ```
 
   </TabItem>
 </Tabs>
 
 :::caution
 
-If this method is not supported, then a [`ARC0027MethodNotSupportedError`](../../api-reference/errors#arc0027methodnotsupportederror) should be thrown.
+If this method is not supported, then a [`VIP030027MethodNotSupportedError`](../../api-reference/errors.mdx#vip030027methodnotsupportederror) **SHOULD** be returned.
 
 :::
 
 :::caution
 
-If the transactions fail to be accepted by the network, then a [`ARC0027FailedToPostSomeTransactionsError`](../../api-reference/errors#arc0027failedtopostsometransactionserror) should be thrown.
+If the transactions fail to be accepted by the network, then a [`VIP030027FailedToPostSomeTransactionsError`](../../api-reference/errors.mdx#vip030027failedtopostsometransactionserror) **SHOULD** be returned.
 
 :::

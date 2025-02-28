@@ -3,7 +3,6 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "moduleResolution": "Bundler",
     "outDir": "dist",
     "rootDir": "src",
