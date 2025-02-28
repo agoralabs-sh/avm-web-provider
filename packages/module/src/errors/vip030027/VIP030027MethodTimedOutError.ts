@@ -11,7 +11,7 @@ export default class VIP030027MethodTimedOutError extends BaseVIP030027Error {
   public readonly code: VIP030027ErrorCodeEnum.MethodTimedOutError = VIP030027ErrorCodeEnum.MethodTimedOutError;
   public readonly method: VIP030027MethodEnum;
   public readonly name = 'VIP030027MethodTimedOutError';
-  public readonly providerID: string;
+  public readonly vcic: string;
 
   constructor({ message, method, vcic }: IVIP030027MethodErrorOptions) {
     super({
@@ -19,6 +19,6 @@ export default class VIP030027MethodTimedOutError extends BaseVIP030027Error {
     });
 
     this.method = method;
-    this.providerID = vcic;
+    this.vcic = vcic;
   }
 }

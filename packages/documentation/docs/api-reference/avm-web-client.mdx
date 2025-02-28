@@ -59,15 +59,10 @@ import TOCInline from '@theme/TOCInline';
 |----------|--------------------------------|
 | `string` | the ID of the request message. |
 
-### `discover([params])`
+### `discover()`
 
 > Sends a request to get information relating to available providers. This should be called before interacting with any providers to ensure networks and methods are supported.
 
-#### Parameters
-
-| Name   | Type                                       | Required | Default | Description                                   |
-|--------|--------------------------------------------|----------|---------|-----------------------------------------------|
-| params | [`IDiscoverParams`](types#idiscoverparams) | no       | -       | Params that specify which provider to target. |
 
 #### Returns
 
@@ -108,9 +103,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -124,9 +119,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -140,9 +135,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|----------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientDiscoverCallbackOptions`](types#iclientdiscovercallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -156,9 +151,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -172,9 +167,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -188,9 +183,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 
@@ -204,9 +199,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 ### `onSignTransactions(callback)`
 
@@ -214,9 +209,9 @@ import TOCInline from '@theme/TOCInline';
 
 #### Parameters
 
-| Name     | Type                                                                                                             | Required | Default | Description                                                                                                                   |
-|----------|------------------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
-| callback | (`options`: [`IAVMWebClientCallbackOptions`](types#iavmwebclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
+| Name     | Type                                                                                                 | Required | Default | Description                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------|----------|---------|-------------------------------------------------------------------------------------------------------------------------------|
+| callback | (`options`: [`IClientCallbackOptions`](types#iclientcallbackoptions)) => (`void` \| `Promise<void>`) | yes      | -       | The callback is called when a response message is received. If the result was successful, the `error` parameter will be null. |
 
 #### Returns
 

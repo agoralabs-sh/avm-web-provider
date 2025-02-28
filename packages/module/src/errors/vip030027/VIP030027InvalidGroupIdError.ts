@@ -10,13 +10,13 @@ import type { IBaseErrorOptions } from '@/types';
 export default class VIP030027InvalidGroupIdError extends BaseVIP030027Error {
   public readonly code: VIP030027ErrorCodeEnum.InvalidGroupIdError = VIP030027ErrorCodeEnum.InvalidGroupIdError;
   public readonly name = 'VIP030027InvalidGroupIdError';
-  public readonly providerID: string;
+  public readonly vcic: string;
 
-  constructor({ message, providerID }: IBaseErrorOptions & Record<'providerID', string>) {
+  constructor({ message, vcic }: IBaseErrorOptions & Record<'vcic', string>) {
     super({
       message: message || `computed group id does not match the assigned id of one or more transactions`,
     });
 
-    this.providerID = providerID;
+    this.vcic = vcic;
   }
 }

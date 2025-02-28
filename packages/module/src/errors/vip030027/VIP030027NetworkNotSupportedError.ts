@@ -12,7 +12,7 @@ export default class VIP030027NetworkNotSupportedError extends BaseVIP030027Erro
     VIP030027ErrorCodeEnum.NetworkNotSupportedError;
   public readonly genesisHashes: string[];
   public readonly name: string = 'VIP030027NetworkNotSupportedError';
-  public readonly providerID: string;
+  public readonly vcic: string;
 
   public constructor({ genesisHashes, message, vcic }: IVIP030027NetworkNotSupportedErrorOptions) {
     super({
@@ -24,6 +24,6 @@ export default class VIP030027NetworkNotSupportedError extends BaseVIP030027Erro
     });
 
     this.genesisHashes = genesisHashes;
-    this.providerID = vcic;
+    this.vcic = vcic;
   }
 }

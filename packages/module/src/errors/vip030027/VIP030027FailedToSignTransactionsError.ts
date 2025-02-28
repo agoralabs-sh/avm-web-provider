@@ -12,7 +12,7 @@ export default class VIP030027FailedToSignTransactionsError extends BaseVIP03002
     VIP030027ErrorCodeEnum.FailedToSignTransactionsError;
   public readonly failedTransactions: string[];
   public readonly name = 'VIP030027FailedToSignTransactionsError';
-  public readonly providerID: string;
+  public readonly vcic: string;
 
   constructor({ failedTransactions, message, vcic }: IVIP030027FailedToSignTransactionsErrorOptions) {
     super({
@@ -20,6 +20,6 @@ export default class VIP030027FailedToSignTransactionsError extends BaseVIP03002
     });
 
     this.failedTransactions = failedTransactions;
-    this.providerID = vcic;
+    this.vcic = vcic;
   }
 }

@@ -10,13 +10,13 @@ import type { IBaseErrorOptions } from '@/types';
 export default class VIP030027InvalidInputError extends BaseVIP030027Error {
   public readonly code: VIP030027ErrorCodeEnum.InvalidInputError = VIP030027ErrorCodeEnum.InvalidInputError;
   public readonly name = 'VIP030027InvalidInputError';
-  public readonly providerID: string;
+  public readonly vcic: string;
 
-  constructor({ message, providerID }: IBaseErrorOptions & Record<'providerID', string>) {
+  constructor({ message, vcic }: IBaseErrorOptions & Record<'vcic', string>) {
     super({
       message: message || `invalid input in transaction(s)`,
     });
 
-    this.providerID = providerID;
+    this.vcic = vcic;
   }
 }

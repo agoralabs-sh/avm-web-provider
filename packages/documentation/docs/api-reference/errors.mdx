@@ -7,20 +7,21 @@ import TOCInline from '@theme/TOCInline';
   toc={toc}
 />
 
-## ARC-0027 Errors
+## VIP-03-0027 Errors
 
-| Code | Name                                                                                    | Summary                                                                                   |
-|------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| 4000 | [`ARC0027UnknownError`](#arc0027unknownerror)                                           | The default error response, usually indicates something is not quite right.               |
-| 4001 | [`ARC0027MethodCanceledError`](#arc0027methodcancelederror)                             | When a user has rejected the method.                                                      |
-| 4003 | [`ARC0027MethodNotSupportedError`](#arc0027methodnotsupportederror)                     | The specified provider does not exist.                                                    |
-| 4004 | [`ARC0027NetworkNotSupportedError`](#arc0027networknotsupportederror)                   | Networks not supported.                                                                   |
-| 4100 | [`ARC0027UnauthorizedSignerError`](#arc0027unauthorizedsignererror)                     | The provider has not given permission to use a specified signer.                          |
-| 4200 | [`ARC0027InvalidInputError`](#arc0027invalidinputerror)                                 | The input for signing transactions is malformed.                                          |
-| 4201 | [`ARC0027InvalidGroupIdError`](#arc0027invalidgroupiderror)                             | The computed group ID of the atomic transactions is different from the assigned group ID. |
-| 4300 | [`ARC0027FailedToPostSomeTransactionsError`](#arc0027failedtopostsometransactionserror) | When some transactions were not sent properly.                                            |
+| Code | Name                                                                                            | Summary                                                                                                                                                                              |
+|------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 4000 | [`VIP030027UnknownError`](#vip030027unknownerror)                                               | The default error response, usually indicates something is not quite right.                                                                                                          |
+| 4001 | [`VIP030027MethodCanceledError`](#vip030027methodcancelederror)                                 | When a user has rejected the method.                                                                                                                                                 |
+| 4003 | [`VIP030027MethodNotSupportedError`](#vip030027methodnotsupportederror)                         | The specified provider does not exist.                                                                                                                                               |
+| 4004 | [`VIP030027NetworkNotSupportedError`](#vip030027networknotsupportederror)                       | Networks not supported.                                                                                                                                                              |
+| 4100 | [`VIP030027UnauthorizedSignerError`](#vip030027unauthorizedsignererror)                         | The provider has not given permission to use a specified signer.                                                                                                                     |
+| 4200 | [`VIP030027InvalidInputError`](#vip030027invalidinputerror)                                     | The input for signing transactions is malformed.                                                                                                                                     |
+| 4201 | [`VIP030027InvalidGroupIdError`](#vip030027invalidgroupiderror)                                 | The computed group ID of the atomic transactions is different from the assigned group ID.                                                                                            |
+| 4300 | [`VIP030027FailedToSignTransactionsError`](#vip030027failedtosigntransactionserror)             | When transactions were not signed.                                                                                                                                                   |
+| 4401 | [`VIP030027UnauthorizedProviderCredentialError`](#vip030027unauthorizedprovidercredentialerror) | When the provider's VCIC has failed verification. This can be caused if the signature the provider has provided in the response does not pass validation of the request's challenge. |
 
-### `ARC0027UnknownError`
+### `VIP030027UnknownError`
 
 This error is the default error and serves as the "catch all" error. This usually occurs when something has happened that is outside the bounds of graceful handling. You can check the `UnknownError.message` string for more information.
 
@@ -31,81 +32,86 @@ This error is the default error and serves as the "catch all" error. This usuall
 | code    | `number` | 4000  | A canonical code for this error. |
 | message | `string` | -     | A human readable message.        |
 
-### `ARC0027MethodCanceledError`
+### `VIP030027MethodCanceledError`
 
 This error is thrown when a user has rejected or canceled the requested action on the wallet. For example, the user decides to cancel the signing of a transaction.
 
 #### Properties
 
-| Name    | Type     | Value | Description                                   |
-|---------|----------|-------|-----------------------------------------------|
-| code    | `number` | 4001  | A canonical code for this error.              |
-| message | `string` | -     | A human readable message.                     |
-| method  | `string` | -     | The name of the method that is not supported. |
+| Name    | Type     | Value | Description                                                                                                   |
+|---------|----------|-------|---------------------------------------------------------------------------------------------------------------|
+| code    | `number` | 4001  | A canonical code for this error.                                                                              |
+| message | `string` | -     | A human readable message.                                                                                     |
+| method  | `string` | -     | The name of the method that is not supported.                                                                 |
+| vcic    | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `ARC0027MethodNotSupportedError`
+### `VIP030027MethodNotSupportedError`
 
 This can be thrown by most [`AVMWebClient`](avm-web-client.mdx#methods) methods and indicates that the provider does not support the requested method.
 
 #### Properties
 
-| Name    | Type     | Value | Description                                   |
-|---------|----------|-------|-----------------------------------------------|
-| code    | `number` | 4003  | A canonical code for this error.              |
-| id      | `string` | -     | The ID of the provider.                       |
-| message | `string` | -     | A human readable message.                     |
-| method  | `string` | -     | The name of the method that is not supported. |
+| Name    | Type     | Value | Description                                                                                                   |
+|---------|----------|-------|---------------------------------------------------------------------------------------------------------------|
+| code    | `number` | 4003  | A canonical code for this error.                                                                              |
+| message | `string` | -     | A human readable message.                                                                                     |
+| method  | `string` | -     | The name of the method that is not supported.                                                                 |
+| vcic    | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `ARC0027NetworkNotSupportedError`
+### `VIP030027NetworkNotSupportedError`
 
 This error is thrown when a provided genesis hash is not supported by the wallet.
 
 #### Properties
 
-| Name          | Type       | Value | Description                                                |
-|---------------|------------|-------|------------------------------------------------------------|
-| code          | `number`   | 4004  | A canonical code for this error.                           |
-| genesisHashes | `string[]` | -     | The genesis hashes of the networks that are not supported. |
-| message       | `string`   | -     | A human readable message.                                  |
+| Name          | Type       | Value | Description                                                                                                   |
+|---------------|------------|-------|---------------------------------------------------------------------------------------------------------------|
+| code          | `number`   | 4004  | A canonical code for this error.                                                                              |
+| genesisHashes | `string[]` | -     | The genesis hashes of the networks that are not supported.                                                    |
+| message       | `string`   | -     | A human readable message.                                                                                     |
+| vcic          | `string`   | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `ARC0027UnauthorizedSignerError`
+### `VIP030027UnauthorizedSignerError`
 
 This error is thrown when a provided account has been specified, but the provider has not given permission to use that account as a signer.
 
 #### Properties
 
-| Name    | Type     | Value | Description                                                    |
-|---------|----------|-------|----------------------------------------------------------------|
-| code    | `number` | 4100  | A canonical code for this error.                               |
-| message | `string` | -     | A human readable message.                                      |
-| signer  | `string` | -     | The address (public key) of the signer that is not authorized. |
+| Name    | Type     | Value | Description                                                                                                   |
+|---------|----------|-------|---------------------------------------------------------------------------------------------------------------|
+| code    | `number` | 4100  | A canonical code for this error.                                                                              |
+| message | `string` | -     | A human readable message.                                                                                     |
+| signer  | `string` | -     | The address (public key) of the signer that is not authorized.                                                |
+| vcic    | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `ARC0027InvalidInputError`
+### `VIP030027InvalidInputError`
 
 This error is thrown when the provider attempts to sign transaction(s) but the input is malformed.
 
 #### Properties
 
-| Name            | Type     | Value | Description                                          |
-|-----------------|----------|-------|------------------------------------------------------|
-| code            | `number` | 4200  | A canonical code for this error.                     |
-| message         | `string` | -     | A human readable message.                            |
+| Name    | Type     | Value | Description                                                                                                   |
+|---------|----------|-------|---------------------------------------------------------------------------------------------------------------|
+| code    | `number` | 4200  | A canonical code for this error.                                                                              |
+| message | `string` | -     | A human readable message.                                                                                     |
+| vcic    | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `ARC0027InvalidGroupIdError`
+### `VIP030027InvalidGroupIdError`
 
 This error is thrown when the wallet attempts to sign atomic transactions in which the computed group ID is different from the assigned group ID.
 
 #### Properties
 
-| Name            | Type     | Value | Description                                          |
-|-----------------|----------|-------|------------------------------------------------------|
-| code            | `number` | 4201  | A canonical code for this error.                     |
-| computedGroupId | `string` | -     | The computed ID of the supplied atomic transactions. |
-| message         | `string` | -     | A human readable message.                            |
+| Name            | Type     | Value | Description                                                                                                   |
+|-----------------|----------|-------|---------------------------------------------------------------------------------------------------------------|
+| code            | `number` | 4201  | A canonical code for this error.                                                                              |
+| computedGroupId | `string` | -     | The computed ID of the supplied atomic transactions.                                                          |
+| message         | `string` | -     | A human readable message.                                                                                     |
+| vcic            | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
-### `ARC0027FailedToPostSomeTransactionsError`
+### `VIP030027FailedToSignTransactionsError`
 
-This error is thrown when some transactions failed to be posted to the network.
+This error is thrown when some transactions failed to sign the provided transactions.
 
 #### Properties
 
@@ -114,6 +120,19 @@ This error is thrown when some transactions failed to be posted to the network.
 | code          | `number`                             | 4300  | A canonical code for this error.                                                                                                                                                      |
 | message       | `string`                             | -     | A human readable message.                                                                                                                                                             |
 | successTxnIDs | <code>(string  &#124; null)[]</code> | -     | This will correspond to the `stxns` list sent in `postTxns` and will contain the ID of those transactions that were successfully committed to the blockchain, or null if they failed. |
+| vcic          | `string`                             | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard.                                                                         |
+
+### `VIP030027UnauthorizedProviderCredentialError`
+
+When the provider's VCIC has failed verification. This can be caused if the signature the provider has provided in the response does not pass validation of the request's challenge.
+
+#### Properties
+
+| Name            | Type     | Value | Description                                                                                                   |
+|-----------------|----------|-------|---------------------------------------------------------------------------------------------------------------|
+| code            | `number` | 4401  | A canonical code for this error.                                                                              |
+| message         | `string` | -     | A human readable message.                                                                                     |
+| vcic            | `string` | -     | The provider's base64 encoded public key credential that conforms to the [VIP-03-0026][vip-03-0026] standard. |
 
 ## ARC-0060 Errors
 
@@ -157,3 +176,6 @@ This error is thrown when signing typed data and the supplied `signer` has not b
 | message | `string`                | -                      | A human readable message.       |
 | signer  | `string` \| `undefined` | -                      | The requested signer.           |
 | type    | `string`                | `ERROR_INVALID_SIGNER` | A canonical type for the error. |
+
+<!-- links -->
+[vip-03-0026]: https://vips.voi.community/03/0026
