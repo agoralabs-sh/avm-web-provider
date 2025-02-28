@@ -48,7 +48,7 @@ import TOCInline from '@theme/TOCInline';
 | Name        | Type       | Required | Default | Description                                                                  |
 |-------------|------------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string`   | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
-| genesisId   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
+| genesisID   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
 | methods     | `string[]` | yes      | -       | A list of methods available from the provider for the chain.                 |
 
 ## Options
@@ -143,6 +143,7 @@ import TOCInline from '@theme/TOCInline';
 | Name        | Type       | Required | Default | Description                                                                  |
 |-------------|------------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string`   | no       | -       | The unique identifier for the network that is the hash of the genesis block. |
+| sessionIDs  | `string[]` | no       | -       | A list of specific session IDs to remove.                                    |
 
 ### `IEnableParams`
 
@@ -183,8 +184,8 @@ import TOCInline from '@theme/TOCInline';
 | Name        | Type       | Required | Default | Description                                                                  |
 |-------------|------------|----------|---------|------------------------------------------------------------------------------|
 | genesisHash | `string`   | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
-| genesisId   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
-| sessionIds  | `string[]` | no       | -       | A list of removed session IDs.                                               |
+| genesisID   | `string`   | yes      | -       | A human-readable identifier for the network.                                 |
+| sessionIDs  | `string[]` | no       | -       | A list of removed session IDs.                                               |
 
 ### `IDiscoverResult`
 
@@ -202,7 +203,8 @@ import TOCInline from '@theme/TOCInline';
 |-------------|---------------------------|----------|---------|------------------------------------------------------------------------------|
 | accounts    | [`IAccount[]`](#iaccount) | yes      | -       | A list of accounts authorized accounts on the provider.                      |
 | genesisHash | `string`                  | yes      | -       | The unique identifier for the network that is the hash of the genesis block. |
-| genesisId   | `string`                  | yes      | -       | A human-readable identifier for the network.                                 |
+| genesisID   | `string`                  | yes      | -       | A human-readable identifier for the network.                                 |
+| sessionID   | `string`                  | no       | -       | A unique identifier for the session as defined by the provider.              |
 
 ### `IPostTransactionsResult`
 

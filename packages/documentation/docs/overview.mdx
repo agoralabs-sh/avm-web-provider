@@ -24,9 +24,9 @@ The AVM Web Provider works towards achieving two main goals:
 
 Traditionally, web-based provider inject script into a web page's document and "hijack" a property on the global object. This can be problematic as browser extensions are loaded in the web page in an unpredictable and unstable order, so for a user that uses multiple providers this will cause the last provider loaded to re-initialize the global property that was already initialized by another provider.
 
-In order to prevent provider collisions, the client emits an event and instantiates an event listener. The provider listens to the client's incoming events and upon receiving an event, emits an event in response. This forms an event concurrency loop.
+In order to prevent provider collisions, the client instantiates an event listener and emits an event. The provider listens to any client's incoming events and upon receiving an event, emits an event in response. This forms an event concurrency loop.
 
-Since the client code and provider code aren’t guaranteed to run in a particular order, the events are designed to handle such race conditions.
+Since the client & provider code aren’t guaranteed to run in a particular order, the events are designed to handle such race conditions.
 
 Both clients and providers use the [`window.dispatchEvent`][dispatch-event] function to emit events, and use the [`window.addEventListener`][add-event-listener] function to observe events.
 

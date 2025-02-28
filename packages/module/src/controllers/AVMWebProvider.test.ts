@@ -17,7 +17,7 @@ import type { IARC0001Transaction, IAuthenticateParams, IAVMWebProviderConfig, I
 
 describe(AVMWebProvider.name, () => {
   const genesisHash = encodeBase64(randomBytes(32));
-  const genesisId = 'localhost-v1';
+  const genesisID = 'localhost-v1';
   const name = 'Awesome Wallet';
   const signature = 'gqNzaWfEQ...';
   const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
@@ -175,7 +175,7 @@ describe(AVMWebProvider.name, () => {
           return {
             result: {
               genesisHash,
-              genesisId,
+              genesisID,
             },
             signature,
             vcic: vcic.toString(),
@@ -244,7 +244,7 @@ describe(AVMWebProvider.name, () => {
             result: {
               accounts: [],
               genesisHash,
-              genesisId,
+              genesisID,
             },
             signature,
             vcic: vcic.toString(),

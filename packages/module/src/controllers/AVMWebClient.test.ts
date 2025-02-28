@@ -29,7 +29,7 @@ import type {
 
 describe(AVMWebClient.name, () => {
   const genesisHash = encodeBase64(randomBytes(32));
-  const genesisId = 'localhost-v1';
+  const genesisID = 'localhost-v1';
   const name = 'Awesome Wallet';
   const signer = 'P3AIQVDJ2CTH54KSJE63YWB7IZGS4W4JGC53I6GK72BGZ5BXO2B2PS4M4U';
   let client: AVMWebClient;
@@ -161,8 +161,8 @@ describe(AVMWebClient.name, () => {
         ];
         const expectedResult: IDisableResult = {
           genesisHash,
-          genesisId: 'vip-03-0027-test-v1.0',
-          sessionIds,
+          genesisID,
+          sessionIDs: sessionIds,
         };
         let actualRequestId: string;
 
@@ -190,7 +190,7 @@ describe(AVMWebClient.name, () => {
         client.disable({
           params: {
             genesisHash,
-            sessionIds,
+            sessionIDs: sessionIds,
           },
           vcic: vcic.toString(),
         });
@@ -207,7 +207,7 @@ describe(AVMWebClient.name, () => {
           networks: [
             {
               genesisHash,
-              genesisId,
+              genesisID,
               methods: [
                 VIP030027MethodEnum.Authenticate,
                 VIP030027MethodEnum.Disable,
@@ -285,7 +285,7 @@ describe(AVMWebClient.name, () => {
             },
           ],
           genesisHash: encodeBase64(randomBytes(32)),
-          genesisId: 'vip-03-0027-test-v1.0',
+          genesisID,
         };
         let actualRequestId: string;
 
